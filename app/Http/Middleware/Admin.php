@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Models\EmployeeCategory;
 
 class Admin
 {
@@ -16,7 +17,9 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->check() || !auth()->user()->is_admin) {
+        // Check if the authenticated user is a admin
+        $waiterCategory = EmployeeCategory::where('name',"admin")->first()->id;
+        if (!auth()->check() || !auth()->user()->category_id == 1) {
             abort(403);
         }
         return $next($request);
