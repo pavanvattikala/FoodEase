@@ -23,8 +23,8 @@
         <nav class="container px-6 py-8 mx-auto md:flex md:justify-between md:items-center">
             <div class="flex items-center justify-between">
                 <a class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 md:text-2xl hover:text-green-400"
-                    href="#">
-                    TailFood
+                    href="/">
+                    Srinu Hotels
                 </a>
                 <!-- Mobile menu button -->
                 <div @click="isOpen = !isOpen" class="flex md:hidden">
@@ -51,7 +51,7 @@
                     href="{{ route('menus.index') }}">Our Menu</a>
                 <a class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 hover:text-green-400"
                     href="{{ route('reservations.step.one') }}">Make Reservation</a>
-
+        
             </div>
         </nav>
     </div>
