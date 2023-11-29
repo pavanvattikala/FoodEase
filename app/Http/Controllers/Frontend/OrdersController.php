@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers\FrontEnd;
 
 use App\Enums\TableStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Reservation;
 use App\Models\Table;
@@ -11,23 +12,22 @@ use App\Rules\DateBetween;
 use App\Rules\TimeBetween;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
-
-class ReservationController extends Controller
+class OrdersController extends Controller
 {
-    public function stepZero(Request $request)
+    public function stepone(Request $request)
     {
         $menus = Menu::all();
-        return view('reservations.step-zero',compact('menus'));
+        $categories = Category::all();
+        return view('orders.step-one',compact('menus','categories'));
     }
 
-    public function stepOne(Request $request)
-    {
-        $reservation = $request->session()->get('reservation');
-        $min_date = Carbon::today();
-        $max_date = Carbon::now()->addWeek();
-        return view('reservations.step-one', compact('reservation', 'min_date', 'max_date'));
-    }
+    // public function stepOne(Request $request)
+    // {
+    //     $reservation = $request->session()->get('reservation');
+    //     $min_date = Carbon::today();
+    //     $max_date = Carbon::now()->addWeek();
+    //     return view('reservations.step-one', compact('reservation', 'min_date', 'max_date'));
+    // }
 
     public function storeStepOne(Request $request)
     {
