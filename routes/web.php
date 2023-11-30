@@ -13,24 +13,13 @@ use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Frontend\WelcomeController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
-use PHPUnit\TextUI\XmlConfiguration\Group;
+
+use App\Http\Controllers\RequestController;
 
 Route::get('/', [WelcomeController::class, 'index']);
 Route::get('/categories', [FrontendCategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [FrontendCategoryController::class, 'show'])->name('categories.show');
 Route::get('/menus', [FrontendMenuController::class, 'index'])->name('menus.index');
-
-// Route::middleware(['auth','waiter'])->group(function () {
-//     // display menu
-//     Route::get('/orders/step-one', [FrontendOrdersController::class, 'stepone'])->name('orders.step.one');    
-// });
-
-Route::get('/orders/step-one', [FrontendOrdersController::class, 'stepone'])->name('orders.step.one');    
-
-Route::get('/waiter/request-waiter', [WaiterController::class, 'requestWaiter'])->name('request.waiter.new');
-Route::get('/waiter/request-bill', [WaiterController::class, 'requestWaiter'])->name('request.waiter.bill');
-Route::get('/waiter/request-extra', [WaiterController::class, 'requestWaiter'])->name('request.waiter.extra');
-
 
 Route::get('/reservation/step-one', [FrontendReservationController::class, 'stepOne'])->name('reservations.step.one');
 Route::post('/reservation/step-one', [FrontendReservationController::class, 'storeStepOne'])->name('reservations.store.step.one');
@@ -41,6 +30,23 @@ Route::get('/thankyou', [WelcomeController::class, 'thankyou'])->name('thankyou'
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+
+Route::name('request.')->prefix('request')->group(function () {
+
+    Route::get('/waiter', [RequestController::class, 'requestWaiter'])->name('request.waiter');
+    Route::get('/bill', [RequestController::class, 'requestBill'])->name('request.bill');
+    Route::get('/extra', [RequestController::class, 'requestExtra'])->name('request.extra');  
+
+});
+
+Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(function () {
+
+    Route::get('/orders/step-one', [FrontendOrdersController::class, 'stepone'])->name('orders.step.one');    
+    Route::get('/', [WaiterController::class, 'index'])->name('waiter.home');    
+
+});
+
 
 Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');

@@ -17,11 +17,13 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check if the authenticated user is a admin
-        $waiterCategory = EmployeeCategory::where('name',"admin")->first()->id;
-        if (!auth()->check() || !auth()->user()->category_id == 1) {
-            abort(403);
+        $adminCategory = EmployeeCategory::where('name',"admin")->first()->id;
+
+        if (auth()->user()->category_id == $adminCategory) {
+            return $next($request);
         }
-        return $next($request);
+
+        abort(403, 'Unauthorized access.'); 
+
     }
 }

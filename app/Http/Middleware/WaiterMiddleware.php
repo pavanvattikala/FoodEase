@@ -21,7 +21,10 @@ class WaiterMiddleware
         // Check if the authenticated user is a waiter
         $waiterCategory = EmployeeCategory::where('name',"waiter")->first()->id;
 
-        if ($request->user() && $request->user()->category_id == $waiterCategory) {
+        $adminCategory = EmployeeCategory::where('name',"admin")->first()->id;
+
+
+        if ($request->user() && ( $request->user()->category_id == $waiterCategory || $request->user()->category_id == $adminCategory) ) {
             return $next($request);
         }
 

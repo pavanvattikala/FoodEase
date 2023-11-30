@@ -22,5 +22,9 @@ class WaiterController extends Controller
         return view('waiter.booking', compact('message', 'minutes', 'seconds'));
     }
 
+    public function index(Request $request){
+        return view('waiter.index');
+    }
+
     
 }
