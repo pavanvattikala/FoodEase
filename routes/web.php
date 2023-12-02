@@ -34,15 +34,17 @@ Route::get('/dashboard', function () {
 
 Route::name('request.')->prefix('request')->group(function () {
 
-    Route::get('/waiter', [RequestController::class, 'requestWaiter'])->name('request.waiter');
-    Route::get('/bill', [RequestController::class, 'requestBill'])->name('request.bill');
-    Route::get('/extra', [RequestController::class, 'requestExtra'])->name('request.extra');  
+    Route::get('/waiter', [RequestController::class, 'requestWaiter'])->name('waiter');
+    Route::get('/bill', [RequestController::class, 'requestBill'])->name('bill');
+    Route::get('/extra', [RequestController::class, 'requestExtra'])->name('extra');  
 
 });
 
 Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(function () {
 
     Route::get('/orders/step-one', [FrontendOrdersController::class, 'stepone'])->name('orders.step.one');    
+    Route::get('/orders/history', [FrontendOrdersController::class, 'stepone'])->name('orders.history');    
+
     Route::get('/', [WaiterController::class, 'index'])->name('waiter.home');    
 
 });
