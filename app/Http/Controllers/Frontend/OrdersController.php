@@ -12,13 +12,16 @@ use App\Rules\DateBetween;
 use App\Rules\TimeBetween;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 class OrdersController extends Controller
 {
     public function stepone(Request $request)
     {
-        $menus = Menu::all();
-        $categories = Category::all();
-        return view('orders.step-one',compact('menus','categories'));
+        $categoriesWithMenus = Category::with('menus')->get();
+
+        //dd($categoriesWithMenus);
+
+        return view('orders.step-one',compact('categoriesWithMenus'));
     }
 
     // public function stepOne(Request $request)
