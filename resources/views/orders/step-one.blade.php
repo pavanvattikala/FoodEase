@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-waiter-layout>
   <div class="container w-full px-5 py-6 mx-auto">
       <div class="categories-wrapper flex flex-col">
           @foreach ($categories as $category)
@@ -37,7 +37,7 @@
   <script>
       // ... your existing JavaScript code ...
   </script>
-</x-guest-layout>
+</x-waiter-layout>
 
 <style>
   .categories-wrapper {

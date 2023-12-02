@@ -1,3 +1,7 @@
+Certainly! Here's the complete code for the `waiter.blade.php` layout file:
+
+```html
+<!-- resources/views/layouts/waiter.blade.php -->
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -41,12 +45,12 @@
             </div>
             <nav :class="{'block': open, 'hidden': !open}"
                 class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-                <x-waiter-nav-link :href="route('waiter.orders.step.one')"
-                    :active="request()->routeIs('waiter.orders.step.one')">
+                <x-waiter-nav-link :href="route('waiter.create.order')"
+                    :active="request()->routeIs('waiter.create.order')">
                     {{ __('Create Order') }}
                 </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('waiter.orders.history')"
-                    :active="request()->routeIs('waiter.orders.history')">
+                <x-waiter-nav-link :href="route('waiter.order.history')"
+                    :active="request()->routeIs('waiter.order.history')">
                     {{ __('Order History') }}
                 </x-waiter-nav-link>
             </nav>
@@ -78,3 +82,6 @@
 </body>
 
 </html>
+```
+
+Make sure to create corresponding routes and views for the "Create Order" and "Order History" functionalities.
