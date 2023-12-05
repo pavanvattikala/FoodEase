@@ -24,6 +24,31 @@ class OrdersController extends Controller
         return view('orders.step-one',compact('categoriesWithMenus'));
     }
 
+    public function addToCart(Request $request){
+        $menuId = $request->menuId;
+
+        $cart = session()->get('cart', []);
+    
+        // Check if the menuId is already in the cart
+        if (array_key_exists($menuId, $cart)) {
+            // If it is, increment the quantity
+            $cart[$menuId]['quantity']++;
+        } else {
+            // If it's not, add a new item to the cart
+            $cart[$menuId] = [
+                'menuId' => $menuId,
+                'quantity' => 1,
+                // You can add more details about the item if needed
+            ];
+        }
+    
+        // Update the cart in the session
+        session()->put('cart', $cart);
+    
+        // Return a response if needed
+        return response()->json(['message' => 'Item added to cart']);
+    }
+
     // public function stepOne(Request $request)
     // {
     //     $reservation = $request->session()->get('reservation');
@@ -32,29 +57,7 @@ class OrdersController extends Controller
     //     return view('reservations.step-one', compact('reservation', 'min_date', 'max_date'));
     // }
 
-    public function storeStepOne(Request $request)
-    {
-        $validated = $request->validate([
-            'first_name' => ['required'],
-            'last_name' => ['required'],
-            'email' => ['required', 'email'],
-            'res_date' => ['required', 'date', new DateBetween, new TimeBetween],
-            'tel_number' => ['required'],
-            'guest_number' => ['required'],
-        ]);
-
-        if (empty($request->session()->get('reservation'))) {
-            $reservation = new Reservation();
-            $reservation->fill($validated);
-            $request->session()->put('reservation', $reservation);
-        } else {
-            $reservation = $request->session()->get('reservation');
-            $reservation->fill($validated);
-            $request->session()->put('reservation', $reservation);
-        }
-
-        return to_route('reservations.step.two');
-    }
+    
     public function stepTwo(Request $request)
     {
         $reservation = $request->session()->get('reservation');

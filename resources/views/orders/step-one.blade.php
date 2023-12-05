@@ -38,6 +38,13 @@
         <div class="mt-8">
             <h2 class="text-2xl font-semibold">Total Amount: <span id="totalAmount">Rs 0</span></h2>
         </div>
+
+        <a href="{{ route("waiter.order.step.two") }}">
+            <button class="bg-green-500 text-white px-4 py-2 rounded relative m-2">
+                Shopping Cart
+                <span id="cartBadge" class="bg-red-500 text-black px-2 py-1 rounded-full absolute top-0 right-0 -mt-1 -mr-1 hidden">9</span>
+            </button>
+        </a>
         
   </div>
 
@@ -59,8 +66,10 @@ function toggleDropdown(categoryName) {
     function addToTotal(menuId, amount) {
         itemCounts[menuId] = (itemCounts[menuId] || 0) + 1;
         totalAmount += amount;
+        addToCart(menuId);
         updateTotalAmount();
         updateItemCount(menuId);
+        
     }
 
     function subtractFromTotal(menuId, amount) {
@@ -82,5 +91,26 @@ function toggleDropdown(categoryName) {
             countElement.innerText = itemCounts[menuId] || 0;
         }
     }
+
+    function addToCart(menuId) {
+    const url = "addtocart";  // Correct the URL to the correct endpoint
+
+    var csrf_token = "{{ csrf_token()  }}";
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: { menuId: menuId },  
+        headers: { 'X-CSRF-TOKEN': csrf_token },
+        contentType:'application/x-www-form-urlencoded',
+        success: function (response) {
+            console.log('Item added to cart:', response);
+        },
+        error: function (error) {
+            console.error('Error adding item to cart:', error);
+        }
+    });
+}
+
 </script>
   

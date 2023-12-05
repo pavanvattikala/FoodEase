@@ -42,7 +42,12 @@ Route::name('request.')->prefix('request')->group(function () {
 
 Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(function () {
 
-    Route::get('/orders/step-one', [FrontendOrdersController::class, 'stepone'])->name('orders.step.one');    
+    Route::get('/order/step-one', [FrontendOrdersController::class, 'stepone'])->name('order.step.one');
+    //route to add current item to session
+    Route::post('/order/addtocart', [FrontendOrdersController::class, 'addToCart'])->name('order.add.tocart');
+
+    Route::get('/orders/step-two', [FrontendOrdersController::class, 'steptwo'])->name('order.step.two');    
+
     Route::get('/orders/history', [FrontendOrdersController::class, 'stepone'])->name('orders.history');    
 
     Route::get('/', [WaiterController::class, 'index'])->name('waiter.home');    
