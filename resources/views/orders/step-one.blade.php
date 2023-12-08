@@ -23,7 +23,8 @@
                                 <div class="flex items-center justify-between p-4 bg-gray-100">
                                     <div class="flex items-center">
                                         <button class="bg-green-500 text-ipwhite px-4 py-2 mr-2 rounded" onclick="addToTotal({{ $menu->id }}, {{ $menu->price }})">+</button>
-                                        <span id="count_{{ $menu->id }}" class="text-lg font-semibold">{{ $menu->initialCount ?? 0 }}</span>
+                                        <span id="count_{{ $menu->id }}" class="text-lg font-semibold">                    {{ session('cart.' . $menu->id . '.quantity', 0) }}
+                                        </span>
                                         <button class="bg-red-500 text-white px-4 py-2 ml-2 rounded" onclick="subtractFromTotal({{ $menu->id }}, {{ $menu->price }})">-</button>
                                     </div>
                                 </div>
@@ -36,15 +37,18 @@
         </div>
         
         <div class="mt-8">
-            <h2 class="text-2xl font-semibold">Total Amount: <span id="totalAmount">Rs 0</span></h2>
+            <h2 class="text-2xl font-semibold">Total Amount: <span id="totalAmount">Rs {{  session('cart.total' , 0)  }}</span></h2>
         </div>
 
-        <a href="{{ route("waiter.order.step.two") }}">
+        <a href="{{ route("waiter.order.cart") }}">
             <button class="bg-green-500 text-white px-4 py-2 rounded relative m-2">
-                Shopping Cart
-                <span id="cartBadge" class="bg-red-500 text-black px-2 py-1 rounded-full absolute top-0 right-0 -mt-1 -mr-1 hidden">9</span>
+                View Cart
             </button>
         </a>
+
+        <button onclick="clearCart()" class="bg-red-500 text-white px-4 py-2 rounded relative m-2">
+            Clear Cart
+        </button>
         
   </div>
 
@@ -61,23 +65,24 @@ function toggleDropdown(categoryName) {
     }
     
     let totalAmount = 0;
-    let itemCounts = {};
 
     function addToTotal(menuId, amount) {
-        itemCounts[menuId] = (itemCounts[menuId] || 0) + 1;
+        let currentItemCount =  document.getElementById(`count_${menuId}`).innerText;
         totalAmount += amount;
-        addToCart(menuId);
+        addToCart(menuId,amount);
         updateTotalAmount();
-        updateItemCount(menuId);
+        updateItemCount(menuId,++currentItemCount);
         
     }
 
     function subtractFromTotal(menuId, amount) {
-        if (itemCounts[menuId] && itemCounts[menuId] > 0) {
-            itemCounts[menuId] -= 1;
+
+        let currentItemCount =  document.getElementById(`count_${menuId}`).innerText;
+        if (currentItemCount > 0) {
             totalAmount -= amount;
+            removeFromCart(menuId,amount)
             updateTotalAmount();
-            updateItemCount(menuId);
+            updateItemCount(menuId,--currentItemCount);
         }
     }
 
@@ -85,14 +90,12 @@ function toggleDropdown(categoryName) {
         document.getElementById('totalAmount').innerText = `Rs ${Math.max(totalAmount, 0)}`;
     }
 
-    function updateItemCount(menuId) {
+    function updateItemCount(menuId,count) {
         const countElement = document.getElementById(`count_${menuId}`);
-        if (countElement) {
-            countElement.innerText = itemCounts[menuId] || 0;
-        }
+        countElement.innerText = count;
     }
 
-    function addToCart(menuId) {
+    function addToCart(menuId,amount) {
     const url = "addtocart";  // Correct the URL to the correct endpoint
 
     var csrf_token = "{{ csrf_token()  }}";
@@ -100,7 +103,7 @@ function toggleDropdown(categoryName) {
     $.ajax({
         type: "POST",
         url: url,
-        data: { menuId: menuId },  
+        data: { menuId: menuId,price:amount},  
         headers: { 'X-CSRF-TOKEN': csrf_token },
         contentType:'application/x-www-form-urlencoded',
         success: function (response) {
@@ -111,6 +114,47 @@ function toggleDropdown(categoryName) {
         }
     });
 }
+
+function removeFromCart(menuId,amount) {
+    const url = "removefromcart";
+    var csrf_token = "{{ csrf_token() }}";
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: { menuId: menuId,price:amount},  
+        headers: { 'X-CSRF-TOKEN': csrf_token },
+        success: function (response) {
+            console.log('Item removed from cart:', response);
+            // Handle the success response if needed
+        },
+        error: function (error) {
+            console.error('Error removing item from cart:', error);
+            // Handle the error if needed
+        }
+    });
+}
+
+function clearCart() {
+    const url = "clearcart";  
+
+    var csrf_token = "{{ csrf_token()  }}";
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        headers: { 'X-CSRF-TOKEN': csrf_token },
+        contentType:'application/x-www-form-urlencoded',
+        success: function (response) {
+            console.log(response);
+            location.reload(); 
+        },
+        error: function (error) {
+            console.error('Error ', error);
+        }
+    });
+}
+
 
 </script>
   

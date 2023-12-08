@@ -19,16 +19,21 @@ class OrdersController extends Controller
     {
         $categoriesWithMenus = Category::with('menus')->get();
 
+        $cart = session()->get('cart', []);
+
+
         //dd($categoriesWithMenus);
 
-        return view('orders.step-one',compact('categoriesWithMenus'));
+        return view('orders.step-one',compact('categoriesWithMenus','cart'));
     }
 
     public function addToCart(Request $request){
         $menuId = $request->menuId;
-
+        $price = $request->price;
+        $itemName = Menu::where('id', $menuId)->first()->name;
+        
         $cart = session()->get('cart', []);
-    
+        
         // Check if the menuId is already in the cart
         if (array_key_exists($menuId, $cart)) {
             // If it is, increment the quantity
@@ -36,50 +41,72 @@ class OrdersController extends Controller
         } else {
             // If it's not, add a new item to the cart
             $cart[$menuId] = [
-                'menuId' => $menuId,
+                'name' => $itemName,
                 'quantity' => 1,
-                // You can add more details about the item if needed
+                'price' => $price,
             ];
         }
-    
+        
+        $cart['total'] = isset($cart['total']) ? $cart['total'] + $price : $price;
+        
         // Update the cart in the session
         session()->put('cart', $cart);
-    
+        
         // Return a response if needed
         return response()->json(['message' => 'Item added to cart']);
+        
+    }
+    
+
+
+public function removeFromCart(Request $request) {
+
+    $menuId = $request->menuId;
+$price = $request->price;
+
+$cart = session()->get('cart', []);
+
+// Check if the menuId is in the cart
+if (array_key_exists($menuId, $cart) && $cart[$menuId]['quantity'] > 0) {
+    // If it is, decrement the quantity
+    $cart[$menuId]['quantity']--;
+
+    // If the quantity becomes zero, remove the item from the cart
+    if ($cart[$menuId]['quantity'] <= 0) {
+        unset($cart[$menuId]);
     }
 
-    // public function stepOne(Request $request)
-    // {
-    //     $reservation = $request->session()->get('reservation');
-    //     $min_date = Carbon::today();
-    //     $max_date = Carbon::now()->addWeek();
-    //     return view('reservations.step-one', compact('reservation', 'min_date', 'max_date'));
-    // }
+    // Subtract the price of the removed item from the total
+    $cart['total'] -= $price;
+
+    // Update the cart in the session
+    session()->put('cart', $cart);
+
+    // Return a response if needed
+    return response()->json(['message' => 'Item removed from cart']);
+}
+
+// Return a response if the menuId is not in the cart or the quantity is already 0
+return response()->json(['message' => 'Item not found in cart'], 404);
+
+
+}
+
+public function cart() {
+    $cart = session()->get('cart', []);
 
     
-    public function stepTwo(Request $request)
-    {
-        $reservation = $request->session()->get('reservation');
-        $res_table_ids = Reservation::orderBy('res_date')->get()->filter(function ($value) use ($reservation) {
-            return $value->res_date->format('Y-m-d') == $reservation->res_date->format('Y-m-d');
-        })->pluck('table_id');
-        $tables = Table::where('status', TableStatus::Avalaiable)
-            ->where('guest_number', '>=', $reservation->guest_number)
-            ->whereNotIn('id', $res_table_ids)->get();
-        return view('reservations.step-two', compact('reservation', 'tables'));
-    }
+    return view('orders.cart', ['cart' => $cart]);
+}
 
-    public function storeStepTwo(Request $request)
-    {
-        $validated = $request->validate([
-            'table_id' => ['required']
-        ]);
-        $reservation = $request->session()->get('reservation');
-        $reservation->fill($validated);
-        $reservation->save();
-        $request->session()->forget('reservation');
+public function clearCart() {
+    session()->forget('cart');
 
-        return to_route('thankyou');
-    }
+    return response()->json("cart cleared sucessfully");
+}
+
+public function submit(Request $request){
+    session()->forget('cart');
+    return route("waiter.waiter.home");
+}
 }
