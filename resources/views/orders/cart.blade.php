@@ -38,10 +38,10 @@
             </div>
 
 
-                <button onclick="submitToKitchen()" class="bg-green-500 text-white px-4 py-2 rounded relative m-2">
-                    Submit To Kitchen
-                </button>
-           
+            <button onclick="submitToKitchen()" class="bg-green-500 text-white px-4 py-2 rounded relative m-2">
+                Submit To Kitchen
+            </button>
+        
 
             
         @endif
@@ -49,23 +49,26 @@
 
     <script>
 
-function submitToKitchen() {
-    const url = "submit";  
 
-    var csrf_token = "{{ csrf_token()  }}";
+        // submit to kitchen call
+        function submitToKitchen() {
+            const url = "submit";  
 
-    $.ajax({
-        type: "POST",
-        url: url,
-        headers: { 'X-CSRF-TOKEN': csrf_token },
-        contentType:'application/x-www-form-urlencoded',
-        success: function (response) {
-            window.location.replace(response);        
-        },
-        error: function (error) {
-            console.error('Error ', error);
+            var csrf_token = "{{ csrf_token()  }}";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                headers: { 'X-CSRF-TOKEN': csrf_token },
+                contentType:'application/x-www-form-urlencoded',
+                success: function (response) {
+                    alert("order submitted");
+                    window.location.replace(response);        
+                },
+                error: function (error) {
+                    console.error('Error ', error);
+                }
+            });
         }
-    });
-}
     </script>
 </x-waiter-layout>

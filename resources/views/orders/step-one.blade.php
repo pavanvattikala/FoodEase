@@ -57,7 +57,8 @@
   
 <script>
 
-function toggleDropdown(categoryName) {
+    //tooggle menu
+    function toggleDropdown(categoryName) {
         const dropdown = document.getElementById(`${categoryName}Dropdown`);
         const arrow = document.getElementById(`${categoryName}Arrow`);
         dropdown.classList.toggle('hidden');
@@ -86,74 +87,80 @@ function toggleDropdown(categoryName) {
         }
     }
 
+    // to update total amount
     function updateTotalAmount() {
         document.getElementById('totalAmount').innerText = `Rs ${Math.max(totalAmount, 0)}`;
     }
 
+    // to update individual count 
     function updateItemCount(menuId,count) {
         const countElement = document.getElementById(`count_${menuId}`);
         countElement.innerText = count;
     }
 
+    //ajax call to add item in cart
     function addToCart(menuId,amount) {
-    const url = "addtocart";  // Correct the URL to the correct endpoint
+        const url = "addtocart";  
 
-    var csrf_token = "{{ csrf_token()  }}";
+        var csrf_token = "{{ csrf_token()  }}";
 
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: { menuId: menuId,price:amount},  
-        headers: { 'X-CSRF-TOKEN': csrf_token },
-        contentType:'application/x-www-form-urlencoded',
-        success: function (response) {
-            console.log('Item added to cart:', response);
-        },
-        error: function (error) {
-            console.error('Error adding item to cart:', error);
-        }
-    });
-}
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { menuId: menuId,price:amount},  
+            headers: { 'X-CSRF-TOKEN': csrf_token },
+            contentType:'application/x-www-form-urlencoded',
+            success: function (response) {
+                console.log('Item added to cart:', response);
+            },
+            error: function (error) {
+                console.error('Error adding item to cart:', error);
+            }
+        });
+    }
 
-function removeFromCart(menuId,amount) {
-    const url = "removefromcart";
-    var csrf_token = "{{ csrf_token() }}";
+    //ajax call to remove item in cart
+    function removeFromCart(menuId,amount) {
+        const url = "removefromcart";
+        var csrf_token = "{{ csrf_token() }}";
 
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: { menuId: menuId,price:amount},  
-        headers: { 'X-CSRF-TOKEN': csrf_token },
-        success: function (response) {
-            console.log('Item removed from cart:', response);
-            // Handle the success response if needed
-        },
-        error: function (error) {
-            console.error('Error removing item from cart:', error);
-            // Handle the error if needed
-        }
-    });
-}
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { menuId: menuId,price:amount},  
+            headers: { 'X-CSRF-TOKEN': csrf_token },
+            success: function (response) {
+                console.log('Item removed from cart:', response);
+                // Handle the success response if needed
+            },
+            error: function (error) {
+                console.error('Error removing item from cart:', error);
+                // Handle the error if needed
+            }
+        });
+    }
 
-function clearCart() {
-    const url = "clearcart";  
+    //ajax call to clear cart
 
-    var csrf_token = "{{ csrf_token()  }}";
+    function clearCart() {
+        const url = "clearcart";  
 
-    $.ajax({
-        type: "POST",
-        url: url,
-        headers: { 'X-CSRF-TOKEN': csrf_token },
-        contentType:'application/x-www-form-urlencoded',
-        success: function (response) {
-            console.log(response);
-            location.reload(); 
-        },
-        error: function (error) {
-            console.error('Error ', error);
-        }
-    });
-}
+        var csrf_token = "{{ csrf_token()  }}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: { 'X-CSRF-TOKEN': csrf_token },
+            contentType:'application/x-www-form-urlencoded',
+            success: function (response) {
+                console.log(response);
+                location.reload(); 
+            },
+            error: function (error) {
+                console.error('Error ', error);
+            }
+        });
+    }
 
 
 </script>
