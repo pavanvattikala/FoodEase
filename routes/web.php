@@ -41,10 +41,26 @@ Route::name('request.')->prefix('request')->group(function () {
 });
 
 Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(function () {
-
+    
+    //order step one
     Route::get('/order/step-one', [FrontendOrdersController::class, 'stepone'])->name('order.step.one');
+
     //route to add current item to session
     Route::post('/order/addtocart', [FrontendOrdersController::class, 'addToCart'])->name('order.add.tocart');
+
+    //route to remove current item to session
+    Route::post('/order/removefromcart', [FrontendOrdersController::class, 'removefromcart'])->name('order.remove.fromcart');
+
+    // show cart
+    Route::get('/order/cart', [FrontendOrdersController::class, 'cart'])->name('order.cart');
+
+    // clear cart
+    Route::post('/order/clearcart', [FrontendOrdersController::class, 'clearcart'])->name('order.clear.cart');
+
+    Route::post('/order/clearcart', [FrontendOrdersController::class, 'clearcart'])->name('order.clear.cart');
+
+    Route::post('/order/submit', [FrontendOrdersController::class, 'submit'])->name('order.submit');
+
 
     Route::get('/orders/step-two', [FrontendOrdersController::class, 'steptwo'])->name('order.step.two');    
 
