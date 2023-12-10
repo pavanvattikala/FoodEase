@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers\FrontEnd;
 
-use App\Enums\TableStatus;
 use App\Events\OrderSubmittedToKitchen;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\Reservation;
-use App\Models\Table;
-use App\Rules\DateBetween;
-use App\Rules\TimeBetween;
-use Carbon\Carbon;
-use Illuminate\Console\Scheduling\Event;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-class OrdersController extends Controller
+
+
+class OrderController extends Controller
 {
     public function stepone(Request $request)
     {
