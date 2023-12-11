@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Frontend\CategoryController as FrontendCategoryController;
 use App\Http\Controllers\Frontend\MenuController as FrontendMenuController;
 use App\Http\Controllers\Frontend\ReservationController as FrontendReservationController;
-use App\Http\Controllers\Frontend\OrdersController as FrontendOrdersController;
+use App\Http\Controllers\Frontend\OrderController as FrontendOrdersController;
 use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Frontend\WelcomeController;
 use GuzzleHttp\Middleware;
