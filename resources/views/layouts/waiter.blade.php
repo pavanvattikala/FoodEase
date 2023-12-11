@@ -33,8 +33,8 @@
             </div>
             <nav :class="{'block': open, 'hidden': !open}"
                 class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-                <x-waiter-nav-link :href="route('waiter.order.step.one')"
-                    :active="request()->routeIs('waiter.order.step.one')">
+                <x-waiter-nav-link :href="route('waiter.choose.table')"
+                    :active="request()->routeIs('waiter.choose.table')">
                     {{ __('Create Order') }}
                 </x-waiter-nav-link>
                 <x-waiter-nav-link :href="route('waiter.orders.history')"

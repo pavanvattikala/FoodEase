@@ -43,8 +43,13 @@ Route::name('request.')->prefix('request')->group(function () {
 Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(function () {
 
     //waiter home page 
-    Route::get('/', [WaiterController::class, 'index'])->name('waiter.home');  
+    Route::get('/', [WaiterController::class, 'index'])->name('home'); 
     
+    Route::get('/choosetable', [WaiterController::class, 'chooseTable'])->name('choose.table');
+
+    Route::post('addtabletosession', [WaiterController::class, 'addTableToSesstion'])->name('table.add.toSession');
+
+
     //order step one
     Route::get('/order/step-one', [FrontendOrdersController::class, 'stepone'])->name('order.step.one');
 
