@@ -14,7 +14,7 @@ class Order extends Model
     protected $fillable = [
         'KOT',
         'total',
-        'tableNo',
+        'table_id',
         'status',
         'special_instructions',
         'order_type',
@@ -34,5 +34,9 @@ class Order extends Model
     public function waiter()
     {
         return $this->belongsTo(User::class, 'waiter_id');
+    }
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
     }
 }
