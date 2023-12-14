@@ -8,7 +8,7 @@ use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use App\Helpers\TableHelper;
-
+use Error;
 
 class OrderController extends Controller
 {
@@ -100,30 +100,26 @@ class OrderController extends Controller
 
         $tableId=null;
 
-        if(session()->has("tableID")){
-            $tableId=session()->get("tabelId");
+        if(session()->has("tableId")){
+            $tableId = intval(session()->get("tableId"));
         }
         else{
-            return response()->json(['message' => 'no table selected']);
+            return response()->json(['error' => 'Table not selected.'], 422);
         }
 
         $isTableAvailable = TableHelper::checkIfTableAvailable($tableId);
 
         if(!$isTableAvailable){
             
-            return response()->json(['message' => 'false']);
-        }
-
-        $waiterId = auth()->user->id;
-    
+            return response()->json(['error' => 'Table not Availible.'], 422);
+        }    
 
         $cart = session()->get('cart', []);
 
-        array_push($cart,$waiterId);
 
-        array_push($cart,$tableId);
+        $cart["waiterId"] = $waiterId;
 
-        dd($cart);
+        $cart["tableId"] = $tableId;
 
         //create order submit event
         event(new OrderSubmittedToKitchen($cart));
