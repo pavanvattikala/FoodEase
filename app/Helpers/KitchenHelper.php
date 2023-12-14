@@ -2,17 +2,21 @@
 
 namespace App\Helpers;
 
+use App\Models\Order;
 use Ramsey\Uuid\Uuid;
 
 class KitchenHelper{
 
     public static function generateKOT()
     {
-        $uuid = Uuid::uuid4();
-        $date = now()->format('Ymd');
-        $uuid_string = $uuid->toString();
+        $lastKOT = Order::latest('id')->first();
 
-        return "KOT-$date-$uuid_string";
+        // Increment the last KOT ID or start from 1 if there are no existing KOTs
+        $nextKOTId = $lastKOT ? $lastKOT->id + 1 : 1;
+
+        $date = now()->format('Ymd');
+
+        return "KOT-$date-$nextKOTId";
     }
 }
 
