@@ -54,6 +54,8 @@
         function submitToKitchen() {
             const url = "submit";  
 
+            const redirectUrl = "{{ route("waiter.order.step.one",[],false) }}";
+
             var csrf_token = "{{ csrf_token()  }}";
 
             $.ajax({
@@ -62,8 +64,8 @@
                 headers: { 'X-CSRF-TOKEN': csrf_token },
                 contentType:'application/x-www-form-urlencoded',
                 success: function (response) {
-                    alert("order submitted");
-                    window.location.replace(response);        
+                    alert(response.message);
+                    window.location.replace(redirectUrl);        
                 },
                 error: function (error) {
                     console.error('Error ', error);
