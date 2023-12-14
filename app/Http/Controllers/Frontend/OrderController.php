@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use App\Helpers\TableHelper;
+use App\Models\Order;
 use Error;
 
 class OrderController extends Controller
@@ -128,4 +129,18 @@ class OrderController extends Controller
 
         return response()->json(["message"=> "order placed successfully"]);
     }
+
+    public function orderHistory()
+    {
+        // Retrieve orders for the current waiter with order details
+        $waiterId = auth()->user()->id;
+        $orders = Order::with('orderDetails.menu') // Adjust the relationship names based on your actual structure
+            ->where('waiter_id', $waiterId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // You can return the orders to a view or process them as needed
+        return view('orders.order-history', ['orders' => $orders]);
+    }
+
 }

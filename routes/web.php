@@ -69,7 +69,8 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
     Route::post('/order/submit', [FrontendOrdersController::class, 'submit'])->name('order.submit');
 
     //orders history
-    Route::get('/orders/history', [FrontendOrdersController::class, 'stepone'])->name('orders.history');    
+    Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('orders.history');    
+
 
 });
 
