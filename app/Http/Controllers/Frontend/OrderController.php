@@ -126,6 +126,6 @@ class OrderController extends Controller
         
         session()->forget('cart');
 
-        return route("waiter.home");
+        return response()->json(["message"=> "order placed successfully"]);
     }
 }
