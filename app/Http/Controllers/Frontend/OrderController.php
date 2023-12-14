@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use App\Helpers\TableHelper;
 
 
 class OrderController extends Controller
@@ -92,13 +93,43 @@ class OrderController extends Controller
     }
 
     public function submit(Request $request){
+
+        // submit the order to kitchen
+
+        $waiterId = auth()->user()->id;
+
+        $tableId=null;
+
+        if(session()->has("tableID")){
+            $tableId=session()->get("tabelId");
+        }
+        else{
+            return response()->json(['message' => 'no table selected']);
+        }
+
+        $isTableAvailable = TableHelper::checkIfTableAvailable($tableId);
+
+        if(!$isTableAvailable){
+            
+            return response()->json(['message' => 'false']);
+        }
+
+        $waiterId = auth()->user->id;
+    
+
         $cart = session()->get('cart', []);
+
+        array_push($cart,$waiterId);
+
+        array_push($cart,$tableId);
+
+        dd($cart);
 
         //create order submit event
         event(new OrderSubmittedToKitchen($cart));
         
         session()->forget('cart');
 
-        return route("waiter.waiter.home");
+        return route("waiter.home");
     }
 }

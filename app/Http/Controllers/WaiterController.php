@@ -7,6 +7,7 @@ use App\Models\Table;
 use App\Models\Waiter;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
+use App\Helpers\TableHelper;
 
 class WaiterController extends Controller
 {
@@ -23,9 +24,10 @@ class WaiterController extends Controller
     public function addTableToSesstion(Request $request){
         $tableId = $request->tableId;
 
-        $status = Table::where('id',$tableId)->first()->status->value;
+        $isTableAvailable = TableHelper::checkIfTableAvailable($tableId);
 
-        if($status==TableStatus::Available->value){
+        if($isTableAvailable){
+            
             Session()->put("tableId",$tableId);
 
             return response()->json(['message' => 'true']);
