@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderSubmittedToKitchen
+class OrderSubmittedToKitchen implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,6 +33,19 @@ class OrderSubmittedToKitchen
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('orderSubmitted');
     }
+
+    public function broadcastWith()
+    {
+        unset( $this->cart['tableId']);
+        unset($this->cart['total']);
+        unset($this->cart['waiterId']);
+        
+        return [
+            'cart' => $this->cart,
+            // Add other properties as needed for Pusher
+        ];
+    }
+
 }

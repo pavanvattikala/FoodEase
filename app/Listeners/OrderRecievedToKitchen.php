@@ -35,6 +35,8 @@ class OrderRecievedToKitchen
      */
     public function handle(OrderSubmittedToKitchen $event)
 {
+    return response()->json(['message' => 'Order placed successfully']);
+
     $cart = collect($event->cart);
 
    
