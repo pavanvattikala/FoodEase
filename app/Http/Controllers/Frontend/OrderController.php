@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\FrontEnd;
 
+use App\Enums\OrderStatus;
 use App\Events\OrderSubmittedToKitchen;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Helpers\TableHelper;
 use App\Models\Order;
 use Error;
+use PhpParser\Node\Expr\New_;
 
 class OrderController extends Controller
 {
@@ -136,6 +138,23 @@ class OrderController extends Controller
         $waiterId = auth()->user()->id;
         $orders = Order::with('orderDetails.menu') // Adjust the relationship names based on your actual structure
             ->where('waiter_id', $waiterId)
+            ->where('status',OrderStatus::Closed->value)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // You can return the orders to a view or process them as needed
+        return view('orders.order-history', ['orders' => $orders]);
+    }
+
+    public function runningOrders()
+    {
+        // Retrieve orders for the current waiter with order details
+        $waiterId = auth()->user()->id;
+        $orders = Order::with('orderDetails.menu') // Adjust the relationship names based on your actual structure
+            ->where('waiter_id', $waiterId)
+            ->where('status',OrderStatus::New->value)
+            ->orWhere('status',OrderStatus::Processing->value)
+            ->orWhere('status',OrderStatus::Served->value)
             ->orderBy('created_at', 'desc')
             ->get();
 

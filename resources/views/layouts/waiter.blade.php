@@ -37,6 +37,10 @@
                     :active="request()->routeIs('waiter.choose.table')">
                     {{ __('Create Order') }}
                 </x-waiter-nav-link>
+                <x-waiter-nav-link :href="route('waiter.orders.running')"
+                    :active="request()->routeIs('waiter.orders.running')">
+                    {{ __('Running Orders') }}
+                </x-waiter-nav-link>
                 <x-waiter-nav-link :href="route('waiter.orders.history')"
                     :active="request()->routeIs('waiter.orders.history')">
                     {{ __('Order History') }}
