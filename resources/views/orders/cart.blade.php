@@ -58,6 +58,10 @@
 
             let special_instructions = $("#special_instructions").val();
 
+            if(!special_instructions){
+                special_instructions =null;
+            }
+
             const redirectUrl = "{{ route("waiter.order.step.one",[],false) }}";
 
             var csrf_token = "{{ csrf_token()  }}";

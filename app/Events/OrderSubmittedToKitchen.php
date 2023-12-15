@@ -25,7 +25,7 @@ class OrderSubmittedToKitchen implements ShouldBroadcast
     public function __construct($cart)
     {
         $this->cart = $cart;
-        $cart['kot'] = KitchenHelper::generateKOT();
+        $this->cart['kot'] = KitchenHelper::generateKOT();
     }
 
     /**
