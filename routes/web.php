@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\ReservationController as FrontendReservationCo
 use App\Http\Controllers\Frontend\OrderController as FrontendOrdersController;
 use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Frontend\WelcomeController;
+use App\Http\Controllers\KitchenController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
@@ -72,6 +73,11 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
     Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('orders.history');    
 
 
+});
+
+
+Route::middleware(['auth', 'kitchen'])->name('kitchen.')->prefix('kitchen')->group(function () {
+    Route::get('/', [KitchenController::class, 'index'])->name('index');
 });
 
 
