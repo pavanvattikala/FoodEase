@@ -35,20 +35,15 @@ class OrderRecievedToKitchen
      */
     public function handle(OrderSubmittedToKitchen $event)
 {
-    return response()->json(['message' => 'Order placed successfully']);
-
     $cart = collect($event->cart);
 
-   
 
     $tableId = $cart->get("tableId");
     $waiterId = $cart->get("waiterId");
     $specialInstructions = $cart->get("special_instructions");
     $total = $cart->get("total");
+    $kot = $cart->get("kot");
     
-
-    // Step 1: Generate a KOT
-    $kot = KitchenHelper::generateKOT();
 
     // Step 2: Create an order
     $order = Order::create([

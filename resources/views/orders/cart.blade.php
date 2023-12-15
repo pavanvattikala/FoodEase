@@ -36,7 +36,9 @@
             <div class="mt-4">
                 <p class="text-lg font-semibold">Total: Rs {{ ($cart['total']) ? $cart['total'] : 0 }}</p>
             </div>
-
+            <br>
+            <h3>Enter Special instuctions</h3>
+            <textarea class="m-4 p-4" name="special_instructions" id="special_instructions" cols="30" rows="5"></textarea>
 
             <button onclick="submitToKitchen()" class="bg-green-500 text-white px-4 py-2 rounded relative m-2">
                 Submit To Kitchen
@@ -54,6 +56,8 @@
         function submitToKitchen() {
             const url = "submit";  
 
+            let special_instructions = $("#special_instructions").val();
+
             const redirectUrl = "{{ route("waiter.order.step.one",[],false) }}";
 
             var csrf_token = "{{ csrf_token()  }}";
@@ -62,6 +66,7 @@
                 type: "POST",
                 url: url,
                 headers: { 'X-CSRF-TOKEN': csrf_token },
+                data:{special_instructions:special_instructions},
                 contentType:'application/x-www-form-urlencoded',
                 success: function (response) {
                     alert(response.message);

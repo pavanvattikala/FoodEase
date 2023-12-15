@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Helpers\KitchenHelper;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -24,6 +25,7 @@ class OrderSubmittedToKitchen implements ShouldBroadcast
     public function __construct($cart)
     {
         $this->cart = $cart;
+        $cart['kot'] = KitchenHelper::generateKOT();
     }
 
     /**
@@ -38,7 +40,7 @@ class OrderSubmittedToKitchen implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        unset( $this->cart['tableId']);
+        unset($this->cart['tableId']);
         unset($this->cart['total']);
         unset($this->cart['waiterId']);
         
