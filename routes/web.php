@@ -79,6 +79,9 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
 
 Route::middleware(['auth', 'kitchen'])->name('kitchen.')->prefix('kitchen')->group(function () {
     Route::get('/', [KitchenController::class, 'index'])->name('index');
+    Route::post('/accept-order', [KitchenController::class, 'acceptOrder'])->name('accept.order');
+    Route::post('/discard-order', [KitchenController::class, 'discardOrder'])->name('discard.order');
+
 });
 
 
