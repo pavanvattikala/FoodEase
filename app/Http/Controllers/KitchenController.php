@@ -67,4 +67,21 @@ class KitchenController extends Controller
          return response()->json(['message' => 'Order deleted successfully']);
  
      }
+
+
+     public function getNewOrderComponent(Request $request){
+        
+        $KOT = $request->kot;
+
+        $order = Order::with('orderDetails.menu') 
+            ->with('waiter')
+            ->where('KOT',$KOT)
+            ->orderBy('created_at')
+            ->first();
+
+        $html = view('components.new-order-component-for-kitchen', compact('order'))->render();
+
+        return response()->json(['html' => $html]);
+
+     }
 }
