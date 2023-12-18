@@ -6,7 +6,7 @@
         </div>
         <div class="w-3/4">
             <p class="mb-2 px-4">{{ $order->waiter->name }}</p>
-            <p class="mb-2 px-4">Order Type: {{ \App\Enums\OrderType::getDescription($order->order_type) }}</p>                  
+            <p class="mb-2 px-4">{{ \App\Enums\OrderType::getDescription($order->order_type) }}</p>                  
         </div>                        
     </div>
     <div>
@@ -22,11 +22,9 @@
             </div>
         @endforeach
     </div>     
-    <div class="mt-4 px-4 options">
+    <div class="flex justify-center options">
         <button class="m-2 p-2 rounded" id="acceptOrder" onclick="acceptOrder({{ $order->id }})">✅</button>
         <button class="m-2 p-2 rounded" id="discardOrder" onclick="discardOrder({{ $order->id }})">❌</button>
-        
-
     </div>                   
 </div>
 

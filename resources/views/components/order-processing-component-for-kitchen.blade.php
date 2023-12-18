@@ -6,7 +6,7 @@
         </div>
         <div class="w-3/4">
             <p class="mb-2 px-4">{{ $order->waiter->name }}</p>
-            <p class="mb-2 px-4">Order Type: {{ \App\Enums\OrderType::getDescription($order->order_type) }}</p>                  
+            <p class="mb-2 px-4">{{ \App\Enums\OrderType::getDescription($order->order_type) }}</p>                  
         </div>                        
     </div>
     <div>
