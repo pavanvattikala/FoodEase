@@ -82,6 +82,7 @@ Route::middleware(['auth', 'kitchen'])->name('kitchen.')->prefix('kitchen')->gro
     Route::post('/accept-order', [KitchenController::class, 'acceptOrder'])->name('accept.order');
     Route::post('/discard-order', [KitchenController::class, 'discardOrder'])->name('discard.order');
 
+    Route::post('/get-new-order-component',[KitchenController::class, 'getNewOrderComponent'])->name('get.new.order.component');
 });
 
 
