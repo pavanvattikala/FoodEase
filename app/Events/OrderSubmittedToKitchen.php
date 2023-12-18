@@ -16,7 +16,6 @@ class OrderSubmittedToKitchen implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $cart;
-
     /**
      * Create a new event instance.
      *
@@ -40,13 +39,9 @@ class OrderSubmittedToKitchen implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        unset($this->cart['tableId']);
-        unset($this->cart['total']);
-        unset($this->cart['waiterId']);
-        
+                
         return [
-            'cart' => $this->cart,
-            // Add other properties as needed for Pusher
+            'kot' =>$this->cart['kot'],
         ];
     }
 
