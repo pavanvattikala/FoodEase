@@ -63,7 +63,6 @@
                             success: function (response) {
                                 $('.pending-orders').append(response.html);
                                 console.log('Order added');
-                                calculateMenuSumByType();
                             },
                             error: function (error) {
                                 console.error('Error ', error);
