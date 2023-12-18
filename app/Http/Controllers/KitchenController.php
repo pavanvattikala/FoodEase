@@ -84,4 +84,26 @@ class KitchenController extends Controller
         return response()->json(['html' => $html]);
 
      }
+
+     public function completeOrder(Request $request){
+
+        $orderId = $request->orderId;
+        
+     
+         // Retrieve the order from the database
+         $order = Order::find($orderId);
+     
+         if (!$order) {
+             // Handle the case where the order is not found
+             return response()->json(['error' => 'Order not found'], 404);
+         }        
+     
+         $order->status = OrderStatus::ReadyForPickup->value;
+ 
+         $order->save();
+     
+         // You can return a response if needed
+         return response()->json(['message' => 'Order Completed successfully']);
+ 
+     }
 }

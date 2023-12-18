@@ -115,5 +115,26 @@
             });
         }
 
+        function completeOrder(orderId){
+            
+            const url = '{{ route('kitchen.complete.order',[],false) }}';
+            var csrf_token = "{{ csrf_token()  }}";
+            $.ajax({
+                type: "POST",
+                url: url,
+                headers: { 'X-CSRF-TOKEN': csrf_token },
+                data:{orderId:orderId},
+                contentType:'application/x-www-form-urlencoded',
+                success: function (response) {
+                    $('#order' + orderId).remove();
+                    console.log('Order No '+orderId+' marked as completed');
+
+                },
+                error: function (error) {
+                    console.error('Error ', error);
+                }
+            });
+        }
+
     </script>
 </x-kitchen-layout>
