@@ -9,7 +9,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     @include('layouts.scripts')
-    {{-- <script src="{{ asset('js/kitchen.js') }}"></script> --}}
+    <script src="{{ asset('js/kitchen.js') }}"></script>
 
 </head>
 

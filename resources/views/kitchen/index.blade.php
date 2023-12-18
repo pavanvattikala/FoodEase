@@ -46,8 +46,26 @@
         document.addEventListener('DOMContentLoaded', function () {
             window.Echo.channel('orderSubmitted')
                 .listen('OrderSubmittedToKitchen', (event) => {
-                    console.log('Order submitted to kitchen:', event.cart);
-                    // Handle the event data as needed
+                    console.log('KOT submitted to kitchen:', event.kot);
+                    const url = '{{ route('kitchen.get.new.order.component',[],false) }}';
+                    var csrf_token = "{{ csrf_token()  }}";
+
+                    setTimeout(function() {
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            headers: { 'X-CSRF-TOKEN': csrf_token },
+                            data: { kot: event.kot },
+                            contentType: 'application/x-www-form-urlencoded',
+                            success: function (response) {
+                                $('.pending-orders').append(response.html);
+                                console.log('Order added');
+                            },
+                            error: function (error) {
+                                console.error('Error ', error);
+                            }
+                        });
+                    }, 5000); // 5 seconds
                 });
         });
 
