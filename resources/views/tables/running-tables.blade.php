@@ -9,12 +9,12 @@
                 <div id="{{ $location->name }}Dropdown" class="flex flex-wrap">
                     @foreach ($tables->where('location', $location) as $table)
 
-                        <div id="{{ $table->id }}"  onclick="selectTable({{ $table->id }})" class="w-40 m-4 p-4 bg-green-500 border border-gray-300 rounded cursor-pointer text-center" >
-                            <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
-                            <div class="flex flex-wrap ">
-                                <p>Guests: {{ $table->guest_number }}</p>
-                            </div>
+                    <div id="table{{ $table->id }}" style="margin: 1rem" onclick="closeTable({{ $table->id }})" class="w-40 m-4 p-4 bg-red-500 text-center rounded">
+                        <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
+                        <div class="flex flex-wrap">
+                            <p class="text-white" id="timer{{ $table->id }}"></p>
                         </div>
+                    </div>
                     @endforeach
                 </div>
             </div>
@@ -22,6 +22,11 @@
     </div>
 
     <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            getAllTables();
+        });
+        
         function toggleDropdown(categoryName) {
             const dropdown = document.getElementById(`${categoryName}Dropdown`);
             const arrow = document.getElementById(`${categoryName}Arrow`);
@@ -29,7 +34,7 @@
             arrow.innerHTML = dropdown.classList.contains('hidden') ? '&#9662;' : '&#9652;';
         }
 
-        function selectTable(tableId){
+        function closeTable(tableId){
 
             const url = "{{ url()->route('waiter.table.add.toSession',[],false) }}";
             
@@ -59,5 +64,28 @@
                 }
             });
         }
+
+            // JavaScript to update the timer
+            function updateTimer(element, updatedAt) {
+                setInterval(function () {
+                    const now = new Date();
+                    const diff = now - new Date(updatedAt);
+                    const hours = Math.floor(diff / 3600000);
+                    const minutes = Math.floor((diff % 3600000) / 60000);
+                    const seconds = Math.floor((diff % 60000) / 1000);
+
+                    const timerText = `${hours}h ${minutes}m ${seconds}s`;
+                    element.textContent = timerText;
+                }, 1000); // Update every second
+            }
+
+            function getAllTables(){
+                // Call updateTimer function for each table
+                const tables = {!! json_encode($tables) !!}; // Assuming $tables is an array of table data
+                tables.forEach(table => {
+                    const timerElement = document.getElementById(`timer${table.id}`);
+                    updateTimer(timerElement, table.updated_at);
+                });
+            }
     </script>
 </x-waiter-layout>

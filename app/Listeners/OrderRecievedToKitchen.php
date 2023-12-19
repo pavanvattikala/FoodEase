@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\TableStatus;
 use App\Events\OrderSubmittedToKitchen;
 use App\Helpers\KitchenHelper;
 use GuzzleHttp\Promise\Create;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderDetail;
-
+use App\Models\Table;
 
 class OrderRecievedToKitchen
 {
@@ -77,6 +78,9 @@ class OrderRecievedToKitchen
                 $order->orderDetails()->save($orderDetail);
             }
         }
+
+        Table::find($tableId)->update(['status' => TableStatus::Unavaliable]);
+
     }
 
 }

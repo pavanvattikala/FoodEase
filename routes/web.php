@@ -48,6 +48,8 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
     
     Route::get('/choosetable', [WaiterController::class, 'chooseTable'])->name('choose.table');
 
+    Route::get('/get-running-tables', [WaiterController::class, 'getRunningTables'])->name('get.running.tables');
+
     Route::post('addtabletosession', [WaiterController::class, 'addTableToSesstion'])->name('table.add.toSession');
 
 
