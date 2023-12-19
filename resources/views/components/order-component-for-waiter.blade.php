@@ -1,0 +1,1 @@
+<x-main-order-component :order="$order" />
