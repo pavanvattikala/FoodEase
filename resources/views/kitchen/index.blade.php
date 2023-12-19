@@ -216,7 +216,5 @@
             $('.take-away > .items').append('<p class="mb-1 order-name-quantity">'+sum+' x '+menuItem+'</p>');
         }
     }
-
-
     </script>
 </x-kitchen-layout>

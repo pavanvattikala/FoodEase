@@ -148,7 +148,6 @@ class OrderController extends Controller
         $orders = Order::with('orderDetails.menu') 
             ->where('waiter_id', $waiterId)
             ->where('status', OrderStatus::Closed)
-            ->orWhere('status', OrderStatus::Served)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -211,5 +210,7 @@ class OrderController extends Controller
         return response()->json(['status'=>'success','message' => 'Order served  successfully'],200);
 
     }
+
+    
 
 }

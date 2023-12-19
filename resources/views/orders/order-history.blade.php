@@ -25,7 +25,7 @@
                 success: function (response) {
                     console.log(response);
                     if(response.status === 'success'){
-                        location.reload();
+                        $('#order'+orderId).remove();
                     }else{
                         alert('Something went wrong');
                     }
