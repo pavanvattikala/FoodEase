@@ -87,8 +87,10 @@
                 success: function (response) {
                     var order = $('.pending-orders > #order'+orderId).clone();
                     order.find('.options').children().last().remove();
-                    order.find('.options').children().first().attr("id","completeOrder");
-                    order.find('.options').children().first().attr("onclick","completeOrder("+orderId+")");
+                    var firstChilderen = order.find('.options').children().first();
+                    firstChilderen.attr("id","completeOrder");
+                    firstChilderen.text("Completed");
+                    firstChilderen.attr("onclick","completeOrder("+orderId+")");
                     $('.processing-orders > .flex').append(order);
                     $('.pending-orders > #order' + orderId).remove();
                     console.log('Order accepted');
