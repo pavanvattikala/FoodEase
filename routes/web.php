@@ -74,7 +74,10 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
 
     Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('orders.running');   
     
-    Route::get('/orders/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('orders.ready.for.pickup');   
+    Route::get('/orders/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('orders.ready.for.pickup');
+    
+    
+    Route::post('/order/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('order.mark.as.served'); 
 
 });
 

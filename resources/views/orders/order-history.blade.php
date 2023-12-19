@@ -6,9 +6,33 @@
                 <p class="text-gray-500 w-full">No order history available.</p>
             @else
                 @foreach($orders as $order)
-                    <x-order-component-for-waiter :order="$order" />
+                    <x-order-component-for-waiter :order="$order"/>
                 @endforeach
             @endif
         </div>
     </div>
+
+    <script>
+
+        function markAsServed(orderId){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('waiter.order.mark.as.served',[],false) }}",
+                headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
+                data: {
+                    orderId: orderId
+                },
+                success: function (response) {
+                    console.log(response);
+                    if(response.status === 'success'){
+                        alert('Order marked as served');
+                        location.reload();
+                    }else{
+                        alert('Something went wrong');
+                    }
+                }
+            });
+        }
+
+    </script>
 </x-waiter-layout>

@@ -191,4 +191,24 @@ class OrderController extends Controller
         return view('orders.order-history', ['orders' => $orders]);
     }
 
+    public function markAsServed(Request $request){
+        $orderId = $request->orderId;       
+    
+        // Retrieve the order from the database
+        $order = Order::find($orderId);
+    
+        if (!$order) {
+            // Handle the case where the order is not found
+            return response()->json(['error' => 'Order not found'], 404);
+        }        
+    
+        $order->status = OrderStatus::Served;
+
+        $order->save();
+    
+        // You can return a response if needed
+        return response()->json(['status'=>'success','message' => 'Order served  successfully'],200);
+
+    }
+
 }
