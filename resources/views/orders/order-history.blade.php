@@ -1,6 +1,6 @@
 <x-waiter-layout>
     <div class="container max-w-max px-2 processing-orders">
-        <h1 class="text-2xl font-semibold w-full align-top text-center">Current Orders</h1>
+        <h1 class="text-2xl font-semibold w-full align-top text-center">Orders {{ ucfirst(basename(Request::url()) )}} </h1>
         <div class="flex flex-wrap">
             @if($orders->isEmpty())
                 <p class="text-gray-500 w-full">No order history available.</p>
@@ -25,7 +25,6 @@
                 success: function (response) {
                     console.log(response);
                     if(response.status === 'success'){
-                        alert('Order marked as served');
                         location.reload();
                     }else{
                         alert('Something went wrong');
