@@ -17,6 +17,9 @@ class OrderController extends Controller
 {
     public function stepone(Request $request)
     {
+        if(!session()->has('tableId')){
+            return back();
+        }
         $categoriesWithMenus = Category::with('menus')->get();
 
         $cart = session()->get('cart', []);
@@ -91,6 +94,7 @@ class OrderController extends Controller
 
     public function clearCart() {
         session()->forget('cart');
+        session()->forget('tableId');
 
         return response()->json("cart cleared sucessfully");
     }
@@ -128,6 +132,7 @@ class OrderController extends Controller
         event(new OrderSubmittedToKitchen($cart));
         
         session()->forget('cart');
+        session()->forget('tableId');
 
         return response()->json(["message"=> "order placed successfully"]);
     }
