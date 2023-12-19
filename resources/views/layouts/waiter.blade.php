@@ -45,6 +45,10 @@
                     :active="request()->routeIs('waiter.orders.history')">
                     {{ __('Order History') }}
                 </x-waiter-nav-link>
+                <x-waiter-nav-link :href="route('waiter.orders.ready.for.pickup')"
+                    :active="request()->routeIs('waiter.orders.ready.for.pickup')">
+                    {{ __('Ready For Pickup') }}
+                </x-waiter-nav-link>
             </nav>
         </div>
         <main class="m-2 p-8 w-full">

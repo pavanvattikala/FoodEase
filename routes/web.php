@@ -72,7 +72,9 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
     //orders history
     Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('orders.history');    
 
-    Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('orders.running');    
+    Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('orders.running');   
+    
+    Route::get('/orders/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('orders.ready.for.pickup');   
 
 });
 

@@ -137,13 +137,17 @@ class OrderController extends Controller
         return response()->json(["message"=> "order placed successfully"]);
     }
 
+    /**
+     * Retrieves the order history for the authenticated waiter.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function orderHistory()
     {
-        // Retrieve orders for the current waiter with order details
         $waiterId = auth()->user()->id;
-        $orders = Order::with('orderDetails.menu') // Adjust the relationship names based on your actual structure
+        $orders = Order::with('orderDetails.menu') 
             ->where('waiter_id', $waiterId)
-            ->where('status',OrderStatus::Closed->value)
+            ->where('status', OrderStatus::Closed)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -151,19 +155,39 @@ class OrderController extends Controller
         return view('orders.order-history', ['orders' => $orders]);
     }
 
+    /**
+     * Get the running orders for the authenticated waiter.
+     *
+     * @return \Illuminate\View\View
+     */
     public function runningOrders()
     {
-        // Retrieve orders for the current waiter with order details
+        // running orders
         $waiterId = auth()->user()->id;
-        $orders = Order::with('orderDetails.menu') // Adjust the relationship names based on your actual structure
+        $orders = Order::with('orderDetails.menu') 
             ->where('waiter_id', $waiterId)
-            ->where('status',OrderStatus::New->value)
-            ->orWhere('status',OrderStatus::Processing->value)
-            ->orWhere('status',OrderStatus::Served->value)
+            ->where('status',OrderStatus::New)
+            ->orWhere('status',OrderStatus::Processing)
+            ->orWhere('status',OrderStatus::Served)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // You can return the orders to a view or process them as needed
+        return view('orders.order-history', ['orders' => $orders]);
+    }
+    /**
+     * Get the orders that are ready for pickup.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function readyForPickUp()
+    {
+        $waiterId = auth()->user()->id;
+        $orders = Order::with('orderDetails.menu') 
+            ->where('waiter_id', $waiterId)
+            ->where('status', OrderStatus::ReadyForPickup)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
         return view('orders.order-history', ['orders' => $orders]);
     }
 
