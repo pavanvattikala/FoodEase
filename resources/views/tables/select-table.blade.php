@@ -53,7 +53,7 @@
         @endforeach
     </div>
 
-    <div id="modal-window" class="hidden w-full h-full flex flex-col items-center justify-center pt-20" style="background-color: #6b6e5c">
+    <div id="modal-window" class="w-full h-full flex flex-col items-center justify-center pt-20" style="background-color: #6b6e5c">
 
         <div class="modal-content">
             <div class="m-2  options">
@@ -130,6 +130,8 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             getAllTables();
+
+            document.getElementById('modal-window').classList.add('hidden');
         });
         
 
