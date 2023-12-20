@@ -52,6 +52,8 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
 
     Route::post('addtabletosession', [WaiterController::class, 'addTableToSesstion'])->name('table.add.toSession');
 
+    Route::post('submitForBilling', [WaiterController::class, 'submitForBilling'])->name('table.submit.for.billing');
+
 
     //order step one
     Route::get('/order/step-one', [FrontendOrdersController::class, 'stepone'])->name('order.step.one');

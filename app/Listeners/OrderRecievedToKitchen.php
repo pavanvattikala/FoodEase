@@ -15,6 +15,7 @@ use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Table;
+use Carbon\Carbon;
 
 class OrderRecievedToKitchen
 {
@@ -45,6 +46,7 @@ class OrderRecievedToKitchen
         $total = $cart->get("total");
         $kot = $cart->get("kot");
 
+        $reOrder = boolval($cart->get("reOrder"));
 
 
         // Step 2: Create an order
@@ -79,7 +81,17 @@ class OrderRecievedToKitchen
             }
         }
 
-        Table::find($tableId)->update(['status' => TableStatus::Unavaliable]);
+        if($reOrder===true){
+            Table::find($tableId)->update(['status' => TableStatus::Unavaliable]);
+        }
+        else{
+            Table::find($tableId)->update([
+                'status' => TableStatus::Unavaliable,
+                'taken_at' => Carbon::now(),
+            ]);
+        }
+
+        
 
     }
 
