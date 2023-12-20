@@ -95,6 +95,7 @@ class OrderController extends Controller
     public function clearCart() {
         session()->forget('cart');
         session()->forget('tableId');
+        session()->forget('reOrder');
 
         return response()->json("cart cleared sucessfully");
     }
@@ -107,19 +108,22 @@ class OrderController extends Controller
 
         $tableId=null;
 
+        $reOrder=false;
+
+        
         if(session()->has("tableId")){
             $tableId = intval(session()->get("tableId"));
         }
+
         else{
             return response()->json(['error' => 'Table not selected.'], 422);
         }
 
-        $isTableAvailable = TableHelper::checkIfTableAvailable($tableId);
 
-        if(!$isTableAvailable){
-            
-            return response()->json(['error' => 'Table not Availible.'], 422);
-        }    
+        if(session()->has("reOrder")){
+            $reOrder = boolval(session()->get("reOrder"));
+        }
+ 
 
         $cart = session()->get('cart', []);
 
@@ -128,11 +132,17 @@ class OrderController extends Controller
 
         $cart["tableId"] = $tableId;
 
+        $cart["reOrder"] = $reOrder;
+
+      
+
+
         //create order submit event
         event(new OrderSubmittedToKitchen($cart));
         
         session()->forget('cart');
         session()->forget('tableId');
+        session()->forget('reOrder');
 
         return response()->json(["message"=> "order placed successfully"]);
     }

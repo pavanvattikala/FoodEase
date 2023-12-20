@@ -42,8 +42,8 @@
 
         <div class="modal-content">
             <div class="m-2  options">
-                <button class="m-2 p-2 rounded " id="acceptOrder" style="background-color: #42d1f5" >Re Order</button>
-                <button class="m-2 p-2 rounded" id="discardOrder" style="background-color: #42f55a">Submit to Billing</button>
+                <button class="m-2 p-2 rounded " id="reOrder" style="background-color: #42d1f5" >Re Order</button>
+                <button class="m-2 p-2 rounded" id="subitForBilling" style="background-color: #42f55a">Submit to Billing</button>
             </div> 
         </div>
 
@@ -59,10 +59,16 @@
         const selectItems = document.getElementById('select-tables');
 
 
+
         function openModel(tableId){
             selectItems.classList.add('hidden');
             modalContainer.classList.remove('hidden');
+            $('#reOrder').attr('onclick', 'reOrder('+tableId+')');
+            $('#subitForBilling').attr('onclick', 'subitForBilling('+tableId+')');
+            
+
         }
+        
         closeModalButton.addEventListener('click', () => {
             modalContainer.classList.add('hidden');
             selectItems.classList.remove('hidden');
@@ -79,17 +85,16 @@
             arrow.innerHTML = dropdown.classList.contains('hidden') ? '&#9662;' : '&#9652;';
         }
 
-        function closeTable(tableId){
+        function reOrder(tableId){
 
-            const url = "{{ url()->route('waiter.table.add.toSession',[],false) }}";
-            
-
+            const url = "{{ route('waiter.table.add.toSession',[],false) }}";
+        
             var csrf_token = "{{ csrf_token()  }}";
 
             $.ajax({
                 type: "POST",
                 url: url,
-                data: { tableId: tableId},  
+                data: { tableId: tableId, reOrder: "true"},  
                 headers: { 'X-CSRF-TOKEN': csrf_token },
                 contentType:'application/x-www-form-urlencoded',
                 success: function (response) {
@@ -110,6 +115,38 @@
             });
         }
 
+        function subitForBilling(tableId){
+
+            const url = "{{ route('waiter.table.submit.for.billing',[],false) }}";
+
+
+            var csrf_token = "{{ csrf_token()  }}";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { tableId: tableId},  
+                headers: { 'X-CSRF-TOKEN': csrf_token },
+                contentType:'application/x-www-form-urlencoded',
+                success: function (response) {
+
+                    if(response.status == "success"){
+                        alert("Table "+tableId+" is submitted for billing" );
+                        window.location.replace(" {{ route('waiter.order.step.one') }}");
+                    }
+
+                    else{
+                        alert("You cannot submit it" );
+                    }
+                    
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+
             // JavaScript to update the timer
             function updateTimer(element, updatedAt) {
                 setInterval(function () {
@@ -129,7 +166,7 @@
                 const tables = {!! json_encode($tables) !!}; // Assuming $tables is an array of table data
                 tables.forEach(table => {
                     const timerElement = document.getElementById(`timer${table.id}`);
-                    updateTimer(timerElement, table.updated_at);
+                    updateTimer(timerElement, table.taken_at);
                 });
             }
     </script>
