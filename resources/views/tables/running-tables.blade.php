@@ -1,7 +1,24 @@
 <x-waiter-layout>
-    <div class="container w-full px-2 py-2 mx-2">
+    <style>
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        .modal-content button{
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem;
+        }
+
+        #close-btn {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }   
+    
+    </style>
+    <div class="container" id="select-tables">
         @foreach (App\Enums\TableLocation::cases() as $location)
-            <div class="mb-4">
+            <div class="mb-1">
                 <h2 class="flex justify-between text-xl font-semibold mb-2 cursor-pointer border border-gray-300 rounded p-2 bg-gray-100" onclick="toggleDropdown('{{ $location->name  }}')">
                     {{ $location->name  }} Tables
                     <span id="{{ $location->name }}Arrow">&#9662;</span>
@@ -9,7 +26,7 @@
                 <div id="{{ $location->name }}Dropdown" class="flex flex-wrap">
                     @foreach ($tables->where('location', $location) as $table)
 
-                    <div id="table{{ $table->id }}" style="margin: 1rem" onclick="closeTable({{ $table->id }})" class="w-40 m-4 p-4 bg-red-500 text-center rounded">
+                    <div onclick="openModel({{ $table->id }})" id="table{{ $table->id }}" style="margin-right: 0.5rem" class="w-30 p-4 bg-red-500 text-center rounded">
                         <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
                         <div class="flex flex-wrap">
                             <p class="text-white" id="timer{{ $table->id }}"></p>
@@ -21,7 +38,35 @@
         @endforeach
     </div>
 
+    <div id="modal-window" class="hidden w-full h-full flex flex-col items-center justify-center pt-20" style="background-color: #6b6e5c">
+
+        <div class="modal-content">
+            <div class="m-2  options">
+                <button class="m-2 p-2 rounded " id="acceptOrder" style="background-color: #42d1f5" >Re Order</button>
+                <button class="m-2 p-2 rounded" id="discardOrder" style="background-color: #42f55a">Submit to Billing</button>
+            </div> 
+        </div>
+
+        <button id="close-btn" class="m-2 p-2 rounded" style="background-color: #e84343">Close</button>
+
+    </div>
+
     <script>
+
+        const openModalButton = document.getElementById('openModalButton');
+        const modalContainer = document.getElementById('modal-window');
+        const closeModalButton = document.getElementById('close-btn');
+        const selectItems = document.getElementById('select-tables');
+
+
+        function openModel(tableId){
+            selectItems.classList.add('hidden');
+            modalContainer.classList.remove('hidden');
+        }
+        closeModalButton.addEventListener('click', () => {
+            modalContainer.classList.add('hidden');
+            selectItems.classList.remove('hidden');
+        });
 
         document.addEventListener('DOMContentLoaded', function () {
             getAllTables();
