@@ -16,19 +16,12 @@ class WaiterController extends Controller
 {
 
     public function index(Request $request){
-
-        
         return view('waiter.index');
     }
 
     public function chooseTable(Request $request){
-        $tables = Table::where('status',TableStatus::Available)->get();
+        $tables = Table::all();
         return view('tables.select-table',compact('tables'));
-    }
-
-    public function getRunningTables(){
-        $tables = Table::where('status',TableStatus::Unavaliable)->get();
-        return view('tables.running-tables',compact('tables'));
     }
 
     public function addTableToSesstion(Request $request){

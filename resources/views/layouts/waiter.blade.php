@@ -49,10 +49,6 @@
                     :active="request()->routeIs('waiter.orders.ready.for.pickup')">
                     {{ __('Ready For Pickup') }}
                 </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('waiter.get.running.tables')"
-                    :active="request()->routeIs('waiter.get.running.tables')">
-                    {{ __('Running Tables') }}
-                </x-waiter-nav-link>
             </nav>
         </div>
         <main class="m-2 p-8 w-full">
