@@ -2,8 +2,6 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
-
 enum OrderStatus: string
 {
     case New = 'new';
