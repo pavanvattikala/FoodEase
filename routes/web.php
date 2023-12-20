@@ -105,7 +105,13 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::resource('/reservations', ReservationController::class);
 
 
-    Route::get('/bills', [BillController::class, 'displayBills'])->name('bills');
+    Route::get('/bills', [BillController::class, 'getBills'])->name('bills');
+
+    Route::get('/bill/view/{id}', [BillController::class, 'viewBill'])->name('view.bill');
+
+    Route::get('/bills/fd', [BillController::class, 'getBills'])->name('bills.update');
+
+
 });
 
 require __DIR__ . '/auth.php';

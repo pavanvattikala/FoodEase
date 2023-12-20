@@ -20,6 +20,6 @@ class Bill extends Model
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class, 'bill_order')->withTimestamps();
+        return $this->belongsToMany(Order::class, 'bill_orders')->withTimestamps();
     }
 }

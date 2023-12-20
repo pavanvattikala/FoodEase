@@ -20,15 +20,15 @@
                                     <tr>
                                         <th scope="col"
                                             class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Name
+                                            Sno
                                         </th>
                                         <th scope="col"
                                             class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Image
+                                            Bill Id
                                         </th>
                                         <th scope="col"
                                             class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Price
+                                            Grand Total
                                         </th>
                                         <th scope="col" class="relative py-3 px-6">
                                             <span class="sr-only">Edit</span>
@@ -44,7 +44,28 @@
                                             </td>
                                             <td
                                                 class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ $bill->created_at->format('Ymd') }}{{ $bill->id }}
+                                            </td>
+                                            <td
+                                                class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{ $bill->grand_total }}
+                                            </td>
+                                            <td class="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
+                                                <div class="flex space-x-2">
+                                                    <a href="{{ route('admin.view.bill',$bill->id) }}"
+                                                        class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Edit/View</a>
+                                                    <a href="{{ route('admin.tables.edit',$bill->id) }}"
+                                                        class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Print</a>
+                                                    <form
+                                                        class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg text-white"
+                                                        method="POST"
+                                                        action="{{ route('admin.tables.destroy', $bill->id) }}"
+                                                        onsubmit="return confirm('Are you sure?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit">Delete</button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
