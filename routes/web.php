@@ -17,6 +17,7 @@ use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RestaurantController;
 
 Route::get('/', [WelcomeController::class, 'index']);
 Route::get('/categories', [FrontendCategoryController::class, 'index'])->name('categories.index');
@@ -115,5 +116,15 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
 
 
 });
+
+
+Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')->group(function () {
+
+    Route::get('/restaurant-config', [RestaurantController::class, 'showConfig'])->name('show.config');
+
+    Route::post('/update-config', [RestaurantController::class, 'updateConfig'])->name('update.config');
+
+});
+
 
 require __DIR__ . '/auth.php';
