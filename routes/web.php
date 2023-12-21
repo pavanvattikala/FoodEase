@@ -109,6 +109,8 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
 
     Route::get('/bill/view/{id}', [BillController::class, 'viewBill'])->name('view.bill');
 
+    Route::get('/bill/print/{id}', [BillController::class, 'printBill'])->name('print.bill');
+
     Route::get('/bills/fd', [BillController::class, 'getBills'])->name('bills.update');
 
 

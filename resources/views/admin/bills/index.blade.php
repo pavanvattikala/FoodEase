@@ -54,7 +54,7 @@
                                                 <div class="flex space-x-2">
                                                     <a href="{{ route('admin.view.bill',$bill->id) }}"
                                                         class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Edit/View</a>
-                                                    <a href="{{ route('admin.tables.edit',$bill->id) }}"
+                                                    <a href="{{ route('admin.print.bill',$bill->id) }} " target="_blank"
                                                         class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Print</a>
                                                     <form
                                                         class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg text-white"
