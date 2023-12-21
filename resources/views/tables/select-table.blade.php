@@ -214,15 +214,10 @@
             function getAllTables(){
 
                 // Call updateTimer function for each table
-                const tables = {!! json_encode(
-                                                $tables->where('status', App\Enums\TableStatus::Unavaliable)
-                                                        ->map(function ($table) {
-                                                                return [
-                                                                    'id' => $table['id'],
-                                                                    'taken_at' => $table['taken_at'],
-                                                                ];
-                                                            })->values()
-                                                )  !!};
+               
+                const tables = {!! json_encode($takenTables) !!}
+
+                console.log(tables);
                 
                 tables.forEach(table => {
                     const timerElement = document.getElementById(`timer${table.id}`);

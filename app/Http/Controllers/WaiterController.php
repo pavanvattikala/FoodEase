@@ -21,7 +21,16 @@ class WaiterController extends Controller
 
     public function chooseTable(Request $request){
         $tables = Table::all();
-        return view('tables.select-table',compact('tables'));
+
+        $takenTables=$tables->where('status', TableStatus::Unavaliable)
+                ->map(function ($table) {
+                        return [
+                            'id' => $table['id'],
+                            'taken_at' => $table['taken_at'],
+                        ];
+                    })->values();
+
+        return view('tables.select-table',compact('tables','takenTables'));
     }
 
     public function addTableToSesstion(Request $request){
