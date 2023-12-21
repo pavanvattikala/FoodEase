@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
+use App\Providers\RestaurantServiceProvider;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class BillController extends Controller
 {
@@ -46,33 +48,30 @@ class BillController extends Controller
                 $itemName = $orderDetail->menu->name;
                 $quantity = $orderDetail->quantity;
                 $price = $orderDetail->menu->price;
-        
-                if ($orderDetails->has($itemName)) {
-                    $existingItem = $orderDetails->get($itemName);
-                    $existingItem['quantity'] += $quantity;
-                    $orderDetails->put($itemName, $existingItem);
-                } else {
-                    $orderDetails->put($itemName, ['quantity' => $quantity, 'price' => $price]);
-                }
+
+
+                // if key alredy exists it wil increment
+                $orderDetails->put($itemName, ['quantity' => $quantity, 'price' => $price+5]);
+               
             }
         }
 
+        $restaurant=[
+            "name"=>Config('restaurant.name'),
+            "address"=>Config('restaurant.address'),
+            "phone"=>Config('restaurant.phone'),
+            "tagline"=>Config('restaurant.tagline')
+        ];
         
-
-        $resName = "FoodEase";
-
-        $address="aphb colony,idpl hyderabad 500054";
-
-        $phone = "8341837776";
 
         $fileName = 'bill_'.$billId . '.pdf';
 
-        $html = view('admin.bills.print', compact('billDetails','orderDetails','resName','address','phone'))->render();
+        $html = view('admin.bills.print', compact('billDetails','orderDetails','restaurant'))->render();
 
         //option array
 
-        $width=226.77;
-        $height=20;
+        $width=226.77; // 8cm
+        $height=25;
 
         $customPaper = array( 0 , 0 , $width , $height );
 
@@ -85,12 +84,14 @@ class BillController extends Controller
         // Get the page count of the rendered PDF
         $page_count = $canvas->get_page_number();
 
+       // dd($page_count);
+
 
         unset( $pdf );
 
         //new pdf 
 
-        $newHeight= ($height * $page_count) + 10 ;
+        $newHeight= ($height * $page_count);
 
         $dompdf = pdf::loadHTML($html);
         $dompdf->set_paper( array( 0 , 0 , $width , $newHeight ) );

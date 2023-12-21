@@ -17,18 +17,21 @@
         }
         .left{
             text-align: left;
-            margin-left: 100px; /* Adjust this margin if needed */
+            margin-left: 80px; /* Adjust this margin if needed */
+        }
+        .last{
+            margin-top: 60px;
         }
     </style>
 </head>
 <body>
     <div class="name">
-        <h1 class="center">{{ $resName }}</h1>
+        <h2 class="center">{{ $restaurant["name"] }}</h2>
     </div>
 
     <div>
-        <h3 class="center">Bill ID:{{ $billDetails['id'] }}</h3>
-        <p>Table: {{ $billDetails['table_no'] }} ---------  {{ date('d M, Y h:i a') }}</p>
+        <h4 class="center">Bill ID:{{ $billDetails['id'] }}</h4>
+        <p>Table: {{ $billDetails['table_no'] }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ date('d M, Y h:i a') }}</p>
     </div>
 
     <div>
@@ -55,6 +58,7 @@
             </tbody>
         </table>
        <div class="left">
+            <p>------------------------------------</p>
             <p >Total: Rs {{ $billDetails['grand_total'] }}</p>
             
             <p >Discount: Rs {{ $billDetails['discount'] }}</p>
@@ -66,9 +70,11 @@
 
     </div>
 
-    <div class="center">
-        <p>{{ $address }}</p>
-        <p>{{ $phone }}</p>
+    <div class="center last">
+        <p>{{ $restaurant["address"] }}</p>
+        <p>{{ $restaurant["phone"] }}</p>
+        <p>**{{ $restaurant["tagline"] }}**</p>
+        <p>**Thank You For Dining With Us**</p>
     </div>
 
 </body>
