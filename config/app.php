@@ -177,6 +177,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+
+        /**
+         * Register the DomPDF service provider.
+         * Custom providers
+         */
+        Barryvdh\DomPDF\ServiceProvider::class,
+
     ],
 
     /*
