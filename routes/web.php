@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\OrderController as FrontendOrdersController;
 use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Frontend\WelcomeController;
 use App\Http\Controllers\KitchenController;
+use App\Http\Controllers\OrderSyncController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
@@ -123,6 +124,14 @@ Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')-
     Route::get('/restaurant-config', [RestaurantController::class, 'showConfig'])->name('show.config');
 
     Route::post('/update-config', [RestaurantController::class, 'updateConfig'])->name('update.config');
+
+});
+
+Route::middleware(['auth','waiter'])->name('sync.')->prefix('sync')->group(function () {
+
+    Route::get('/check-pending-orders-updates', [OrderSyncController::class, 'syncPendingOrder'])->name('pending.orders');
+    Route::get('/check-pickup-orders-updates', [OrderSyncController::class, 'syncPickUpOrder'])->name('pickup.orders');
+
 
 });
 
