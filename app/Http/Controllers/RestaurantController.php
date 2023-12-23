@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Restaurant;
+use App\Providers\RestaurantServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
@@ -33,6 +34,8 @@ class RestaurantController extends Controller
         // Update the configuration values
 
         Restaurant::find($id)->update($validatedData);
+        app(RestaurantServiceProvider::class)->refreshRestaurantDetails();
+
         
         return redirect()->route('restaurant.show.config')->with('success', 'Configuration updated successfully.');
     }
