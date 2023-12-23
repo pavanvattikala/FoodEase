@@ -40,6 +40,7 @@ class BillController extends Controller
             'table_no' => $bill->table_id,
             'grand_total' => $bill->grand_total,
             'discount' => $bill->discount,
+            "date"=>$bill->created_at->format('d M, Y h:i a')
         ]);
         
         $orderDetails = collect([]);

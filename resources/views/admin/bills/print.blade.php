@@ -31,7 +31,7 @@
 
     <div>
         <h4 class="center">Bill ID:{{ $billDetails['id'] }}</h4>
-        <p>Table: {{ $billDetails['table_no'] }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ date('d M, Y h:i a') }}</p>
+        <p>Table: {{ $billDetails['table_no'] }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ $billDetails['date'] }}</p>
     </div>
 
     <div>
