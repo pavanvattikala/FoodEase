@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+
 
 class RestaurantController extends Controller
 {
@@ -11,24 +13,33 @@ class RestaurantController extends Controller
 
     public function updateConfig(Request $request)
     {
+        $id = $request->id;
+      // dd($request->all());
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'tagline' => 'required|string|max:255',
             'address' => 'required|string',
-            // Add validation rules for other configurations as needed
+            'phone' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+            'website' => 'nullable|url|max:255',
+            'pending_order_sync_time' => 'required|in:5,15,30,60',
+            'waiter_sync_time' => 'required|numeric|in:5,15,30,60',
+            'minimum_delivery_time' => 'required|numeric|min:1',
+            'minimum_preparation_time' => 'required|numeric|min:1',
+            'order_live_view' => 'required|in:asc,desc',
+            'kot_live_view' => 'required|in:asc,desc',
         ]);
 
         // Update the configuration values
-        foreach ($validatedData as $key => $value) {
-            config(["restaurant.$key" => $value]);
-        }
 
-        return redirect()->route('restaurant-config.show')->with('success', 'Configuration updated successfully.');
+        Restaurant::find($id)->update($validatedData);
+        
+        return redirect()->route('restaurant.show.config')->with('success', 'Configuration updated successfully.');
     }
 
     public function showConfig()
     {
-        $restaurantConfig = config('restaurant');
+        $restaurantConfig = Restaurant::first();
 
         return view('restaurant.show-config', compact('restaurantConfig'));
     }

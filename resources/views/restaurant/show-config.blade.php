@@ -1,7 +1,29 @@
 <!-- resources/views/restaurant/config.blade.php -->
-
 <x-admin-layout>
-    <h1>Restaurant Configurations</h1>
+    <style>
+        li{
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        input{
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+        }
+        label{
+            display: inline-block;
+            width: 300px;
+        }
+        button[type=submit]{
+            padding: 10px 20px;
+            background: #1fb118;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <h1 class="text-center text-lg font-bold">Restaurant Configurations</h1>
 
     @if(session('success'))
         <div class="alert alert-success" role="alert">
@@ -11,8 +33,7 @@
 
     <form method="post" action="{{ route('restaurant.update.config') }}">
         @csrf
-        @method('patch')
-
+        <input type="hidden" name="id" value="{{  $restaurantConfig['id'] }}">
         <ul>
             <li>
                 <label for="name">Name:</label>
@@ -40,33 +61,51 @@
             </li>
             <li>
                 <label for="pending_order_sync_time">Pending Order Sync Time:</label>
-                <input type="time" id="pending_order_sync_time" name="pending_order_sync_time" value="{{ $restaurantConfig['pending_order_sync_time'] }}">
+                <select name="pending_order_sync_time" id="pending_order_sync_time">
+                    <option @if ($restaurantConfig['pending_order_sync_time'] == '5')  selected @endif value="5">5 Seconds</option>
+                    <option @if ($restaurantConfig['pending_order_sync_time'] == '15') selected @endif value="15">15 Seconds</option>
+                    <option @if ($restaurantConfig['pending_order_sync_time'] == '30') selected @endif value="10">30 Seconds</option>
+                    <option @if ($restaurantConfig['pending_order_sync_time'] == '60') selected @endif value="60">1 Minitute</option>
+                </select>
             </li>
             <li>
                 <label for="waiter_sync_time">waiter Sync Time:</label>
-                <input type="time" id="waiter_sync_time" name="waiter_sync_time" value="{{ $restaurantConfig['waiter_sync_time'] }}">
+                <select name="waiter_sync_time" id="waiter_sync_time">
+                    <option @if ($restaurantConfig['waiter_sync_time'] == '5')  selected @endif value="5">5 Seconds</option>
+                    <option @if ($restaurantConfig['waiter_sync_time'] == '15') selected @endif value="15">15 Seconds</option>
+                    <option @if ($restaurantConfig['waiter_sync_time'] == '30') selected @endif value="10">30 Seconds</option>
+                    <option @if ($restaurantConfig['waiter_sync_time'] == '60') selected @endif value="60">1 Minitute</option>
+                </select>
             </li>
             <li>
                 <label for="minimum_delivery_time">Minimum Delivery Time (minutes):</label>
-                <input type="number" id="minimum_delivery_time" name="minimum_delivery_time" value="{{ $restaurantConfig['minimum_delivery_time'] }}">
+                <select name="minimum_delivery_time" id="minimum_delivery_time">
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '5')  selected @endif value="5">5 Seconds</option>
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '15') selected @endif value="15">15 Seconds</option>
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '30') selected @endif value="10">30 Seconds</option>
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '60') selected @endif value="60">1 Minitute</option>
+                </select>
             </li>
             <li>
                 <label for="minimum_preparation_time">Minimum Preparation Time (minutes):</label>
-                <input type="number" id="minimum_preparation_time" name="minimum_preparation_time" value="{{ $restaurantConfig['minimum_preparation_time'] }}">
+                <select name="minimum_preparation_time" id="minimum_preparation_time">
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '5')  selected @endif value="5">5 Seconds</option>
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '15') selected @endif value="15">15 Seconds</option>
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '30') selected @endif value="10">30 Seconds</option>
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '60') selected @endif value="60">1 Minitute</option>
+                </select>
             </li>
             <li>
                 <label for="order_live_view">Order Live View:</label>
-                <select id="order_live_view" name="order_live_view">
-                    <option value="asc" {{ $restaurantConfig['order_live_view'] == 'asc' ? 'selected' : '' }}>Ascending</option>
-                    <option value="desc" {{ $restaurantConfig['order_live_view'] == 'desc' ? 'selected' : '' }}>Descending</option>
-                </select>
+
+                <input type="radio" @if ($restaurantConfig['order_live_view'] == 'asc') checked @endif name="order_live_view" id="order_live_view_asc" value="asc"> ASC
+                <input type="radio"  @if ($restaurantConfig['order_live_view'] == 'desc') checked @endif name="order_live_view" id="order_live_view_desc" value="desc"> DESC
+
             </li>
             <li>
                 <label for="kot_live_view">KOT Live View:</label>
-                <select id="kot_live_view" name="kot_live_view">
-                    <option value="asc" {{ $restaurantConfig['kot_live_view'] == 'asc' ? 'selected' : '' }}>Ascending</option>
-                    <option value="desc" {{ $restaurantConfig['kot_live_view'] == 'desc' ? 'selected' : '' }}>Descending</option>
-                </select>
+                <input type="radio" @if ($restaurantConfig['kot_live_view'] == 'asc') checked @endif name="kot_live_view" id="kot_live_view_asc" value="asc"> ASC
+                <input type="radio"  @if ($restaurantConfig['kot_live_view'] == 'desc') checked @endif name="kot_live_view" id="kot_live_view_desc" value="desc"> DESC
             </li>
             <!-- Add more configurations as needed -->
         </ul>
