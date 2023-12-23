@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
+use App\Models\Restaurant;
 use App\Providers\RestaurantServiceProvider;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -56,11 +57,13 @@ class BillController extends Controller
             }
         }
 
+        $restaurantDetais = Restaurant::first();
+
         $restaurant=[
-            "name"=>Config('restaurant.name'),
-            "address"=>Config('restaurant.address'),
-            "phone"=>Config('restaurant.phone'),
-            "tagline"=>Config('restaurant.tagline')
+            "name"=>$restaurantDetais->name,
+            "address"=>$restaurantDetais->address,
+            "phone"=>$restaurantDetais->phone,
+            "tagline"=>$restaurantDetais->tagline,
         ];
         
 
