@@ -22,7 +22,7 @@
 
                 // Call the appropriate function based on the last segment
                 if (lastSegment === 'running') {
-                    setInterval(checkOrderUpdates, 5000);
+                    //setInterval(checkOrderUpdates, 5000);
                 } else if (lastSegment === 'ready-for-pickup') {
                     setInterval(checkPickUpOrderUpdates, 5000);
                 }
@@ -47,24 +47,24 @@
             });
         }
 
-        function checkOrderUpdates() {
-            var lastOrderId = getLastOrderId();
-            console.log('Last Order Id:', lastOrderId);
-            $.ajax({
-                url: "{{ route('sync.pending.orders',[], false) }}",
-                method: 'GET',
-                dataType: 'json',
-                data:{
-                    lastOrderId: lastOrderId
-                },
-                success: function (data) {
-                    $("#orders-list").prepend(data.html);
-                },
-                error: function (error) {
-                    console.error('Error checking for updates:', error);
-                }
-            });
-        }
+        // function checkOrderUpdates() {
+        //     var lastOrderId = getLastOrderId();
+        //     console.log('Last Order Id:', lastOrderId);
+        //     $.ajax({
+        //         url: "{{ route('sync.pending.orders',[], false) }}",
+        //         method: 'GET',
+        //         dataType: 'json',
+        //         data:{
+        //             lastOrderId: lastOrderId
+        //         },
+        //         success: function (data) {
+        //             $("#orders-list").prepend(data.html);
+        //         },
+        //         error: function (error) {
+        //             console.error('Error checking for updates:', error);
+        //         }
+        //     });
+        // }
 
         function checkPickUpOrderUpdates() {
             var lastOrderId = getLastOrderId();
@@ -86,7 +86,7 @@
 
 
         function getLastOrderId() {
-            if($("#orders-list").children().length === 0){
+            if($("#orders-list").children().length === 1){
                 return -1;
             }
 
