@@ -27,6 +27,9 @@
 <body>
     <div class="name">
         <h2 class="center">{{ $restaurant["name"] }}</h2>
+        <p class="center">{{ $restaurant["address"] }}</p>
+        <p class="center">{{ $restaurant["phone"] }}</p>
+        <p class="center">Cash/Bill</p>
     </div>
 
     <div>
@@ -71,8 +74,6 @@
     </div>
 
     <div class="center last">
-        <p>{{ $restaurant["address"] }}</p>
-        <p>{{ $restaurant["phone"] }}</p>
         <p>**{{ $restaurant["tagline"] }}**</p>
         <p>**Thank You For Dining With Us**</p>
     </div>
