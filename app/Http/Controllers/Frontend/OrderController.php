@@ -115,11 +115,11 @@ class OrderController extends Controller
         $reOrder = false;
 
 
-        if (session()->has("tableId")) {
-            $tableId = intval(session()->get("tableId"));
-        } else {
+        if (!session()->has("tableId")) {
             return response()->json(['error' => 'Table not selected.'], 422);
         }
+
+        $tableId = intval(session()->get("tableId"));
 
 
         if (session()->has("reOrder")) {
