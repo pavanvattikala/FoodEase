@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BillHelper;
 use App\Helpers\RestaurantHelper;
 use App\Models\Bill;
 use App\Models\Restaurant;
@@ -58,7 +59,8 @@ class BillController extends Controller
         
         $bill = Bill::where('id',$id)->with('orders')->with('orders.orderDetails')->with('orders.orderDetails.menu')->first();
 
-        $billId =$bill->created_at->format('Ymd').$bill->id;
+
+        $billId = $bill->bill_id;
 
         $billDetails = collect([
             'id' => $billId,

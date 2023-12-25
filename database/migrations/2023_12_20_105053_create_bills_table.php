@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('bill_id');
             $table->unsignedBigInteger('table_id');
             $table->foreign('table_id')->references('id')->on('tables')->onDelete('cascade');
             $table->decimal('bill_amount', 8, 2);

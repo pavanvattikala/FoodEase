@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TableStatus;
+use App\Helpers\BillHelper;
 use App\Models\Table;
 use App\Models\Waiter;
 use Illuminate\Contracts\Session\Session;
@@ -71,9 +72,13 @@ class WaiterController extends Controller
         $total = $orders->sum('total');
         $discount = 0.0; // You can adjust this based on your logic
         $grandTotal = $total - $discount;
+
+        $billId = BillHelper::generateBillID();
+
     
         // Create a new bill
         $bill = Bill::create([
+            'bill_id'=>$billId,
             'table_id' => $tableId,
             'bill_amount' => $total,
             'discount' => $discount,
