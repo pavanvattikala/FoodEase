@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RestaurantHelper;
 use App\Models\Bill;
 use App\Models\Restaurant;
 use App\Providers\RestaurantServiceProvider;
@@ -58,13 +59,14 @@ class BillController extends Controller
             }
         }
 
-        $restaurantDetais = Restaurant::first();
+        $restaurantDetails = RestaurantHelper::getCachedRestaurantDetails();
+
 
         $restaurant=[
-            "name"=>$restaurantDetais->name,
-            "address"=>$restaurantDetais->address,
-            "phone"=>$restaurantDetais->phone,
-            "tagline"=>$restaurantDetais->tagline,
+            "name"=>$restaurantDetails->name,
+            "address"=>$restaurantDetails->address,
+            "phone"=>$restaurantDetails->phone,
+            "tagline"=>$restaurantDetails->tagline,
         ];
         
 
