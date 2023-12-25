@@ -9,37 +9,37 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
-use App\Helpers\TableHelper;
 use App\Models\Order;
-use Error;
-use PhpParser\Node\Expr\New_;
 
 class OrderController extends Controller
 {
-    public function stepone(Request $request)
+    public function stepone()
     {
-        if(!session()->has('tableId')){
+        if (!session()->has('tableId')) {
             return back();
         }
         $categoriesWithMenus = Category::with('menus')->get();
 
         $cart = session()->get('cart', []);
 
-        return view('orders.step-one',compact('categoriesWithMenus','cart'));
+        return view('orders.step-one', compact('categoriesWithMenus', 'cart'));
     }
 
-    public function addToCart(Request $request){
+    public function addToCart(Request $request)
+    {
 
         $menuId = $request->menuId;
         $price = $request->price;
         $itemName = Menu::where('id', $menuId)->first()->name;
-        
+
         $cart = session()->get('cart', []);
-        
+
         // check if menu alredy exists
         if (array_key_exists($menuId, $cart)) {
             $cart[$menuId]['quantity']++;
-        } else {
+        }
+        
+        if (!array_key_exists($menuId, $cart)) {
             // add new menu item
             $cart[$menuId] = [
                 'name' => $itemName,
@@ -47,19 +47,19 @@ class OrderController extends Controller
                 'price' => $price,
             ];
         }
-        
+
         $cart['total'] = isset($cart['total']) ? $cart['total'] + $price : $price;
-        
+
         // Update the cart in the session
         session()->put('cart', $cart);
-        
+
         return response()->json(['message' => 'Item added to cart']);
-        
     }
-    
 
 
-    public function removeFromCart(Request $request) {
+
+    public function removeFromCart(Request $request)
+    {
 
         $menuId = $request->menuId;
         $price = $request->price;
@@ -87,13 +87,15 @@ class OrderController extends Controller
         return response()->json(['message' => 'Item not found in cart'], 404);
     }
 
-    public function cart() {
+    public function cart()
+    {
         $cart = session()->get('cart', []);
 
         return view('orders.cart', ['cart' => $cart]);
     }
 
-    public function clearCart() {
+    public function clearCart()
+    {
         session()->forget('cart');
         session()->forget('tableId');
         session()->forget('reOrder');
@@ -101,30 +103,29 @@ class OrderController extends Controller
         return response()->json("cart cleared sucessfully");
     }
 
-    public function submit(Request $request){
+    public function submit(Request $request)
+    {
 
         // submit the order to kitchen
 
         $waiterId = auth()->user()->id;
 
-        $tableId=null;
+        $tableId = null;
 
-        $reOrder=false;
+        $reOrder = false;
 
-        
-        if(session()->has("tableId")){
+
+        if (session()->has("tableId")) {
             $tableId = intval(session()->get("tableId"));
-        }
-
-        else{
+        } else {
             return response()->json(['error' => 'Table not selected.'], 422);
         }
 
 
-        if(session()->has("reOrder")){
+        if (session()->has("reOrder")) {
             $reOrder = boolval(session()->get("reOrder"));
         }
- 
+
 
         $cart = session()->get('cart', []);
 
@@ -135,17 +136,17 @@ class OrderController extends Controller
 
         $cart["reOrder"] = $reOrder;
 
-      
+
 
 
         //create order submit event
         event(new OrderSubmittedToKitchen($cart));
-        
+
         session()->forget('cart');
         session()->forget('tableId');
         session()->forget('reOrder');
 
-        return response()->json(["message"=> "order placed successfully"]);
+        return response()->json(["message" => "order placed successfully"]);
     }
 
     /**
@@ -156,7 +157,7 @@ class OrderController extends Controller
     public function orderHistory()
     {
         $waiterId = auth()->user()->id;
-        $orders = Order::with('orderDetails.menu') 
+        $orders = Order::with('orderDetails.menu')
             ->where('waiter_id', $waiterId)
             ->where('status', OrderStatus::Closed)
             ->orderBy('created_at', 'desc')
@@ -175,11 +176,11 @@ class OrderController extends Controller
     {
         // running orders
         $waiterId = auth()->user()->id;
-        $orders = Order::with('orderDetails.menu') 
+        $orders = Order::with('orderDetails.menu')
             ->where('waiter_id', $waiterId)
-            ->where('status',OrderStatus::New)
-            ->orWhere('status',OrderStatus::Processing)
-            ->orWhere('status',OrderStatus::Served)
+            ->where('status', OrderStatus::New)
+            ->orWhere('status', OrderStatus::Processing)
+            ->orWhere('status', OrderStatus::Served)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -194,40 +195,37 @@ class OrderController extends Controller
     public function readyForPickUp()
     {
         $waiterId = auth()->user()->id;
-        $orders = Order::with('orderDetails.menu') 
+        $orders = Order::with('orderDetails.menu')
             ->where('waiter_id', $waiterId)
             ->where('status', OrderStatus::ReadyForPickup)
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        
 
-        $waiter_sync_time = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time*1000;
 
-        return view('orders.order-history', ['orders' => $orders,"waiter_sync_time"=>$waiter_sync_time]);
-        
+        $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
+
+        return view('orders.order-history', ['orders' => $orders, "waiter_sync_time" => $waiterSyncTime]);
     }
 
-    public function markAsServed(Request $request){
-        $orderId = $request->orderId;       
-    
+    public function markAsServed(Request $request)
+    {
+        $orderId = $request->orderId;
+
         // Retrieve the order from the database
-        $order = Order::find($orderId);
-    
+        $order = new Order();
+        $order = $order->find($orderId);
+        
         if (!$order) {
             // Handle the case where the order is not found
             return response()->json(['error' => 'Order not found'], 404);
-        }        
-    
+        }
+
         $order->status = OrderStatus::Served;
 
         $order->save();
-    
+
         // You can return a response if needed
-        return response()->json(['status'=>'success','message' => 'Order served  successfully'],200);
-
+        return response()->json(['status' => 'success', 'message' => 'Order served  successfully'], 200);
     }
-
-    
-
 }
