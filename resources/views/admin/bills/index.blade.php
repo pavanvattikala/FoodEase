@@ -7,13 +7,25 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex justify-end m-2 p-2">
+            <div class="flex m-2 p-2 justify-between">
                 <a href="{{ route('admin.menus.create') }}"
                     class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">New Menu</a>
+                
+                <div class="date-pickers flex flex-row justify-between">
+                    <div class="">
+                        <label for="startDatePicker">Start Date</label>
+                        <input type="text" class="datepicker" id="startDatePicker" placeholder="Select Start date">
+                    </div>
+                    <div class="">
+                        <label for="endDatePicker">End Date</label>
+                        <input type="text" class="datepicker" id="endDatePicker" placeholder="Select End date">
+                    </div>
+                    <div class="">
+                        <button id="searchByDate" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Search</button>
+                    </div>
+                </div>
             </div>
-            <div class="flex justify-end m-2 p-2">
-                <input type="text" id="datepicker" placeholder="Select a date">
-            </div>
+
         
             <div class="flex flex-col">
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -39,40 +51,8 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach ($bills as $bill)
-                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <td
-                                                class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $bill->id }}
-                                            </td>
-                                            <td
-                                                class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $bill->created_at->format('Ymd') }}{{ $bill->id }}
-                                            </td>
-                                            <td
-                                                class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $bill->grand_total }}
-                                            </td>
-                                            <td class="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-                                                <div class="flex space-x-2">
-                                                    <a href="{{ route('admin.view.bill',$bill->id) }}"
-                                                        class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Edit/View</a>
-                                                    <a href="{{ route('admin.print.bill',$bill->id) }} " target="_blank"
-                                                        class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Print</a>
-                                                    <form
-                                                        class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg text-white"
-                                                        method="POST"
-                                                        action="{{ route('admin.tables.destroy', $bill->id) }}"
-                                                        onsubmit="return confirm('Are you sure?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit">Delete</button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                <tbody id="bills-table-body">
+                                   
                                 </tbody>
                             </table>
                         </div>
@@ -83,6 +63,75 @@
     </div>
     <script>
 
+        let startDateObject;
+        let endDateObject;
 
+        document.addEventListener("DOMContentLoaded", function () {
+            startDateObject = flatpickr("#startDatePicker", {
+                dateFormat: "d-M-y",
+                defaultDate: "today",
+                maxDate: "today",
+            });
+
+            endDateObject= flatpickr("#endDatePicker", {
+                dateFormat: "d-M-y",
+                defaultDate: "today",
+                maxDate: "today",
+            });
+
+            $("#searchByDate").trigger("click");
+        });
+
+        function getSelectPickrFormattedDate(date) {
+            return date.selectedDates[0];//.format('MM-D-YYYY');
+        }
+
+        document.getElementById("searchByDate").addEventListener("click", function () {
+            startDate = new Date(getSelectPickrFormattedDate(startDateObject));
+            endDate = getSelectPickrFormattedDate(endDateObject);
+
+
+            if (startDate > endDate) {
+                alert("Start date should be less than end date");
+                return;
+            }
+
+            startDate = formatDateToYYYYMMDD(startDate);
+            endDate = formatDateToYYYYMMDD(endDate);
+            console.log("Start Date:", startDate);
+            console.log("End Date:", endDate);
+
+            let url = "{{ route('admin.bills.by.date',[],false) }}";
+            url += "?startDate=" + startDate;
+            url += "&endDate=" + endDate;
+
+            $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (data) {
+                        var bills = data.bills;
+                        var tableBody = document.getElementById("bills-table-body");
+                        tableBody.innerHTML = bills;
+                        
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        console.error("Error:", error);
+                    }
+            });
+        });
+
+        function formatDateToYYYYMMDD(date) {
+            // Extract year, month, and date
+            let year = date.getFullYear();
+            // Months are zero-based, so we add 1 to get the correct month
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+
+            // Format the date as YYYY-MM-DD
+            let formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+
+            return formattedDate;
+            }
     </script>
 </x-admin-layout>

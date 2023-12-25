@@ -7,6 +7,7 @@ use App\Models\Bill;
 use App\Models\Restaurant;
 use App\Providers\RestaurantServiceProvider;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
@@ -14,11 +15,34 @@ class BillController extends Controller
 {
     //
 
-    function getBills(){
+    // function getBills(){
 
-        $bills = Bill::all();
+    //     return view('admin.bills.index');
+    // }
 
-        return view('admin.bills.index',compact('bills'));
+    function getBillsByDate(Request $request){
+        
+        $startDate = Carbon::parse($request->input('startDate'));
+        $endDate = Carbon::parse($request->input('endDate'))->addDay();
+
+        //dd($endDate);
+
+        $bills = Bill::whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at','desc')->get();
+
+        //dd($bills);
+
+        $html='';
+
+        foreach ($bills as $bill){
+
+            $data = view('components.bill-component',compact('bill'))->render();
+
+            $html=$html.$data;
+
+        }
+
+        return response()->json(["status"=>"success",'bills'=>$html]);
+
     }
 
     

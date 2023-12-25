@@ -107,7 +107,14 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::resource('/reservations', ReservationController::class);
 
 
-    Route::get('/bills', [BillController::class, 'getBills'])->name('bills');
+    // Route::get('/bills', [BillController::class, 'getBills'])->name('bills');
+
+    Route::get("/bills",function(){
+        return view('admin.bills.index');
+    })->name('bills');
+
+    Route::get('/bills-by-date', [BillController::class, 'getBillsByDate'])->name('bills.by.date');
+
 
     Route::get('/bill/view/{id}', [BillController::class, 'viewBill'])->name('view.bill');
 
