@@ -9,6 +9,10 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     @include('layouts.scripts')
+    <script src="{{ mix('js/datepicker.js')}}"></script>
+   <link rel="stylesheet" href="{{ mix('css/flatpickr.css') }}">
+
+    
 </head>
 
 <body class="font-sans antialiased">
