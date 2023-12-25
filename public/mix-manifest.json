@@ -1,5 +1,7 @@
 {
-    "/js/kitchen.js": "/js/kitchen.js",
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/js/datepicker.js": "/js/datepicker.js?id=e5edc37aaab318ba1ba268c7c731e779",
+    "/js/kitchen.js": "/js/kitchen.js?id=4e92d67a2ef9449ac1c38c61bc8dd438",
+    "/js/app.js": "/js/app.js?id=21041a772942a1c574fe8b3243c128ff",
+    "/css/app.css": "/css/app.css?id=d9894be2a9f668136209f0c608044fe4",
+    "/css/flatpickr.css": "/css/flatpickr.css?id=e3fa03b1556a5d1fb19956e88f09f3b4"
 }

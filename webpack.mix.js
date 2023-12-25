@@ -11,10 +11,13 @@ const mix = require("laravel-mix");
  |
  */
 
-mix.js("resources/js/kitchen.js", "public/js")
+mix.js("resources/js/datepicker.js", "public/js")
+    .js("resources/js/kitchen.js", "public/js")
     .js("resources/js/app.js", "public/js")
     .postCss("resources/css/app.css", "public/css", [
         require("postcss-import"),
         require("tailwindcss"),
         require("autoprefixer"),
-    ]);
+    ])
+    .copy("node_modules/flatpickr/dist/flatpickr.css", "public/css")
+    .version();
