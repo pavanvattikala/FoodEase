@@ -1,10 +1,11 @@
 import flatpickr from "flatpickr";
-document.addEventListener("DOMContentLoaded", function () {
-    flatpickr("#datepicker", {
-        dateFormat: "Y-m-d", // Customize the date format as needed
-        onChange: function (selectedDates, dateStr) {
-            // Handle date selection, e.g., filter bills based on the selected date
-            console.log(selectedDates, dateStr);
-        },
-    });
-});
+// document.addEventListener("DOMContentLoaded", function () {
+//     flatpickr("#datepicker", {
+//         dateFormat: "d-m-Y",
+//         defaultDate: "today",
+//         maxDate: "today",
+//         onChange: function (selectedDates, dateStr) {
+//             console.log(selectedDates, dateStr);
+//         },
+//     });
+// });
