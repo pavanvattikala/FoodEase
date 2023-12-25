@@ -10,13 +10,13 @@
                 @endforeach
             @endif
         </div>
-    </div>
+    </div>    
 
     <script>
 
         document.addEventListener('DOMContentLoaded', function() {
-                var pending_order_sync_time = {{ $restaurantDetails->pending_order_sync_time*1000 }}; // 5 seconds
-                var pickup_order_sync_time = {{ $restaurantDetails->waiter_sync_time*1000 }} // 5 seconds
+            
+                var pickup_order_sync_time = {{ $waiter_sync_time }} 
                // Check the last segment of the URL
                 var lastSegment = window.location.pathname.split('/').pop();
 
@@ -24,7 +24,7 @@
                 if (lastSegment === 'running') {
                     //setInterval(checkOrderUpdates, 5000);
                 } else if (lastSegment === 'ready-for-pickup') {
-                    setInterval(checkPickUpOrderUpdates, 5000);
+                    setInterval(checkPickUpOrderUpdates, pickup_order_sync_time);
                 }
         });
 

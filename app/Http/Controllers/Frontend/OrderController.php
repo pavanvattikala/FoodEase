@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FrontEnd;
 
 use App\Enums\OrderStatus;
 use App\Events\OrderSubmittedToKitchen;
+use App\Helpers\RestaurantHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Menu;
@@ -182,6 +183,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+
         return view('orders.order-history', ['orders' => $orders]);
     }
     /**
@@ -198,7 +200,12 @@ class OrderController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        return view('orders.order-history', ['orders' => $orders]);
+        
+
+        $waiter_sync_time = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time*1000;
+
+        return view('orders.order-history', ['orders' => $orders,"waiter_sync_time"=>$waiter_sync_time]);
+        
     }
 
     public function markAsServed(Request $request){
