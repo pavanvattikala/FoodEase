@@ -38,7 +38,7 @@ class OrderController extends Controller
         if (array_key_exists($menuId, $cart)) {
             $cart[$menuId]['quantity']++;
         }
-        
+
         if (!array_key_exists($menuId, $cart)) {
             // add new menu item
             $cart[$menuId] = [
@@ -136,9 +136,6 @@ class OrderController extends Controller
 
         $cart["reOrder"] = $reOrder;
 
-
-
-
         //create order submit event
         event(new OrderSubmittedToKitchen($cart));
 
@@ -160,10 +157,10 @@ class OrderController extends Controller
         $orders = Order::with('orderDetails.menu')
             ->where('waiter_id', $waiterId)
             ->where('status', OrderStatus::Closed)
+            ->whereDate('created_at', now())
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // You can return the orders to a view or process them as needed
         return view('orders.order-history', ['orders' => $orders]);
     }
 
@@ -178,9 +175,7 @@ class OrderController extends Controller
         $waiterId = auth()->user()->id;
         $orders = Order::with('orderDetails.menu')
             ->where('waiter_id', $waiterId)
-            ->where('status', OrderStatus::New)
-            ->orWhere('status', OrderStatus::Processing)
-            ->orWhere('status', OrderStatus::Served)
+            ->where('status', '!=', OrderStatus::Closed)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -201,11 +196,10 @@ class OrderController extends Controller
             ->orderBy('updated_at', 'desc')
             ->get();
 
-
-
         $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
 
-        return view('orders.order-history', ['orders' => $orders, "waiter_sync_time" => $waiterSyncTime]);
+
+        return view('orders.order-history', compact('orders', 'waiterSyncTime'));
     }
 
     public function markAsServed(Request $request)
@@ -215,7 +209,7 @@ class OrderController extends Controller
         // Retrieve the order from the database
         $order = new Order();
         $order = $order->find($orderId);
-        
+
         if (!$order) {
             // Handle the case where the order is not found
             return response()->json(['error' => 'Order not found'], 404);

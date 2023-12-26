@@ -9,6 +9,11 @@
             flex-direction: column;
             justify-content: space-between;
         }
+
+        main {
+            padding: 0px !important;
+            margin: 0px !important;
+        }
     </style>
     <div class="container w-full px-2 py-2 mx-2">
         <div class=" flex flex-col">
@@ -24,14 +29,14 @@
                             <div class=" rounded-lg shadow-lg menu-item">
                                 {{-- <img class="w-full h-20 object-cover" src="{{ Storage::url($menu->image) }}"
                                     alt="Image" /> --}}
-                                <div class="flex flex-col text-center px-6 py-4 items-center ">
-                                    <h4
-                                        class="text-xl font-semibold tracking-tight text-orange-500 uppercase break-words">
+                                <div class="flex flex-col text-center pt-2 mb-2 items-center ">
+                                    <p
+                                        class="text-lg font-semibold tracking-tight text-orange-500 uppercase break-words">
                                         {{ $menu->name }}
-                                    </h4>
-                                    <h4 class="text-sm font-semibold tracking-tight text-blue-600 lowercase ml-2">
+                                    </p>
+                                    <p class="text-sm font-semibold tracking-tight text-blue-600 lowercase ml-2">
                                         ${{ $menu->price }}
-                                    </h4>
+                                    </p>
                                 </div>
                                 <div class="flex items-center justify-between  bg-gray-100">
                                     <div class="flex items-center">
