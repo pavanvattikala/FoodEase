@@ -16,7 +16,7 @@ class MainOrderComponent extends Component
     public function __construct($order)
     {
         //
-        $this->order=$order;
+        $this->order = $order;
     }
 
 
