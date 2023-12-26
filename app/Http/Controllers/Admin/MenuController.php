@@ -46,7 +46,7 @@ class MenuController extends Controller
         $menu = Menu::create([
             'name' => $request->name,
             'description' => $request->description,
-            //'image' => $image,
+            'image' => $image,
             'price' => $request->price
         ]);
 
