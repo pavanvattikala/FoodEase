@@ -49,6 +49,7 @@
                     :active="request()->routeIs('waiter.orders.ready.for.pickup')">
                     {{ __('Ready For Pickup') }}
                 </x-waiter-nav-link>
+                <x-user-dropdown/>
             </nav>
         </div>
         <main class="m-2 p-8 w-full">
