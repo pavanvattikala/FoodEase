@@ -20,7 +20,7 @@ class WaiterController extends Controller
         return view('waiter.index');
     }
 
-    public function chooseTable(Request $request){
+    public function chooseTable(){
         $tables = Table::all();
 
         $takenTables=$tables->where('status', TableStatus::Unavaliable)

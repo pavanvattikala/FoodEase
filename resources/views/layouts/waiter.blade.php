@@ -31,25 +31,21 @@
                     </svg>
                 </button>
             </div>
-            <nav :class="{'block': open, 'hidden': !open}"
+            <nav :class="{ 'block': open, 'hidden': !open }"
                 class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-                <x-waiter-nav-link :href="route('waiter.choose.table')"
-                    :active="request()->routeIs('waiter.choose.table')">
+                <x-waiter-nav-link :href="route('waiter.choose.table')" :active="request()->routeIs('waiter.choose.table')">
                     {{ __('Create Order') }}
                 </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('waiter.orders.running')"
-                    :active="request()->routeIs('waiter.orders.running')">
+                <x-waiter-nav-link :href="route('waiter.orders.running')" :active="request()->routeIs('waiter.orders.running')">
                     {{ __('Running Orders') }}
                 </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('waiter.orders.history')"
-                    :active="request()->routeIs('waiter.orders.history')">
+                <x-waiter-nav-link :href="route('waiter.orders.history')" :active="request()->routeIs('waiter.orders.history')">
                     {{ __('Order History') }}
                 </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('waiter.orders.ready.for.pickup')"
-                    :active="request()->routeIs('waiter.orders.ready.for.pickup')">
+                <x-waiter-nav-link :href="route('waiter.orders.ready.for.pickup')" :active="request()->routeIs('waiter.orders.ready.for.pickup')">
                     {{ __('Ready For Pickup') }}
                 </x-waiter-nav-link>
-                <x-user-dropdown/>
+                <x-user-dropdown />
             </nav>
         </div>
         <main class="m-2 p-8 w-full">
@@ -68,9 +64,7 @@
             @if (session()->has('warning'))
                 <div class="p-4 mb-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
                     role="alert">
-                    <span class="font-medium">{{ session()->get('warning') }}!</span
-
->
+                    <span class="font-medium">{{ session()->get('warning') }}!</span>
                 </div>
             @endif
             {{ $slot }}

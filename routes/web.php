@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RestaurantController;
 
+use App\Http\Controllers\ExtraController;
+
+
 Route::get('/', [WelcomeController::class, 'index']);
 Route::get('/categories', [FrontendCategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [FrontendCategoryController::class, 'show'])->name('categories.show');
@@ -40,15 +43,14 @@ Route::name('request.')->prefix('request')->group(function () {
 
     Route::get('/waiter', [RequestController::class, 'requestWaiter'])->name('waiter');
     Route::get('/bill', [RequestController::class, 'requestBill'])->name('bill');
-    Route::get('/extra', [RequestController::class, 'requestExtra'])->name('extra');  
-
+    Route::get('/extra', [RequestController::class, 'requestExtra'])->name('extra');
 });
 
-Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(function () {
+Route::middleware(['auth', 'waiter'])->name('waiter.')->prefix('waiter')->group(function () {
 
     //waiter home page 
-    Route::get('/', [WaiterController::class, 'index'])->name('home'); 
-    
+    Route::get('/', [WaiterController::class, 'index'])->name('home');
+
     Route::get('/choosetable', [WaiterController::class, 'chooseTable'])->name('choose.table');
 
     Route::post('addtabletosession', [WaiterController::class, 'addTableToSesstion'])->name('table.add.toSession');
@@ -75,15 +77,14 @@ Route::middleware(['auth','waiter'])->name('waiter.')->prefix('waiter')->group(f
     Route::post('/order/submit', [FrontendOrdersController::class, 'submit'])->name('order.submit');
 
     //orders history
-    Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('orders.history');    
+    Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('orders.history');
 
-    Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('orders.running');   
-    
+    Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('orders.running');
+
     Route::get('/orders/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('orders.ready.for.pickup');
-    
-    
-    Route::post('/order/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('order.mark.as.served'); 
 
+
+    Route::post('/order/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('order.mark.as.served');
 });
 
 
@@ -95,7 +96,7 @@ Route::middleware(['auth', 'kitchen'])->name('kitchen.')->prefix('kitchen')->gro
     Route::post('/complete-order', [KitchenController::class, 'completeOrder'])->name('complete.order');
 
 
-    Route::post('/get-new-order-component',[KitchenController::class, 'getNewOrderComponent'])->name('get.new.order.component');
+    Route::post('/get-new-order-component', [KitchenController::class, 'getNewOrderComponent'])->name('get.new.order.component');
 });
 
 
@@ -109,7 +110,7 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
 
     // Route::get('/bills', [BillController::class, 'getBills'])->name('bills');
 
-    Route::get("/bills",function(){
+    Route::get("/bills", function () {
         return view('admin.bills.index');
     })->name('bills');
 
@@ -121,8 +122,6 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::get('/bill/print/{id}', [BillController::class, 'printBill'])->name('print.bill');
 
     Route::get('/bills/fd', [BillController::class, 'getBills'])->name('bills.update');
-
-
 });
 
 
@@ -131,16 +130,12 @@ Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')-
     Route::get('/restaurant-config', [RestaurantController::class, 'showConfig'])->name('show.config');
 
     Route::post('/update-config', [RestaurantController::class, 'updateConfig'])->name('update.config');
-
 });
 
-Route::middleware(['auth','waiter'])->name('sync.')->prefix('sync')->group(function () {
+Route::middleware(['auth', 'waiter'])->name('sync.')->prefix('sync')->group(function () {
 
     Route::get('/check-pending-orders-updates', [OrderSyncController::class, 'syncPendingOrder'])->name('pending.orders');
     Route::get('/check-pickup-orders-updates', [OrderSyncController::class, 'syncPickUpOrder'])->name('pickup.orders');
-
-
 });
-
 
 require __DIR__ . '/auth.php';
