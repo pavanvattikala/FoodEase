@@ -39,11 +39,21 @@ class CategoryController extends Controller
      */
     public function store(CategoryStoreRequest $request)
     {
-        $image = $request->file('image')->store('public/categories');
+
+
+        $image = null;
+        $description = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('public/categories');
+        }
+
+        if ($request->has('description')) {
+            $description = $request->description;
+        }
 
         Category::create([
             'name' => $request->name,
-            'description' => $request->description,
+            'description' => $description,
             'image' => $image
         ]);
 

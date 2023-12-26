@@ -41,11 +41,20 @@ class MenuController extends Controller
      */
     public function store(MenuStoreRequest $request)
     {
-        $image = $request->file('image')->store('public/menus');
+        $image = null;
+        $description = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('public/menus');
+        }
+
+        if ($request->has('description')) {
+            $description = $request->description;
+        }
+
 
         $menu = Menu::create([
             'name' => $request->name,
-            'description' => $request->description,
+            'description' => $description,
             'image' => $image,
             'price' => $request->price
         ]);
