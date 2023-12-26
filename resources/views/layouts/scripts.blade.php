@@ -3,10 +3,11 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-    <link rel="stylesheet" href="{{ mix('css/flatpickr.css') }}">
+    
 
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ mix('js/datepicker.js')}}"></script>
+
+ 
