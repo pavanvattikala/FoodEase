@@ -21,7 +21,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RestaurantController;
 
 use App\Http\Controllers\ExtraController;
-
+use App\Http\Controllers\PosController;
 
 Route::get('/', [WelcomeController::class, 'index']);
 Route::get('/categories', [FrontendCategoryController::class, 'index'])->name('categories.index');
@@ -136,6 +136,11 @@ Route::middleware(['auth', 'waiter'])->name('sync.')->prefix('sync')->group(func
 
     Route::get('/check-pending-orders-updates', [OrderSyncController::class, 'syncPendingOrder'])->name('pending.orders');
     Route::get('/check-pickup-orders-updates', [OrderSyncController::class, 'syncPickUpOrder'])->name('pickup.orders');
+});
+
+Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(function () {
+
+    Route::get('/', [PosController::class, 'index'])->name('index');
 });
 
 require __DIR__ . '/auth.php';

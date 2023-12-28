@@ -10,10 +10,10 @@
 
     @include('layouts.scripts')
 
-    <script src="{{ mix('js/datepicker.js')}}"></script>
+    <script src="{{ mix('js/datepicker.js') }}"></script>
     <link rel="stylesheet" href="{{ mix('css/flatpickr.css') }}">
 
-    
+
 </head>
 
 <body class="font-sans antialiased">
@@ -35,32 +35,27 @@
                     </svg>
                 </button>
             </div>
-            <nav :class="{'block': open, 'hidden': !open}"
+            <nav :class="{ 'block': open, 'hidden': !open }"
                 class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-                <x-admin-nav-link :href="route('admin.categories.index')"
-                    :active="request()->routeIs('admin.categories.index')">
+                <x-admin-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
                     {{ __('Categories') }}
                 </x-admin-nav-link>
                 <x-admin-nav-link :href="route('admin.menus.index')" :active="request()->routeIs('admin.menus.index')">
                     {{ __('Menus') }}
                 </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.tables.index')"
-                    :active="request()->routeIs('admin.tables.index')">
+                <x-admin-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">
                     {{ __('Tables') }}
                 </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.reservations.index')"
-                    :active="request()->routeIs('admin.reservations.index')">
+                <x-admin-nav-link :href="route('admin.reservations.index')" :active="request()->routeIs('admin.reservations.index')">
                     {{ __('Reservations') }}
                 </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.bills')"
-                    :active="request()->routeIs('admin.bills')">
+                <x-admin-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
                     {{ __('Bills') }}
                 </x-admin-nav-link>
-                <x-admin-nav-link :href="route('restaurant.show.config')"
-                    :active="request()->routeIs('restaurant.show.config')">
+                <x-admin-nav-link :href="route('restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
                     {{ __('Manage Restaurant') }}
                 </x-admin-nav-link>
-                <x-user-dropdown/>
+                <x-user-dropdown />
             </nav>
         </div>
         <main class="m-2 p-8 w-full">
