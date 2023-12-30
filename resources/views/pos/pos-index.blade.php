@@ -106,7 +106,7 @@
                 <div id="c{{ $category->id }}" class="menu-items flex flex-row hidden">
                     @foreach ($category->menus as $menu)
                         <button class="w-40 h-20 m-2 p-2 rounded-lg shadow-lg" id="{{ $menu->id }}"
-                            onclick="addItem({{ $menu->id }})"
+                            onclick="addItemToOrder({{ $menu->id }})"
                             data-price="{{ $menu->price }}">{{ $menu->name }}</button>
                     @endforeach
                 </div>
@@ -152,6 +152,8 @@
     </div>
 
     <script>
+        const orderItems = [];
+
         function showMenu(categoryId) {
             $(".menu-items").addClass('hidden');
             const menuItems = document.getElementById(categoryId);
@@ -159,80 +161,88 @@
 
         }
 
-        function getItemTr(menuId) {
-            const menu = $('#' + menuId);
-            var price = menu.data('price');
-            var total = Number(price) * 1;
-            var tr = `
-               <tr id=${menuId}>
-                    <td>${menu.text()}</td>
-                    <td><button class="qty-options" id="remQty" onclick=remQty(${menuId})>-</button><span id="qty">1</span><button id="addQty" class="qty-options" onclick=addQty(${menuId})>+</button></td>
-                    <td>${price}</td>
-                    <td>${total}</td>
-                </tr>
-            `;
-            return tr;
-        }
+        function renderOrderTable() {
+            const orderItemsBody = $('#order-items-body');
+            orderItemsBody.empty(); // Clear existing content
 
-        function addItem(menuId) {
-            var orderItems = $("#order-items-body");
+            orderItems.forEach(item => {
+                const tr = $(`
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>
+                            <button id="remQty" class="qty-options" onclick="remQty(${item.id})">-</button>
+                            <span id="qty">${item.quantity}</span>
+                            <button id="addQty" class="qty-options" onclick="addQty(${item.id})">+</button>
+                        </td>
+                        <td>${item.price}</td>
+                        <td>${item.total}</td>
+                    </tr>
+                `);
+                orderItemsBody.append(tr);
+            });
 
-            if (orderItems.find('#' + menuId).length > 0) {
-                var qty = Number(orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text());
-                qty++;
-                orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text(qty);
-                var price = orderItems.find('#' + menuId).find('td:nth-child(3)').text();
-                var total = Number(price) * qty;
-                orderItems.find('#' + menuId).find('td:nth-child(4)').text(total);
-            } else {
-                var tr = getItemTr(menuId);
-                orderItems.append(tr);
-            }
             calculateTotal();
         }
 
+        function addItemToOrder(menuId) {
+            const menu = $('#' + menuId);
+            const existingItem = orderItems.find(item => item.id === menuId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+                existingItem.total = existingItem.quantity * existingItem.price;
+            } else {
+                const newItem = {
+                    id: menuId,
+                    name: menu.text(),
+                    quantity: 1,
+                    price: menu.data('price'),
+                    total: menu.data('price'),
+                };
+                orderItems.push(newItem);
+            }
+
+            renderOrderTable();
+        }
+
+        function addQty(menuId) {
+            const item = orderItems.find(item => item.id === menuId);
+            if (item) {
+                item.quantity++;
+                item.total = item.quantity * item.price;
+                renderOrderTable();
+            }
+        }
+
+        function remQty(menuId) {
+            const item = orderItems.find(item => item.id === menuId);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity--;
+                    item.total = item.quantity * item.price;
+                } else {
+                    // Remove the item if quantity becomes 0
+                    orderItems.splice(orderItems.indexOf(item), 1);
+                }
+                renderOrderTable();
+            }
+        }
+
         function calculateTotal() {
-            var total = 0;
-            $("#order-items-body tr").each(function() {
-                total += Number($(this).find('td:nth-child(4)').text());
+            let total = 0;
+            orderItems.forEach(item => {
+                total += item.total;
             });
-            var discount = $("#discount").text();
-            var grandtotal = total - discount;
+
+            const discount = $("#discount").text();
+            const grandtotal = total - discount;
+
             $("#grandtotal").text(grandtotal);
             $("#total").text(total);
         }
 
-        function addQty(menuId) {
-            var orderItems = $("#order-items-body");
-            var qty = Number(orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text());
-            qty++;
-            orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text(qty);
-            var price = orderItems.find('#' + menuId).find('td:nth-child(3)').text();
-            var total = Number(price) * qty;
-            orderItems.find('#' + menuId).find('td:nth-child(4)').text(total);
-            calculateTotal();
-        }
-
-        function remQty(menuId) {
-            var orderItems = $("#order-items-body");
-            var qty = Number(orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text());
-
-            if (qty > 1) {
-                qty--;
-                orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text(qty);
-                var price = orderItems.find('#' + menuId).find('td:nth-child(3)').text();
-                var total = Number(price) * qty;
-                orderItems.find('#' + menuId).find('td:nth-child(4)').text(total);
-
-            } else {
-                console.log(qty);
-                orderItems.find('#' + menuId).remove();
-            }
-            calculateTotal();
-        }
-
-        //dom loaded
-        document.addEventListener('DOMContentLoaded', () => {
+        // DOM loaded
+        $(document).ready(function() {
             $(".category button:first-child").click();
         });
     </script>
