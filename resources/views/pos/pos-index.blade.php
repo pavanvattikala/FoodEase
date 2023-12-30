@@ -8,6 +8,7 @@
 
         button {
             background-color: #4CAF50;
+            border-radius: 2px;
         }
 
         .mw-60 {
@@ -29,8 +30,6 @@
 
 
         #order-options-parent {
-            overflow-x: scroll;
-            overflow-y: hidden;
             white-space: nowrap;
             text-overflow: wrap;
             justify-content: space-evenly
@@ -61,9 +60,10 @@
         #order-items-body {
             display: flex;
             flex-direction: column-reverse;
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: scroll;
             flex-grow: 1;
+            min-height: 300px;
         }
 
         #order-items-body::-webkit-scrollbar {
@@ -108,6 +108,16 @@
 
         .remQty {
             background-color: #f44336;
+        }
+
+        #payment-types {
+            justify-content: space-evenly;
+            background-color: #8ea08e
+        }
+
+        #payment-types div {
+            text-align: center;
+            padding: 10px;
         }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="items-search-bar">
@@ -165,6 +175,9 @@
                         </tr>
                     </thead>
                     <tbody id="order-items-body">
+                        <tr id="noitems">
+                            <td colspan="4">No Items Selected</td>
+                        </tr>
                     </tbody>
                     <tfoot>
                         <tr>
@@ -180,6 +193,24 @@
                             <td id="grandtotal">0</td>
                         </tr> --}}
                 </table>
+            </div>
+            <div id="payment-types" class="flex flex-row">
+                <div>
+                    <input type="radio" selected="true">
+                    <label>Cash</label>
+                </div>
+                <div>
+                    <input type="radio">
+                    <label>Card</label>
+                </div>
+                <div>
+                    <input type="radio">
+                    <label>UPI</label>
+                </div>
+                <div>
+                    <input type="radio" name="" id="">
+                    <label>Due</label>
+                </div>
             </div>
 
         </div>
@@ -237,6 +268,9 @@
         }
 
         function addItemToOrder(menuId) {
+            if ($("#noitems").length > 0) {
+                $("#noitems").remove();
+            }
             const menu = $("#" + menuId);
             const existingItem = orderItems.find((item) => item.id === menuId);
 
