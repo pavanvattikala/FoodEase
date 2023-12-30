@@ -18,8 +18,50 @@
         .mw-40 {
             width: 40%;
         }
+
+        .order-options {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 10px;
+
+        }
+
+
+        #order-options-parent {
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+            text-overflow: wrap;
+            justify-content: space-evenly
+        }
+
+        #order-items-table {
+            overflow-y: scroll;
+            height: 500px;
+        }
+
+        .mw-10 {
+            width: 10%;
+        }
+
+        #order-items-heading {
+            background-color: #666b66;
+            color: white;
+        }
+
+        td {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        th {
+            text-align: center;
+            padding: 5px
+        }
     </style>
-    <div class="flex flex-row" id="items-search-bar">
+    <div class="flex flex-row mb-2 mt-2" id="items-search-bar">
         <div class="flex flex-row mw-60">
             <div>
                 <input type="text" placeholder="Search.." name="search">
@@ -30,10 +72,10 @@
                 <button type="submit"><i class="fa fa-search"></i></button>
             </div>
         </div>
-        <div class="mw-40">
-            <button class="btn">Chinneses</button>
-            <button class="btn">Chinneses</button>
-            <button class="btn">Chinneses</button>
+        <div class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
+            <button class="btn h-full">Dine In</button>
+            <button class="btn h-full">Pick Up</button>
+            <button class="btn h-full">Delivery</button>
         </div>
     </div>
     <div class="flex flex-row">
@@ -55,20 +97,21 @@
             @endforeach
         </div>
 
-        <div id="order-panel" class="items flex flex-col mw-40">
-            <div id="order-type" class="flex flex-row">
-                <button class="btn p-1 m-1">Chinneses</button>
-                <button class="btn p-1 m-1">Chinneses</button>
-                <button class="btn p-1 m-1">Chinneses</button>
+        <div id="order-panel" class="items flex flex-col  mw-40">
+            <div id="order-options-parent" class="flex flex-row justify-evenly">
+                <button class="btn order-options" id="count">Count</button>
+                <button class="btn order-options" id="notes">Notes</button>
+                <button class="btn order-options" id="customer">Customer</button>
+                <button class="btn order-options" is="table">Table</button>
             </div>
-            <div id="order-items-table" class="items mw-40">
-                <table>
+            <div id="order-items-table" class="items ">
+                <table class="table-auto">
                     <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Qty</th>
-                            <th>Price</th>
-                            <th>Amount</th>
+                        <tr id="order-items-heading">
+                            <th class="mw-10">Item</th>
+                            <th class="mw-10">Qty</th>
+                            <th class="mw-10">Price</th>
+                            <th class="mw-10">Amount</th>
                         </tr>
                     </thead>
                     <tbody id="order-items-body">
