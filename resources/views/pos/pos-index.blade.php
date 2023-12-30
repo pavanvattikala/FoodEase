@@ -36,10 +36,6 @@
             justify-content: space-evenly
         }
 
-        #order-items-table {
-            overflow-y: scroll;
-            height: 500px;
-        }
 
         .mw-10 {
             width: 10%;
@@ -50,9 +46,47 @@
             color: white;
         }
 
+        #order-items-body tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #order-items-body tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        #order-items-body tr:hover {
+            background-color: #ddd;
+        }
+
+        #order-items-body {
+            display: flex;
+            flex-direction: column-reverse;
+            max-height: 400px;
+            overflow-y: scroll;
+            flex-grow: 1;
+        }
+
+        #order-items-body::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        #order-items-body::-webkit-scrollbar-thumb {
+            background-color: #a78585;
+            border-radius: 10px;
+        }
+
+        #order-items-body {
+            scrollbar-width: auto;
+            scrollbar-color: #888 transparent;
+        }
+
+        #order-items-body tr {
+            width: 100%;
+        }
+
         td {
-            padding-top: 10px;
-            padding-bottom: 10px;
+            width: 10%;
+            padding: 5px;
             text-align: center;
         }
 
@@ -68,11 +102,11 @@
             margin: 10px;
         }
 
-        #addQty {
+        .addQty {
             background-color: #4CAF50;
         }
 
-        #remQty {
+        .remQty {
             background-color: #f44336;
         }
     </style>
@@ -121,7 +155,7 @@
                 <button class="btn order-options" is="table">Table</button>
             </div>
             <div id="order-items-table" class="items ">
-                <table class="table-auto">
+                <table class="table-auto flex flex-col">
                     <thead>
                         <tr id="order-items-heading">
                             <th class="mw-10">Item</th>
@@ -138,13 +172,13 @@
                             <td id="total">0</td>
                         </tr>
                         <tr>
-                            <td colspan="3">Discount</td>
+                            {{-- <td colspan="3">Discount</td>
                             <td id="discount">0</td>
                         </tr>
                         <tr>
                             <td colspan="3">Grand Total</td>
                             <td id="grandtotal">0</td>
-                        </tr>
+                        </tr> --}}
                 </table>
             </div>
 
@@ -152,41 +186,59 @@
     </div>
 
     <script>
+        //
+        //     Order Items Structure
+        //     id : int (menu id)
+        //     name : string
+        //     quantity : int
+        //     price : int
+        //     total : int
+        //
+
         const orderItems = [];
 
         function showMenu(categoryId) {
-            $(".menu-items").addClass('hidden');
+            $(".menu-items").addClass("hidden");
             const menuItems = document.getElementById(categoryId);
-            menuItems.classList.toggle('hidden');
-
+            menuItems.classList.toggle("hidden");
         }
 
         function renderOrderTable() {
-            const orderItemsBody = $('#order-items-body');
+            const orderItemsBody = $("#order-items-body");
             orderItemsBody.empty(); // Clear existing content
 
-            orderItems.forEach(item => {
+            orderItems.forEach((item) => {
                 const tr = $(`
-                    <tr>
-                        <td>${item.name}</td>
-                        <td>
-                            <button id="remQty" class="qty-options" onclick="remQty(${item.id})">-</button>
-                            <span id="qty">${item.quantity}</span>
-                            <button id="addQty" class="qty-options" onclick="addQty(${item.id})">+</button>
-                        </td>
-                        <td>${item.price}</td>
-                        <td>${item.total}</td>
-                    </tr>
-                `);
+            <tr>
+                <td>${item.name}</td>
+                <td>
+                    <button class="qty-options remQty" onclick="remQty(${item.id})">-</button>
+                    <span id="qty">${item.quantity}</span>
+                    <button class="qty-options addQty" onclick="addQty(${item.id})">+</button>
+                </td>
+                <td>${item.price}</td>
+                <td>${item.total}</td>
+            </tr>
+        `);
                 orderItemsBody.append(tr);
             });
 
             calculateTotal();
         }
 
+        function scrollToTop() {
+            const lastChild = $('#order-items-body')[0].lastElementChild;
+
+            lastChild.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+        }
+
         function addItemToOrder(menuId) {
-            const menu = $('#' + menuId);
-            const existingItem = orderItems.find(item => item.id === menuId);
+            const menu = $("#" + menuId);
+            const existingItem = orderItems.find((item) => item.id === menuId);
 
             if (existingItem) {
                 existingItem.quantity++;
@@ -196,17 +248,18 @@
                     id: menuId,
                     name: menu.text(),
                     quantity: 1,
-                    price: menu.data('price'),
-                    total: menu.data('price'),
+                    price: Number(menu.data("price")),
+                    total: Number(menu.data("price")),
                 };
                 orderItems.push(newItem);
             }
 
             renderOrderTable();
+            scrollToTop();
         }
 
         function addQty(menuId) {
-            const item = orderItems.find(item => item.id === menuId);
+            const item = orderItems.find((item) => item.id === menuId);
             if (item) {
                 item.quantity++;
                 item.total = item.quantity * item.price;
@@ -215,7 +268,7 @@
         }
 
         function remQty(menuId) {
-            const item = orderItems.find(item => item.id === menuId);
+            const item = orderItems.find((item) => item.id === menuId);
             if (item) {
                 if (item.quantity > 1) {
                     item.quantity--;
@@ -230,12 +283,12 @@
 
         function calculateTotal() {
             let total = 0;
-            orderItems.forEach(item => {
-                total += item.total;
+            orderItems.forEach((item) => {
+                total += Number(item.total);
             });
 
-            const discount = $("#discount").text();
-            const grandtotal = total - discount;
+            const discount = Number($("#discount").text());
+            const grandtotal = Number(total - discount);
 
             $("#grandtotal").text(grandtotal);
             $("#total").text(total);
