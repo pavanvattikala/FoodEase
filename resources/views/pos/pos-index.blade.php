@@ -60,6 +60,21 @@
             text-align: center;
             padding: 5px
         }
+
+        .qty-options {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 10px;
+        }
+
+        #addQty {
+            background-color: #4CAF50;
+        }
+
+        #remQty {
+            background-color: #f44336;
+        }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="items-search-bar">
         <div class="flex flex-row mw-60">
@@ -82,12 +97,13 @@
         <div class="mw-60 flex flex-row">
             <div id="category" class="category flex flex-col">
                 @foreach ($categoriesWithMenus as $category)
-                    <button class="btn p-4 m-4" onclick="showMenu({{ $category->id }})">{{ $category->name }}</button>
+                    <button class="btn p-4 m-4"
+                        onclick="showMenu('c{{ $category->id }}')">{{ $category->name }}</button>
                 @endforeach
             </div>
 
             @foreach ($categoriesWithMenus as $category)
-                <div id="{{ $category->id }}" class="menu-items flex flex-row hidden">
+                <div id="c{{ $category->id }}" class="menu-items flex flex-row hidden">
                     @foreach ($category->menus as $menu)
                         <button class="w-40 h-20 m-2 p-2 rounded-lg shadow-lg" id="{{ $menu->id }}"
                             onclick="addItem({{ $menu->id }})"
@@ -116,6 +132,19 @@
                     </thead>
                     <tbody id="order-items-body">
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">Total</td>
+                            <td id="total">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Discount</td>
+                            <td id="discount">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">Grand Total</td>
+                            <td id="grandtotal">0</td>
+                        </tr>
                 </table>
             </div>
 
@@ -130,19 +159,76 @@
 
         }
 
-        function addItem($menuId) {
-            const menu = $('#' + $menuId);
+        function getItemTr(menuId) {
+            const menu = $('#' + menuId);
             var price = menu.data('price');
             var total = Number(price) * 1;
-            const orderItems = document.getElementById('order-items-body');
-            const orderItem = document.createElement('tr');
-            orderItem.innerHTML = `
-                <td>${menu.text()}</td>
-                <td>1</td>
-                <td>${price}</td>
-                <td>${total}</td>
+            var tr = `
+               <tr id=${menuId}>
+                    <td>${menu.text()}</td>
+                    <td><button class="qty-options" id="remQty" onclick=remQty(${menuId})>-</button><span id="qty">1</span><button id="addQty" class="qty-options" onclick=addQty(${menuId})>+</button></td>
+                    <td>${price}</td>
+                    <td>${total}</td>
+                </tr>
             `;
-            orderItems.appendChild(orderItem);
+            return tr;
+        }
+
+        function addItem(menuId) {
+            var orderItems = $("#order-items-body");
+
+            if (orderItems.find('#' + menuId).length > 0) {
+                var qty = Number(orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text());
+                qty++;
+                orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text(qty);
+                var price = orderItems.find('#' + menuId).find('td:nth-child(3)').text();
+                var total = Number(price) * qty;
+                orderItems.find('#' + menuId).find('td:nth-child(4)').text(total);
+            } else {
+                var tr = getItemTr(menuId);
+                orderItems.append(tr);
+            }
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            var total = 0;
+            $("#order-items-body tr").each(function() {
+                total += Number($(this).find('td:nth-child(4)').text());
+            });
+            var discount = $("#discount").text();
+            var grandtotal = total - discount;
+            $("#grandtotal").text(grandtotal);
+            $("#total").text(total);
+        }
+
+        function addQty(menuId) {
+            var orderItems = $("#order-items-body");
+            var qty = Number(orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text());
+            qty++;
+            orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text(qty);
+            var price = orderItems.find('#' + menuId).find('td:nth-child(3)').text();
+            var total = Number(price) * qty;
+            orderItems.find('#' + menuId).find('td:nth-child(4)').text(total);
+            calculateTotal();
+        }
+
+        function remQty(menuId) {
+            var orderItems = $("#order-items-body");
+            var qty = Number(orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text());
+
+            if (qty > 1) {
+                qty--;
+                orderItems.find('#' + menuId).find('td:nth-child(2)').find('span').text(qty);
+                var price = orderItems.find('#' + menuId).find('td:nth-child(3)').text();
+                var total = Number(price) * qty;
+                orderItems.find('#' + menuId).find('td:nth-child(4)').text(total);
+
+            } else {
+                console.log(qty);
+                orderItems.find('#' + menuId).remove();
+            }
+            calculateTotal();
         }
 
         //dom loaded
