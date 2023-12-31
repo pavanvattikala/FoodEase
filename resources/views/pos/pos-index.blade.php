@@ -347,11 +347,11 @@
             <div id="save-and-bill-options" class="flex flex-row">
                 <div class="flex flex-row" id="print-options">
                     <div>
-                        <input type="checkbox" name="" id="">
+                        <input type="checkbox" name="bill" id="">
                         <label>Print Bill</label>
                     </div>
                     <div>
-                        <input type="checkbox" name="" id="">
+                        <input type="checkbox" name="kot" id="">
                         <label>Print KOT</label>
                     </div>
                 </div>
@@ -634,7 +634,6 @@
         });
 
         document.getElementById('saveNotesBtn').addEventListener('click', function() {
-            const selectedNotes = [];
 
             $('input[name="notes"]:checked').each(function() {
                 selectedNotes.push($(this).next().text());
@@ -647,6 +646,47 @@
             }
 
             document.getElementById('addNotesModal').style.display = 'none';
+        });
+
+        $("#save-order").click(function() {
+            const order = {
+                orderItems: orderItems,
+                orderType: $("#order-type-options button.active").attr('id'),
+                paymentType: $("input[name='payment-type']:checked").next().text(),
+                notes: selectedNotes,
+                customer: $("#customer").val(),
+                table: $("#table").val(),
+                total: $("#total").text(),
+                discount: $("#discount").text(),
+                grandtotal: $("#grandtotal").text(),
+                printBill: $("#print-options input[name='bill']").prop('checked'),
+                printKOT: $("#print-options input[name='kot']").prop('checked'),
+            };
+            console.log(order);
+            var csrf_token = "{{ csrf_token() }}";
+
+            $.ajax({
+                url: "{{ route('pos.save.order') }}",
+                type: "POST",
+                data: order,
+                headers: {
+                    'X-CSRF-TOKEN': csrf_token
+                },
+                contentType: 'application/x-www-form-urlencoded',
+                success: function(response) {
+                    console.log(response);
+                    if (response.status === 'success') {
+                        alert('Order Saved Successfully');
+                        $("#cancel-order").click();
+                    } else {
+                        alert('Order Save Failed');
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert('Order Save Failed');
+                }
+            });
         });
     </script>
 </x-pos-layout>

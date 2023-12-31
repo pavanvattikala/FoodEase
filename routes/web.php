@@ -141,6 +141,7 @@ Route::middleware(['auth', 'waiter'])->name('sync.')->prefix('sync')->group(func
 Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(function () {
 
     Route::get('/', [PosController::class, 'index'])->name('index');
+    Route::post('/save-order', [PosController::class, 'saveOrder'])->name('save.order');
 });
 
 require __DIR__ . '/auth.php';

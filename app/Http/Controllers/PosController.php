@@ -17,4 +17,9 @@ class PosController extends Controller
 
         return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes'));
     }
+
+    public function saveOrder(Request $request)
+    {
+        dd($request->all());
+    }
 }
