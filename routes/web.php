@@ -139,8 +139,10 @@ Route::middleware(['auth', 'waiter'])->name('sync.')->prefix('sync')->group(func
 });
 
 Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(function () {
-
-    Route::get('/', [PosController::class, 'index'])->name('index');
+    Route::redirect('/', '/pos/tables')->name('index');
+    Route::get('/index', [PosController::class, 'index'])->name('main');
+    Route::get('/tables', [PosController::class, 'tables'])->name('tables');
+    Route::post('addtabletosession', [PosController::class, 'addTableToSesstion'])->name('table.add.toSession');
     Route::post('/save-order', [PosController::class, 'saveOrder'])->name('save.order');
 });
 

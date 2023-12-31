@@ -20,13 +20,13 @@
                 <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
                     {{ __('FoodEase') }}
                 </x-pos-nav-link>
-                <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
+                <x-pos-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
                     {{ __('New Order') }}
                 </x-pos-nav-link>
             </nav>
             <nav class="align-middle justify-center flex-grow px-4 pb-4 ">
-                <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                    {{ __('Categories') }}
+                <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
+                    {{ __('Tables') }}
                 </x-pos-nav-link>
                 <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
                     {{ __('Categories') }}
