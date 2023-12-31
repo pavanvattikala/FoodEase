@@ -13,6 +13,8 @@ class PosController extends Controller
     {
         $categoriesWithMenus = Category::with('menus')->get();
 
-        return view('pos.pos-index', compact('categoriesWithMenus'));
+        $predefinedNotes = config('predefined_options.options');
+
+        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes'));
     }
 }
