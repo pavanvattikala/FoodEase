@@ -7,8 +7,12 @@
 
 
         button {
-            background-color: #4CAF50;
+            background-color: #59c45d;
             border-radius: 8px;
+        }
+
+        .active {
+            background-color: #276a29 !important;
         }
 
         .mw-60 {
@@ -35,6 +39,10 @@
             justify-content: space-evenly
         }
 
+        .mw-20 {
+            width: 20%;
+        }
+
 
         .mw-10 {
             width: 10%;
@@ -55,6 +63,20 @@
 
         #order-items-body tr:hover {
             background-color: #ddd;
+        }
+
+        #order-items-body tr td:first-child {
+            text-align: left;
+            width: 20%;
+        }
+
+        .del-item {
+            background-color: #f44336;
+            border-radius: 45%;
+            color: white;
+            width: 30px !important;
+            height: 30px !important;
+            margin: 10px;
         }
 
         #order-items-body {
@@ -160,11 +182,15 @@
             padding: 10px;
             width: 100%;
         }
+
+        #noitems td {
+            text-align: center !important;
+        }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="order-main-nav">
         <div class="flex flex-row mw-60" id=items-search-options>
-            <input id="search-input" type="text" placeholder="Search.." name="search">
-            <input id="shortcode-input" type="text" placeholder="ShortCode.." name="search-by-shortcode">
+            <input id="search-input" type="text" placeholder="Search by Name.." name="search">
+            <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
         </div>
         <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
             <button class="btn h-full">Dine In</button>
@@ -176,7 +202,7 @@
         <div class="mw-60 flex flex-row">
             <div id="category" class="category flex flex-col">
                 @foreach ($categoriesWithMenus as $category)
-                    <button class="btn p-4 m-4"
+                    <button class="btn p-4 m-4" id="c{{ $category->id }}-btn"
                         onclick="showMenu('c{{ $category->id }}')">{{ $category->name }}</button>
                 @endforeach
             </div>
@@ -206,15 +232,14 @@
                 <table class="table-auto flex flex-col">
                     <thead>
                         <tr id="order-items-heading">
-                            <th class="mw-10">Item</th>
+                            <th class="mw-20">Item</th>
                             <th class="mw-10">Qty</th>
-                            <th class="mw-10">Price</th>
                             <th class="mw-10">Amount</th>
                         </tr>
                     </thead>
                     <tbody id="order-items-body">
                         <tr id="noitems">
-                            <td colspan="4">No Items Selected</td>
+                            <td colspan="3">No Items Selected <br> Select from Left Menu</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -262,9 +287,9 @@
                     </div>
                 </div>
                 <div id="save-options" class="flex flex-row">
-                    <button class="btn">Save</button>
-                    <button class="btn">Cancel</button>
-                    <button class="btn">Hold</button>
+                    <button class="btn" id="save-order">Save</button>
+                    <button class="btn" id="cancel-order" style="background-color: #f44336">Cancel</button>
+                    <button class="btn" id="hold-order" style="background-color: rgb(42, 88, 161)">Hold</button>
                 </div>
             </div>
 
@@ -287,8 +312,13 @@
 
         function showMenu(categoryId) {
             $(".menu-items").addClass("hidden");
+            $(".category button").removeClass("active");
             const menuItems = document.getElementById(categoryId);
+
             menuItems.classList.toggle("hidden");
+
+            $("#" + categoryId + "-btn").addClass("active");
+
         }
 
         function renderOrderTable() {
@@ -298,13 +328,15 @@
             orderItems.forEach((item) => {
                 const tr = $(`
             <tr>
-                <td>${item.name}</td>
+                <td>
+                    <button class="del-item" onclick="delItem(${item.id})">X</button>
+                    <span>${item.name}</span>
+                </td>
                 <td>
                     <button class="qty-options remQty" onclick="remQty(${item.id})">-</button>
                     <span id="qty">${item.quantity}</span>
                     <button class="qty-options addQty" onclick="addQty(${item.id})">+</button>
                 </td>
-                <td>${item.price}</td>
                 <td>${item.total}</td>
             </tr>
         `);
@@ -312,6 +344,9 @@
             });
 
             calculateTotal();
+            $("input[type='text']").val('');
+            $('.menu-items button').show();
+
         }
 
         function scrollToTop() {
@@ -397,6 +432,13 @@
                 }
             });
 
+            //use time out to prevent multiple calls
+            var timer = null;
+            $('#search-input').keyup(function() {
+                clearTimeout(timer);
+                timer = setTimeout(searchByName, 500)
+            });
+
         });
 
         function searchByShortcode() {
@@ -411,6 +453,48 @@
             $('#shortcode-input').val('');
             $('#shortcode-input').focus();
 
+        }
+
+        function searchByName() {
+            const searchInput = $('#search-input').val().toLowerCase().trim();
+            console.log("called");
+            if (searchInput === '') {
+                $('.menu-items button').show();
+                return;
+            }
+
+            $('.menu-items button').each(function() {
+                const menuItem = $(this);
+                const menuItemName = menuItem.text().toLowerCase();
+
+                if (menuItemName.startsWith(searchInput) || menuItemName.includes(searchInput)) {
+                    var menudivId = menuItem.parent().attr('id');
+                    showMenu(menudivId);
+                    menuItem.show();
+                } else {
+                    menuItem.hide();
+                }
+            });
+        }
+
+        $("#cancel-order").click(function() {
+            orderItems.splice(0, orderItems.length);
+            renderOrderTable();
+            $("#order-items-body").append(`
+                    <tr id="noitems">
+                        <td colspan="3">No Items Selected</td>
+                    </tr>
+                `);
+            $("input[type='radio']").prop('checked', false);
+            $("input[type='checkbox']").prop('checked', false);
+        });
+
+        function delItem(menuId) {
+            const item = orderItems.find((item) => item.id === menuId);
+            if (item) {
+                orderItems.splice(orderItems.indexOf(item), 1);
+                renderOrderTable();
+            }
         }
     </script>
 </x-pos-layout>
