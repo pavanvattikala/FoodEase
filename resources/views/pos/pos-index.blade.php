@@ -163,14 +163,8 @@
     </style>
     <div class="flex flex-row mb-2 mt-2" id="order-main-nav">
         <div class="flex flex-row mw-60" id=items-search-options>
-            <div>
-                <input type="text" placeholder="Search.." name="search">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </div>
-            <div>
-                <input type="text" placeholder="ShortCode.." name="search">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </div>
+            <input id="search-input" type="text" placeholder="Search.." name="search">
+            <input id="shortcode-input" type="text" placeholder="ShortCode.." name="search-by-shortcode">
         </div>
         <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
             <button class="btn h-full">Dine In</button>
@@ -191,8 +185,11 @@
                 <div id="c{{ $category->id }}" class="menu-items flex flex-row hidden">
                     @foreach ($category->menus as $menu)
                         <button class="w-40 h-20 m-2 p-2 rounded-lg shadow-lg" id="{{ $menu->id }}"
-                            onclick="addItemToOrder({{ $menu->id }})"
-                            data-price="{{ $menu->price }}">{{ $menu->name }}</button>
+                            onclick="addItemToOrder({{ $menu->id }})" data-price="{{ $menu->price }}"
+                            data-shortcode="{{ $menu->shortcode }}">{{ $menu->name }}</button>
+                        @php
+                            $menuShortCuts[$menu->shortcode] = $menu->id;
+                        @endphp
                     @endforeach
                 </div>
             @endforeach
@@ -285,6 +282,8 @@
         //
 
         const orderItems = [];
+
+        const menuShortCuts = @json($menuShortCuts);
 
         function showMenu(categoryId) {
             $(".menu-items").addClass("hidden");
@@ -389,6 +388,29 @@
         // DOM loaded
         $(document).ready(function() {
             $(".category button:first-child").click();
+
+            $('#shortcode-input').keypress(function(event) {
+                console.log(event);
+                if (event.which === 13) {
+                    event.preventDefault();
+                    searchByShortcode();
+                }
+            });
+
         });
+
+        function searchByShortcode() {
+            var shortcodeInput = $('#shortcode-input').val().toLowerCase();
+            const menuId = menuShortCuts[shortcodeInput];
+            if (menuId) {
+                addItemToOrder(menuId);
+
+            } else {
+                alert('Invalid Shortcode');
+            }
+            $('#shortcode-input').val('');
+            $('#shortcode-input').focus();
+
+        }
     </script>
 </x-pos-layout>
