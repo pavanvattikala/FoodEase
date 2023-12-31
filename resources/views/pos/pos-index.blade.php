@@ -8,7 +8,7 @@
 
         button {
             background-color: #4CAF50;
-            border-radius: 2px;
+            border-radius: 8px;
         }
 
         .mw-60 {
@@ -60,10 +60,10 @@
         #order-items-body {
             display: flex;
             flex-direction: column-reverse;
-            max-height: 300px;
+            max-height: 360px;
             overflow-y: scroll;
             flex-grow: 1;
-            min-height: 300px;
+            min-height: 350px;
         }
 
         #order-items-body::-webkit-scrollbar {
@@ -118,6 +118,38 @@
         #payment-types div {
             text-align: center;
             padding: 10px;
+        }
+
+        #payment-types div input {
+            padding: 10px;
+        }
+
+        #save-and-bill-options {
+            justify-content: space-between;
+            background-color: #6a6a6a
+        }
+
+        #save-and-bill-options div {
+            text-align: center;
+            padding: 10px;
+        }
+
+        #print-options {
+            width: 50%;
+            justify-content: space-evenly;
+        }
+
+        #print-options div input {
+            padding: 10px;
+        }
+
+        #save-options {
+            width: 50%;
+            justify-content: space-evenly;
+        }
+
+        #save-options button {
+            width: 80px;
         }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="items-search-bar">
@@ -196,20 +228,37 @@
             </div>
             <div id="payment-types" class="flex flex-row">
                 <div>
-                    <input type="radio" selected="true">
+                    <input type="radio" name="payment-type" selected="true">
                     <label>Cash</label>
                 </div>
                 <div>
-                    <input type="radio">
+                    <input type="radio" name="payment-type">
                     <label>Card</label>
                 </div>
                 <div>
-                    <input type="radio">
+                    <input type="radio" name="payment-type">
                     <label>UPI</label>
                 </div>
                 <div>
-                    <input type="radio" name="" id="">
+                    <input type="radio" name="payment-type" id="">
                     <label>Due</label>
+                </div>
+            </div>
+            <div id="save-and-bill-options" class="flex flex-row">
+                <div class="flex flex-row" id="print-options">
+                    <div>
+                        <input type="checkbox" name="" id="">
+                        <label>Print Bill</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="" id="">
+                        <label>Print KOT</label>
+                    </div>
+                </div>
+                <div id="save-options" class="flex flex-row">
+                    <button class="btn">Save</button>
+                    <button class="btn">Cancel</button>
+                    <button class="btn">Hold</button>
                 </div>
             </div>
 
