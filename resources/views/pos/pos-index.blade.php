@@ -151,9 +151,18 @@
         #save-options button {
             width: 80px;
         }
+
+        #items-search-options {
+            justify-content: space-evenly;
+        }
+
+        #items-search-options input {
+            padding: 10px;
+            width: 100%;
+        }
     </style>
-    <div class="flex flex-row mb-2 mt-2" id="items-search-bar">
-        <div class="flex flex-row mw-60">
+    <div class="flex flex-row mb-2 mt-2" id="order-main-nav">
+        <div class="flex flex-row mw-60" id=items-search-options>
             <div>
                 <input type="text" placeholder="Search.." name="search">
                 <button type="submit"><i class="fa fa-search"></i></button>
@@ -163,7 +172,7 @@
                 <button type="submit"><i class="fa fa-search"></i></button>
             </div>
         </div>
-        <div class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
+        <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
             <button class="btn h-full">Dine In</button>
             <button class="btn h-full">Pick Up</button>
             <button class="btn h-full">Delivery</button>
