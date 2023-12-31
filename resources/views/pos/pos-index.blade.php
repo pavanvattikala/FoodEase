@@ -186,6 +186,66 @@
         #noitems td {
             text-align: center !important;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            /* Adjust the width as needed */
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .modal-body {
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="order-main-nav">
         <div class="flex flex-row mw-60" id=items-search-options>
@@ -227,7 +287,7 @@
                 <button class="btn order-options" id="count" title="Number of Items">
                     <i class="fa fa-list"></i><br> <span id="item-count">0</span>
                 </button>
-                <button class="btn order-options" id="notes" title="Add Notes">
+                <button class="btn order-options" id="add-notes-btn" title="Add Notes">
                     <i class="fa fa-sticky-note"></i>
                 </button>
                 <button class="btn order-options" id="customer" title="Assign to Customer">
@@ -303,6 +363,44 @@
             </div>
 
         </div>
+        <div id="addNotesModal" class="modal">
+            <div class="modal-overlay" tabindex="-1" data-close="addNotesModal"></div>
+            <div class="modal-container bg-white mx-auto mt-10 p-6 rounded-lg shadow-lg w-1/2">
+                <div class="modal-header flex justify-between items-center border-b pb-4">
+                    <span class="text-2xl font-bold">Add Notes</span>
+                    <span class="modal-close cursor-pointer" data-close="addNotesModal">&times;</span>
+                </div>
+                <div class="modal-body mt-4">
+                    <div id="notes-data">
+                        <div class="form-group mb-4">
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Select a
+                                predefined note:</label>
+                            <div class="flex flex-wrap">
+                                @foreach ($predefinedNotes as $note)
+                                    <div class="w-1/3 pr-2 mb-2 mr-2">
+                                        <input type="checkbox" name="notes" id="{{ $note }}"
+                                            class="mr-1">
+                                        <label for="{{ $note }}"
+                                            class="capitalize">{{ $note }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="customNotes" class="block text-sm font-medium text-gray-700 mb-2">Or type a
+                                new note:</label>
+                            <textarea name="extra-notes" id="customNotes" class="w-full p-2 border rounded-md"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer mt-4 flex justify-end">
+                    <button type="button" class="btn  mr-2" data-close="addNotesModal">Close</button>
+                    <button type="button" class="btn bg-green-500" id="saveNotesBtn">Save Notes</button>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <script>
@@ -318,6 +416,8 @@
         const orderItems = [];
 
         const menuShortCuts = @json($menuShortCuts);
+
+        const selectedNotes = [];
 
         function showMenu(categoryId) {
             $(".menu-items").addClass("hidden");
@@ -372,6 +472,7 @@
         }
 
         function addItemToOrder(menuId) {
+            playAudio();
             if ($("#noitems").length > 0) {
                 $("#noitems").remove();
             }
@@ -391,9 +492,13 @@
                 };
                 orderItems.push(newItem);
             }
-
             renderOrderTable();
             scrollToTop();
+        }
+
+        function playAudio() {
+            var audio = new Audio("{{ asset('audio/select.wav') }}");
+            audio.play();
         }
 
         function addQty(menuId) {
@@ -500,6 +605,7 @@
                     </tr>
                 `);
             $("input[type='radio']").prop('checked', false);
+            $("textarea").val('');
             $("input[type='checkbox']").prop('checked', false);
         });
 
@@ -516,5 +622,31 @@
             $('#' + orderType).addClass('active');
             console.log('Selected Order Type:', orderType);
         }
+
+        document.getElementById('add-notes-btn').addEventListener('click', function() {
+            document.getElementById('addNotesModal').style.display = 'block';
+        });
+
+        document.querySelectorAll('[data-close="addNotesModal"]').forEach(function(element) {
+            element.addEventListener('click', function() {
+                document.getElementById('addNotesModal').style.display = 'none';
+            });
+        });
+
+        document.getElementById('saveNotesBtn').addEventListener('click', function() {
+            const selectedNotes = [];
+
+            $('input[name="notes"]:checked').each(function() {
+                selectedNotes.push($(this).next().text());
+            });
+
+            const customNotesValue = $('#customNotes').val().trim();
+            if (customNotesValue !== '') {
+                const customNotesArray = customNotesValue.split(',');
+                selectedNotes.push(...customNotesArray);
+            }
+
+            document.getElementById('addNotesModal').style.display = 'none';
+        });
     </script>
 </x-pos-layout>
