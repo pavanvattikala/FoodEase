@@ -290,7 +290,7 @@
                 <button class="btn order-options" id="add-notes-btn" title="Add Notes">
                     <i class="fa fa-sticky-note"></i>
                 </button>
-                <button class="btn order-options" id="customer" title="Assign to Customer">
+                <button class="btn order-options" id="add-customer-btn" title="Assign to Customer">
                     <i class="fa fa-user"></i>
                 </button>
 
@@ -406,6 +406,35 @@
                 </div>
             </div>
         </div>
+        <div id="customerDataModal" class="modal">
+            <div class="modal-overlay" tabindex="-1" data-close="customerDataModal"></div>
+            <div class="modal-container bg-white mx-auto mt-10 p-6 rounded-lg shadow-lg w-1/2">
+                <div class="modal-header flex justify-between items-center border-b pb-4">
+                    <span class="text-2xl font-bold">Customer Data</span>
+                    <span class="modal-close cursor-pointer" data-close="customerDataModal">&times;</span>
+                </div>
+                <div class="modal-body mt-4">
+                    <div class="form-group mb-4">
+                        <label for="customerName" class="block text-sm font-medium text-gray-700 mb-2">Customer
+                            Name:</label>
+                        <input type="text" id="customerName" name="customerName"
+                            class="w-full p-2 border rounded-md">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="mobileNumber" class="block text-sm font-medium text-gray-700 mb-2">Mobile
+                            Number:</label>
+                        <input type="text" id="mobileNumber" name="mobileNumber"
+                            class="w-full p-2 border rounded-md">
+                    </div>
+                </div>
+                <div class="modal-footer mt-4 flex justify-end">
+                    <button type="button" class="btn  mr-2" data-close="customerDataModal">Close</button>
+                    <button type="button" class="btn bg-green-500" id="saveCustomerDataBtn">Save Customer
+                        Data</button>
+                </div>
+            </div>
+        </div>
+
 
 
     </div>
@@ -425,6 +454,8 @@
         const menuShortCuts = @json($menuShortCuts);
 
         const selectedNotes = [];
+
+        let customerData = null;
 
         function showMenu(categoryId) {
             $(".menu-items").addClass("hidden");
@@ -505,6 +536,7 @@
 
         function playAudio() {
             var audio = new Audio("{{ asset('audio/select.wav') }}");
+            audio.volume = 0.1;
             audio.play();
         }
 
@@ -553,6 +585,14 @@
                 if (event.which === 13) {
                     event.preventDefault();
                     searchByShortcode();
+                }
+            });
+
+            $('#customerName, #mobileNumber').on('keyup', function(event) {
+                // Check if Enter key is pressed (key code 13)
+                if (event.which === 13) {
+                    // Trigger the click event on the save button
+                    $('#saveCustomerDataBtn').click();
                 }
             });
 
@@ -661,7 +701,7 @@
                 orderType: $("#order-type-options button.active").attr('id'),
                 paymentType: $("input[name='payment-type']:checked").next().text(),
                 notes: selectedNotes,
-                customer: $("#customer").val(),
+                customer: customerData,
                 table: $("#table").data('tableid'),
                 total: $("#total").text(),
                 discount: $("#discount").text(),
@@ -694,6 +734,32 @@
                     alert('Order Save Failed');
                 }
             });
+        });
+
+        document.getElementById('add-customer-btn').addEventListener('click', function() {
+            document.getElementById('customerDataModal').style.display = 'block';
+            $("#customerName").focus();
+        });
+
+        document.querySelectorAll('[data-close="customerDataModal"]').forEach(function(element) {
+            element.addEventListener('click', function() {
+                document.getElementById('customerDataModal').style.display = 'none';
+            });
+        });
+
+
+
+        document.getElementById('saveCustomerDataBtn').addEventListener('click', function() {
+
+            const customerName = $('#customerName').val();
+            const mobileNumber = $('#mobileNumber').val();
+
+            customerData = {
+                customerName,
+                mobileNumber
+            };
+            document.getElementById('customerDataModal').style.display = 'none';
+
         });
     </script>
 </x-pos-layout>
