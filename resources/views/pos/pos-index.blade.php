@@ -193,10 +193,11 @@
             <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
         </div>
         <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
-            <button class="btn h-full">Dine In</button>
-            <button class="btn h-full">Pick Up</button>
-            <button class="btn h-full">Delivery</button>
+            <button class="btn h-full" id="dinein" onclick="setOrderType('dinein')">Dine In</button>
+            <button class="btn h-full" id="pickup" onclick="setOrderType('pickup')">Pick Up</button>
+            <button class="btn h-full" id="delivery" onclick="setOrderType('delivery')">Delivery</button>
         </div>
+
     </div>
     <div class="flex flex-row">
         <div class="mw-60 flex flex-row">
@@ -223,10 +224,18 @@
 
         <div id="order-panel" class="items flex flex-col  mw-40">
             <div id="order-options-parent" class="flex flex-row justify-evenly">
-                <button class="btn order-options" id="count">Count</button>
-                <button class="btn order-options" id="notes">Notes</button>
-                <button class="btn order-options" id="customer">Customer</button>
-                <button class="btn order-options" is="table">Table</button>
+                <button class="btn order-options" id="count" title="Number of Items">
+                    <i class="fa fa-list"></i><br> <span id="item-count">0</span>
+                </button>
+                <button class="btn order-options" id="notes" title="Add Notes">
+                    <i class="fa fa-sticky-note"></i>
+                </button>
+                <button class="btn order-options" id="customer" title="Assign to Customer">
+                    <i class="fa fa-user"></i>
+                </button>
+                <button class="btn order-options" id="table" title="Assign to Table">
+                    <i class="fa fa-table"></i>
+                </button>
             </div>
             <div id="order-items-table" class="items ">
                 <table class="table-auto flex flex-col">
@@ -324,24 +333,27 @@
         function renderOrderTable() {
             const orderItemsBody = $("#order-items-body");
             orderItemsBody.empty(); // Clear existing content
+            var count = 0;
 
             orderItems.forEach((item) => {
                 const tr = $(`
-            <tr>
-                <td>
-                    <button class="del-item" onclick="delItem(${item.id})">X</button>
-                    <span>${item.name}</span>
-                </td>
-                <td>
-                    <button class="qty-options remQty" onclick="remQty(${item.id})">-</button>
-                    <span id="qty">${item.quantity}</span>
-                    <button class="qty-options addQty" onclick="addQty(${item.id})">+</button>
-                </td>
-                <td>${item.total}</td>
-            </tr>
-        `);
+                                <tr>
+                                    <td>
+                                        <button class="del-item" onclick="delItem(${item.id})">X</button>
+                                        <span>${item.name}</span>
+                                    </td>
+                                    <td>
+                                        <button class="qty-options remQty" onclick="remQty(${item.id})">-</button>
+                                        <span id="qty">${item.quantity}</span>
+                                        <button class="qty-options addQty" onclick="addQty(${item.id})">+</button>
+                                    </td>
+                                    <td>${item.total}</td>
+                                </tr>
+                            `);
                 orderItemsBody.append(tr);
+                count++;
             });
+            $("#item-count").text(count);
 
             calculateTotal();
             $("input[type='text']").val('');
@@ -439,6 +451,8 @@
                 timer = setTimeout(searchByName, 500)
             });
 
+            $("#dinein").click();
+
         });
 
         function searchByShortcode() {
@@ -495,6 +509,12 @@
                 orderItems.splice(orderItems.indexOf(item), 1);
                 renderOrderTable();
             }
+        }
+
+        function setOrderType(orderType) {
+            $('#order-type-options button').removeClass('active');
+            $('#' + orderType).addClass('active');
+            console.log('Selected Order Type:', orderType);
         }
     </script>
 </x-pos-layout>
