@@ -293,8 +293,15 @@
                 <button class="btn order-options" id="customer" title="Assign to Customer">
                     <i class="fa fa-user"></i>
                 </button>
-                <button class="btn order-options" id="table" title="Assign to Table">
+
+                @php
+                    $tableData = session()->get('tableData');
+                @endphp
+                <button data-tableid={{ $tableData['tableId'] }} class="btn order-options" id="table"
+                    title="Assign to Table">
                     <i class="fa fa-table"></i>
+                    <br>
+                    {{ session()->get('tableData')['tableName'] }}
                 </button>
             </div>
             <div id="order-items-table" class="items ">
@@ -655,7 +662,7 @@
                 paymentType: $("input[name='payment-type']:checked").next().text(),
                 notes: selectedNotes,
                 customer: $("#customer").val(),
-                table: $("#table").val(),
+                table: $("#table").data('tableid'),
                 total: $("#total").text(),
                 discount: $("#discount").text(),
                 grandtotal: $("#grandtotal").text(),

@@ -17,7 +17,7 @@
             margin-right: 10px;
             margin-bottom: 10px;
             background-color: #fff;
-            width: 200px;
+            width: 100px;
 
         }
 
@@ -62,6 +62,7 @@
 
     <script>
         function selectTable(tableId) {
+            var tableName = $("#" + tableId + " h2").text();
 
             const url = "{{ route('pos.table.add.toSession', [], false) }}";
             var csrf_token = "{{ csrf_token() }}";
@@ -69,7 +70,8 @@
                 type: "POST",
                 url: url,
                 data: {
-                    tableId: tableId
+                    tableId: tableId,
+                    tableName: tableName
                 },
                 headers: {
                     'X-CSRF-TOKEN': csrf_token

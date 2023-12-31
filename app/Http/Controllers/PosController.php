@@ -40,9 +40,14 @@ class PosController extends Controller
     public function addTableToSesstion(Request $request)
     {
         $tableId = $request->tableId;
-        $reOrder = boolval($request->reOrder);
+        $tableName = $request->tableName;
 
-        Session()->put("tableId", $tableId);
+        $tableData = [
+            'tableId' => $tableId,
+            'tableName' => $tableName,
+        ];
+
+        Session()->put("tableData", $tableData);
 
         return response()->json(['message' => 'true']);
     }
