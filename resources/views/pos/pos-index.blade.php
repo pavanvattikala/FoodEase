@@ -702,12 +702,13 @@
                 paymentType: $("input[name='payment-type']:checked").next().text(),
                 notes: selectedNotes,
                 customer: customerData,
-                table: $("#table").data('tableid'),
+                tableNumber: $("#table").data('tableid'),
                 total: $("#total").text(),
                 discount: $("#discount").text(),
                 grandtotal: $("#grandtotal").text(),
                 printBill: $("#print-options input[name='bill']").prop('checked'),
                 printKOT: $("#print-options input[name='kot']").prop('checked'),
+                source: 'pos'
             };
             console.log(order);
             var csrf_token = "{{ csrf_token() }}";
