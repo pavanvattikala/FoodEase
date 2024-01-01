@@ -14,15 +14,17 @@ use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Frontend\WelcomeController;
 use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\OrderSyncController;
-use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RestaurantController;
-
-use App\Http\Controllers\ExtraController;
 use App\Http\Controllers\PosController;
 
+
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for FrontEnd & Reservation
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 Route::get('/', [WelcomeController::class, 'index']);
 Route::get('/categories', [FrontendCategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [FrontendCategoryController::class, 'show'])->name('categories.show');
@@ -34,10 +36,20 @@ Route::get('/reservation/step-two', [FrontendReservationController::class, 'step
 Route::post('/reservation/step-two', [FrontendReservationController::class, 'storeStepTwo'])->name('reservations.store.step.two');
 Route::get('/thankyou', [WelcomeController::class, 'thankyou'])->name('thankyou');
 
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Dashboard
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Requsts
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 
 Route::name('request.')->prefix('request')->group(function () {
 
@@ -46,6 +58,11 @@ Route::name('request.')->prefix('request')->group(function () {
     Route::get('/extra', [RequestController::class, 'requestExtra'])->name('extra');
 });
 
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Waiter
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 Route::middleware(['auth', 'waiter'])->name('waiter.')->prefix('waiter')->group(function () {
 
     //waiter home page 
@@ -56,37 +73,13 @@ Route::middleware(['auth', 'waiter'])->name('waiter.')->prefix('waiter')->group(
     Route::post('addtabletosession', [WaiterController::class, 'addTableToSesstion'])->name('table.add.toSession');
 
     Route::post('submitForBilling', [WaiterController::class, 'submitForBilling'])->name('table.submit.for.billing');
-
-
-    //order step one
-    Route::get('/order/step-one', [FrontendOrdersController::class, 'stepone'])->name('order.step.one');
-
-    //current item to session
-    Route::post('/order/addtocart', [FrontendOrdersController::class, 'addToCart'])->name('order.add.tocart');
-
-    //remove current item to session
-    Route::post('/order/removefromcart', [FrontendOrdersController::class, 'removefromcart'])->name('order.remove.fromcart');
-
-    //show cart
-    Route::get('/order/cart', [FrontendOrdersController::class, 'cart'])->name('order.cart');
-
-    //clear cart
-    Route::post('/order/clearcart', [FrontendOrdersController::class, 'clearcart'])->name('order.clear.cart');
-
-    //order submit to kitchen
-    Route::post('/order/submit', [FrontendOrdersController::class, 'submit'])->name('order.submit');
-
-    //orders history
-    Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('orders.history');
-
-    Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('orders.running');
-
-    Route::get('/orders/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('orders.ready.for.pickup');
-
-
-    Route::post('/order/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('order.mark.as.served');
 });
 
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Kitchen
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 
 Route::middleware(['auth', 'kitchen'])->name('kitchen.')->prefix('kitchen')->group(function () {
     Route::get('/', [KitchenController::class, 'index'])->name('index');
@@ -95,10 +88,13 @@ Route::middleware(['auth', 'kitchen'])->name('kitchen.')->prefix('kitchen')->gro
 
     Route::post('/complete-order', [KitchenController::class, 'completeOrder'])->name('complete.order');
 
-
     Route::post('/get-new-order-component', [KitchenController::class, 'getNewOrderComponent'])->name('get.new.order.component');
 });
-
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Admin
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 
 Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
@@ -123,7 +119,11 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
 
     Route::get('/bills/fd', [BillController::class, 'getBills'])->name('bills.update');
 });
-
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Restaurant
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 
 Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')->group(function () {
 
@@ -131,12 +131,12 @@ Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')-
 
     Route::post('/update-config', [RestaurantController::class, 'updateConfig'])->name('update.config');
 });
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for POS
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
 
-Route::middleware(['auth', 'waiter'])->name('sync.')->prefix('sync')->group(function () {
-
-    Route::get('/check-pending-orders-updates', [OrderSyncController::class, 'syncPendingOrder'])->name('pending.orders');
-    Route::get('/check-pickup-orders-updates', [OrderSyncController::class, 'syncPickUpOrder'])->name('pickup.orders');
-});
 
 Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(function () {
     Route::redirect('/', '/pos/tables')->name('index');
@@ -144,6 +144,54 @@ Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(functio
     Route::get('/tables', [PosController::class, 'tables'])->name('tables');
     Route::post('addtabletosession', [PosController::class, 'addTableToSesstion'])->name('table.add.toSession');
     Route::post('/save-order', [PosController::class, 'saveOrder'])->name('save.order');
+});
+
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Order
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
+
+Route::middleware(['auth', 'order'])->name('order.')->prefix('order')->group(function () {
+    //order step one
+    Route::get('/order/step-one', [FrontendOrdersController::class, 'stepone'])->name('step.one');
+
+    //current item to session
+    Route::post('/order/addtocart', [FrontendOrdersController::class, 'addToCart'])->name('add.tocart');
+
+    //remove current item to session
+    Route::post('/order/removefromcart', [FrontendOrdersController::class, 'removefromcart'])->name('remove.fromcart');
+
+    //show cart
+    Route::get('/order/cart', [FrontendOrdersController::class, 'cart'])->name('cart');
+
+    //clear cart
+    Route::post('/order/clearcart', [FrontendOrdersController::class, 'clearcart'])->name('clear.cart');
+
+    //order submit to kitchen
+    Route::post('/order/submit', [FrontendOrdersController::class, 'submit'])->name('submit');
+
+    //orders history
+    Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('history');
+
+    Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('running');
+
+    Route::get('/orders/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('ready.for.pickup');
+
+
+    Route::post('/order/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('mark.as.served');
+});
+
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Sync
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
+
+Route::middleware(['auth', 'order'])->name('sync.')->prefix('sync')->group(function () {
+
+    Route::get('/check-pending-orders-updates', [OrderSyncController::class, 'syncPendingOrder'])->name('pending.orders');
+    Route::get('/check-pickup-orders-updates', [OrderSyncController::class, 'syncPickUpOrder'])->name('pickup.orders');
 });
 
 require __DIR__ . '/auth.php';

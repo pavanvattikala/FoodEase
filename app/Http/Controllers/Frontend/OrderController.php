@@ -90,8 +90,8 @@ class OrderController extends Controller
     public function cart()
     {
         $cart = session()->get('cart', []);
-
-        return view('orders.cart', ['cart' => $cart]);
+        $predefinedNotes = config('predefined_options.options');
+        return view('orders.cart', compact('cart', 'predefinedNotes'));
     }
 
     public function clearCart()
@@ -105,6 +105,9 @@ class OrderController extends Controller
 
     public function submit(Request $request)
     {
+
+        dd($request->all());
+
 
         // submit the order to kitchen
 
