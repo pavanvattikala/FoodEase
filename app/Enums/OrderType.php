@@ -18,4 +18,15 @@ enum OrderType: string
                 return '';
         }
     }
+    public static function getValueFromDescription(string $description): ?string
+    {
+        switch ($description) {
+            case 'DineIn':
+                return self::DineIn->value;
+            case 'Takeaway':
+                return self::Takeaway->value;
+            default:
+                return null;
+        }
+    }
 }
