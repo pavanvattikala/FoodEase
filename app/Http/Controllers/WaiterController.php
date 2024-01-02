@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\TableStatus;
 use App\Helpers\BillHelper;
+use App\Helpers\TableHelper;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use App\Models\Bill;
@@ -35,16 +36,12 @@ class WaiterController extends Controller
 
     public function addTableToSesstion(Request $request)
     {
-        $tableId = $request->tableId;
+        TableHelper::addTableToSession($request->tableId);
+
         $reOrder = boolval($request->reOrder);
 
-
         if ($reOrder === true) {
-
-            Session()->put("tableId", $tableId);
             Session()->put("reOrder", true);
-        } else {
-            Session()->put("tableId", $tableId);
         }
 
         return response()->json(['message' => 'true']);

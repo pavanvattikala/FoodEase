@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TableStatus;
+use App\Helpers\TableHelper;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Table;
@@ -39,16 +40,7 @@ class PosController extends Controller
     }
     public function addTableToSesstion(Request $request)
     {
-        $tableId = $request->tableId;
-        $tableName = $request->tableName;
-
-        $tableData = [
-            'tableId' => $tableId,
-            'tableName' => $tableName,
-        ];
-
-        Session()->put("tableData", $tableData);
-
+        TableHelper::addTableToSession($request->tableID);
         return response()->json(['message' => 'true']);
     }
 }
