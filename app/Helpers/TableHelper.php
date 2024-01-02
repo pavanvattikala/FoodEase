@@ -47,4 +47,17 @@ class TableHelper
 
         return false;
     }
+
+    public static function addTableToSession($tableId)
+    {
+
+        $tableName = Table::where('id', $tableId)->first()->name;
+
+        $tableData = [
+            'tableId' => $tableId,
+            'tableName' => $tableName,
+        ];
+
+        Session()->put("tableData", $tableData);
+    }
 }

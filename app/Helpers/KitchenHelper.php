@@ -43,4 +43,9 @@ class KitchenHelper
 
         return "KOT-$date-$nextKOTId";
     }
+
+    public static function printKOT($kot)
+    {
+        //handle print kot service
+    }
 }

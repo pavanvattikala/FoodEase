@@ -46,4 +46,9 @@ class BillHelper
 
         return  $billId;
     }
+
+    public static function printBill()
+    {
+        // handle print bill service
+    }
 }
