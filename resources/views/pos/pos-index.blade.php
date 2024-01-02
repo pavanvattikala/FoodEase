@@ -253,9 +253,8 @@
             <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
         </div>
         <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
-            <button class="btn h-full" id="dinein" onclick="setOrderType('dinein')">Dine In</button>
-            <button class="btn h-full" id="pickup" onclick="setOrderType('pickup')">Pick Up</button>
-            <button class="btn h-full" id="delivery" onclick="setOrderType('delivery')">Delivery</button>
+            <button class="btn h-full" id="DineIn" onclick="setOrderType('DineIn')">Dine In</button>
+            <button class="btn h-full" id="Takeaway" onclick="setOrderType('Takeaway')">Pick Up</button>
         </div>
 
     </div>
@@ -603,7 +602,7 @@
                 timer = setTimeout(searchByName, 500)
             });
 
-            $("#dinein").click();
+            $("#DineIn").click();
 
         });
 
@@ -696,27 +695,35 @@
         });
 
         $("#save-order").click(function() {
+            //validate order
+            if (orderItems.length === 0) {
+                alert('No Items Selected');
+                return;
+            }
+
             const order = {
                 orderItems: orderItems,
                 orderType: $("#order-type-options button.active").attr('id'),
                 paymentType: $("input[name='payment-type']:checked").next().text(),
-                notes: selectedNotes,
+                specialInstructions: selectedNotes,
                 customer: customerData,
-                tableNumber: $("#table").data('tableid'),
+                tableId: $("#table").data('tableid'),
                 total: $("#total").text(),
                 discount: $("#discount").text(),
                 grandtotal: $("#grandtotal").text(),
                 printBill: $("#print-options input[name='bill']").prop('checked'),
                 printKOT: $("#print-options input[name='kot']").prop('checked'),
-                source: 'pos'
             };
             console.log(order);
             var csrf_token = "{{ csrf_token() }}";
 
             $.ajax({
-                url: "{{ route('pos.save.order') }}",
+                url: "{{ route('order.submit', [], false) }}",
                 type: "POST",
-                data: order,
+                data: {
+                    order: order,
+                    source: 'pos'
+                },
                 headers: {
                     'X-CSRF-TOKEN': csrf_token
                 },
