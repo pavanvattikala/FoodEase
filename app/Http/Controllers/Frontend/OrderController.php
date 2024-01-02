@@ -3,19 +3,28 @@
 namespace App\Http\Controllers\FrontEnd;
 
 use App\Enums\OrderStatus;
+use App\Enums\OrderType;
+use App\Enums\TableStatus;
 use App\Events\OrderSubmittedToKitchen;
+use App\Helpers\BillHelper;
+use App\Helpers\KitchenHelper;
+use App\Helpers\ModuleHelper;
 use App\Helpers\RestaurantHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Table;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
     public function stepone()
     {
-        if (!session()->has('tableId')) {
+        if (!session()->has('tableData')) {
             return back();
         }
         $categoriesWithMenus = Category::with('menus')->get();
@@ -37,14 +46,17 @@ class OrderController extends Controller
         // check if menu alredy exists
         if (array_key_exists($menuId, $cart)) {
             $cart[$menuId]['quantity']++;
+            $cart[$menuId]['total'] = $cart[$menuId]['price'] * $cart[$menuId]['quantity'];
         }
 
         if (!array_key_exists($menuId, $cart)) {
             // add new menu item
             $cart[$menuId] = [
+                'id' => $menuId,
                 'name' => $itemName,
                 'quantity' => 1,
                 'price' => $price,
+                'total' => $price,
             ];
         }
 
@@ -69,6 +81,7 @@ class OrderController extends Controller
         // check if menu alredy exists
         if (array_key_exists($menuId, $cart) && $cart[$menuId]['quantity'] > 0) {
             $cart[$menuId]['quantity']--;
+            $cart[$menuId]['total'] = $cart[$menuId]['price'] * $cart[$menuId]['quantity'];
 
             // If the quantity becomes zero, remove the item from the cart
             if ($cart[$menuId]['quantity'] <= 0) {
@@ -97,63 +110,147 @@ class OrderController extends Controller
     public function clearCart()
     {
         session()->forget('cart');
-        session()->forget('tableId');
+        session()->forget('tableData');
         session()->forget('reOrder');
 
         return response()->json("cart cleared sucessfully");
     }
-
     public function submit(Request $request)
     {
 
-        dd($request->all());
+        $source = $request->source;
+        $order = collect($request->order);
+
+        $specialInstructions = $order->get('specialInstructions') ? implode(',', $order->get('specialInstructions')) :  null;
 
 
-        // submit the order to kitchen
+        $commonData = collect([
+            'tableId' => $order->get('tableId'),
+            'specialInstructions' => $specialInstructions,
+            'printKot' => false,
+            "printBill" => false,
+            "reOrder" => false,
+            "status" => OrderStatus::New->value,
+        ]);
 
-        $waiterId = auth()->user()->id;
-
-        $tableId = null;
-
-        $reOrder = false;
-
-
-        if (!session()->has("tableId")) {
-            return response()->json(['error' => 'Table not selected.'], 422);
+        if ($source == "waiter") {
+            $orderData = $this->processWaiterOrder($request, $commonData);
+        } else if ($source == "pos") {
+            $orderData = $this->processPosOrder($request, $commonData);
         }
 
-        $tableId = intval(session()->get("tableId"));
-
-
-        if (session()->has("reOrder")) {
-            $reOrder = boolval(session()->get("reOrder"));
+        if ($request->reOrder === true) {
+            $orderData["reOrder"] = true;
         }
 
+        $kot =  $this->insertOrder($orderData);
 
-        $cart = session()->get('cart', []);
+        if ($kot == "failed") {
+            return response()->json(["status" => "error", "message" => "order Submission Failed"]);
+        }
 
+        if (ModuleHelper::isKitchenModuleEnabled()) {
+            event(new OrderSubmittedToKitchen($kot));
+        }
 
-        $cart["waiterId"] = $waiterId;
+        if ($request->printKot === true) {
+            KitchenHelper::printKOT($kot);
+        }
+        if ($request->printBill === true) {
+            BillHelper::printBill($kot);
+        }
 
-        $cart["tableId"] = $tableId;
+        $this->clearCart();
 
-        $cart["reOrder"] = $reOrder;
-
-        //create order submit event
-        event(new OrderSubmittedToKitchen($cart));
-
-        session()->forget('cart');
-        session()->forget('tableId');
-        session()->forget('reOrder');
-
-        return response()->json(["message" => "order placed successfully"]);
+        return response()->json(["status" => "success", "message" => "order Submitted successfully"]);
     }
 
-    /**
-     * Retrieves the order history for the authenticated waiter.
-     *
-     * @return \Illuminate\Contracts\View\View
-     */
+    private function insertOrder($orderData)
+    {
+        $kot = KitchenHelper::generateKOT();
+        $total = $orderData->get("total");
+        $tableId = $orderData->get("tableId");
+        $status = $orderData->get("status");
+        $specialInstructions = $orderData->get("specialInstructions");
+        $orderType = $orderData->get("orderType");
+        $waiterId = $orderData->get("waiterId");
+        $reOrder = boolval($orderData->get("reOrder"));
+        $orderItems = $orderData->get("orderItems");
+
+
+        $orderObject = [
+            "KOT" => $kot,
+            "total" => $total,
+            "table_id" => $tableId,
+            "status" => $status,
+            "special_instructions" => $specialInstructions,
+            "order_type" => $orderType,
+            "waiter_id" => $waiterId
+        ];
+
+
+        try {
+            DB::beginTransaction();
+
+            $order = Order::create($orderObject);
+
+            foreach ($orderItems as $key => $item) {
+                $orderDetail = new OrderDetail([
+                    'order_id' => $order->id,
+                    'menu_id' => $item["id"],
+                    'quantity' => $item['quantity'],
+                ]);
+
+                $order->orderDetails()->save($orderDetail);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return "failed";
+        }
+
+
+        if ($reOrder === true) {
+            Table::find($tableId)->update(['status' => TableStatus::Unavaliable]);
+        } else {
+            Table::find($tableId)->update([
+                'status' => TableStatus::Unavaliable,
+                'taken_at' => Carbon::now(),
+            ]);
+        }
+
+        return $kot;
+    }
+
+    private function processWaiterOrder(Request $request, $commonData)
+    {
+        $cart = session()->get('cart');
+        $total = $cart["total"];
+        unset($cart["total"]);
+        $waiterSpecificData = collect([
+            'waiterId' => auth()->user()->id,
+            'orderItems' => $cart,
+            'total' => $total,
+            'orderType' => OrderType::DineIn->value,
+        ]);
+        return $commonData->merge($waiterSpecificData);
+    }
+    private function processPosOrder(Request $request, $commonData)
+    {
+        $order = $request->order;
+        $posSpecificData = collect([
+            'customer' => $order["customer"],
+            'waiterId' => auth()->user()->id,
+            'orderItems' => $order["orderItems"],
+            'total' => $order["total"],
+            'orderType' => OrderType::getValueFromDescription($order["orderType"])
+
+        ]);
+
+        return $commonData->merge($posSpecificData);
+    }
+
     public function orderHistory()
     {
         $waiterId = auth()->user()->id;
@@ -167,14 +264,9 @@ class OrderController extends Controller
         return view('orders.order-history', ['orders' => $orders]);
     }
 
-    /**
-     * Get the running orders for the authenticated waiter.
-     *
-     * @return \Illuminate\View\View
-     */
+
     public function runningOrders()
     {
-        // running orders
         $waiterId = auth()->user()->id;
         $orders = Order::with('orderDetails.menu')
             ->where('waiter_id', $waiterId)
@@ -185,11 +277,7 @@ class OrderController extends Controller
 
         return view('orders.order-history', ['orders' => $orders]);
     }
-    /**
-     * Get the orders that are ready for pickup.
-     *
-     * @return \Illuminate\View\View
-     */
+
     public function readyForPickUp()
     {
         $waiterId = auth()->user()->id;
@@ -209,12 +297,10 @@ class OrderController extends Controller
     {
         $orderId = $request->orderId;
 
-        // Retrieve the order from the database
         $order = new Order();
         $order = $order->find($orderId);
 
         if (!$order) {
-            // Handle the case where the order is not found
             return response()->json(['error' => 'Order not found'], 404);
         }
 
@@ -222,7 +308,6 @@ class OrderController extends Controller
 
         $order->save();
 
-        // You can return a response if needed
         return response()->json(['status' => 'success', 'message' => 'Order served  successfully'], 200);
     }
 }
