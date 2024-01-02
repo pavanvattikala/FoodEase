@@ -1,6 +1,9 @@
 <x-waiter-layout>
     <div class="container">
-        <h1 class="text-2xl font-semibold mb-4">Your Shopping Cart</h1>
+        <h1 class="text-2xl font-semibold mb-4">Your Shopping Cart For Table
+            {{ session()->get('tableData')['tableName'] }}
+
+        </h1>
 
         @if (empty($cart))
             <p>Your cart is empty.</p>
@@ -66,15 +69,26 @@
     <script>
         // submit to kitchen call
         function submitToKitchen() {
-            const url = {{ route('') }}
+            const url = "{{ route('order.submit', [], false) }}";
 
-            let special_instructions = $("#special_instructions").val();
+            let selectedNotes = [];
 
-            if (!special_instructions) {
-                special_instructions = null;
+            $('input[name="notes"]:checked').each(function() {
+                selectedNotes.push($(this).next().text());
+            });
+
+            const customNotesValue = $('#customNotes').val().trim();
+            if (customNotesValue !== '') {
+                const customNotesArray = customNotesValue.split(',');
+                selectedNotes.push(...customNotesArray);
             }
 
-            const redirectUrl = "{{ route('waiter.order.step.one', [], false) }}";
+            const order = {
+                specialInstructions: selectedNotes,
+                tableId: "{{ session()->get('tableData')['tableId'] }}",
+            }
+
+            const redirectUrl = "{{ route('order.step.one', [], false) }}";
 
             var csrf_token = "{{ csrf_token() }}";
 
@@ -85,12 +99,11 @@
                     'X-CSRF-TOKEN': csrf_token
                 },
                 data: {
-                    special_instructions: special_instructions,
+                    order: order,
                     source: 'waiter'
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 success: function(response) {
-                    alert(response.message);
                     window.location.replace(redirectUrl);
                 },
                 error: function(error) {
