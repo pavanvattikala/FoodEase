@@ -143,7 +143,6 @@ Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(functio
     Route::get('/index', [PosController::class, 'index'])->name('main');
     Route::get('/tables', [PosController::class, 'tables'])->name('tables');
     Route::post('addtabletosession', [PosController::class, 'addTableToSesstion'])->name('table.add.toSession');
-    Route::post('/save-order', [PosController::class, 'saveOrder'])->name('save.order');
 });
 
 /**
@@ -152,34 +151,34 @@ Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(functio
  * -----------------------------------------------------------------------------------------------------------------------------
  */
 
-Route::middleware(['auth', 'order'])->name('order.')->prefix('order')->group(function () {
+Route::middleware(['auth'])->name('order.')->prefix('order')->group(function () {
     //order step one
-    Route::get('/order/step-one', [FrontendOrdersController::class, 'stepone'])->name('step.one');
+    Route::get('/step-one', [FrontendOrdersController::class, 'stepone'])->name('step.one');
 
     //current item to session
-    Route::post('/order/addtocart', [FrontendOrdersController::class, 'addToCart'])->name('add.tocart');
+    Route::post('/addtocart', [FrontendOrdersController::class, 'addToCart'])->name('add.tocart');
 
     //remove current item to session
-    Route::post('/order/removefromcart', [FrontendOrdersController::class, 'removefromcart'])->name('remove.fromcart');
+    Route::post('/removefromcart', [FrontendOrdersController::class, 'removefromcart'])->name('remove.fromcart');
 
     //show cart
-    Route::get('/order/cart', [FrontendOrdersController::class, 'cart'])->name('cart');
+    Route::get('/cart', [FrontendOrdersController::class, 'cart'])->name('cart');
 
     //clear cart
-    Route::post('/order/clearcart', [FrontendOrdersController::class, 'clearcart'])->name('clear.cart');
+    Route::post('/clearcart', [FrontendOrdersController::class, 'clearcart'])->name('clear.cart');
 
     //order submit to kitchen
-    Route::post('/order/submit', [FrontendOrdersController::class, 'submit'])->name('submit');
+    Route::post('/submit', [FrontendOrdersController::class, 'submit'])->name('submit');
 
     //orders history
-    Route::get('/orders/history', [FrontendOrdersController::class, 'orderHistory'])->name('history');
+    Route::get('/history', [FrontendOrdersController::class, 'orderHistory'])->name('history');
 
-    Route::get('/orders/running', [FrontendOrdersController::class, 'runningOrders'])->name('running');
+    Route::get('/running', [FrontendOrdersController::class, 'runningOrders'])->name('running');
 
-    Route::get('/orders/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('ready.for.pickup');
+    Route::get('/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('ready.for.pickup');
 
 
-    Route::post('/order/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('mark.as.served');
+    Route::post('/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('mark.as.served');
 });
 
 /**

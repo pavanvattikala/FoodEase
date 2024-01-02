@@ -93,7 +93,7 @@
 
                     if (response.message == "true") {
                         alert("Table " + tableId + " is selected");
-                        window.location.replace(" {{ route('waiter.order.step.one') }}");
+                        window.location.replace(" {{ route('order.step.one') }}");
                     } else {
                         alert("You cannot select it");
                     }
@@ -156,7 +156,7 @@
 
                     if (response.message == "true") {
                         alert("Table " + tableId + " is selected");
-                        window.location.replace(" {{ route('waiter.order.step.one') }}");
+                        window.location.replace(" {{ route('order.step.one') }}");
                     } else {
                         alert("You cannot select it");
                     }
@@ -188,7 +188,7 @@
 
                     if (response.status == "success") {
                         alert("Table " + tableId + " is submitted for billing");
-                        window.location.replace(" {{ route('waiter.order.step.one') }}");
+                        window.location.replace(" {{ route('order.step.one') }}");
                     } else {
                         alert("You cannot submit it");
                     }

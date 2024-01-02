@@ -62,7 +62,7 @@
                     {{ session('cart.total', 0) }}</span></h2>
         </div>
 
-        <a href="{{ route('waiter.order.cart') }}">
+        <a href="{{ route('order.cart') }}">
             <button class="bg-green-500 text-white px-4 py-2 rounded relative m-2">
                 View Cart
             </button>
