@@ -21,11 +21,6 @@ class PosController extends Controller
         return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes'));
     }
 
-    public function saveOrder(Request $request)
-    {
-        dd($request->all());
-    }
-
     public function tables()
     {
         $tables = Table::all();
@@ -40,7 +35,7 @@ class PosController extends Controller
     }
     public function addTableToSesstion(Request $request)
     {
-        TableHelper::addTableToSession($request->tableID);
+        TableHelper::addTableToSession($request->tableId);
         return response()->json(['message' => 'true']);
     }
 }

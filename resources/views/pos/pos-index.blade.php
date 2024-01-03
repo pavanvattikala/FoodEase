@@ -733,6 +733,7 @@
                     if (response.status === 'success') {
                         alert('Order Saved Successfully');
                         $("#cancel-order").click();
+                        window.location.replace(" {{ route('pos.index') }}");
                     } else {
                         alert('Order Save Failed');
                     }
