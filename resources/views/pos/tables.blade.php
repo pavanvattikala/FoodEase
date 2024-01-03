@@ -35,8 +35,39 @@
             display: flex;
             flex-wrap: wrap;
         }
-    </style>
 
+        .mw-60 {
+            width: 60%;
+        }
+
+        .mw-40 {
+            width: 40%;
+        }
+
+        .btn {
+            background-color: rgb(55, 150, 55);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+
+        }
+    </style>
+    <div class="flex flex-row mb-2 mt-2" id="table-main-nav">
+        <div class="flex flex-row mw-60">
+            <h1>Table View</h1>
+        </div>
+        <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
+            <button class="btn h-full" id="reload" onclick="location.reload()"><i class="fa fa-refresh"
+                    aria-hidden="true"></i>
+            </button>
+            <button class="btn h-full" id="Takeaway">Pick Up</button>
+        </div>
+
+    </div>
     <div class="container" id="select-tables">
         @foreach (App\Enums\TableLocation::cases() as $location)
             <div class="mb-4">
@@ -51,7 +82,8 @@
                         @elseif($table->status === App\Enums\TableStatus::Unavaliable)
                             <div class="unavailable-table-item">
                                 <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
-                                <p>Table Unavailable</p>
+                                <a href="{{ route('pos.table.checkout', $table->id) }}"
+                                    class="btn btn-primary">Checkout</a>
                             </div>
                         @endif
                     @endforeach
@@ -61,6 +93,12 @@
     </div>
 
     <script>
+        $("#Takeaway").on("click", function() {
+
+            //tableid -1 for takeaway
+            selectTable(-1);
+        });
+
         function selectTable(tableId) {
             const url = "{{ route('pos.table.add.toSession', [], false) }}";
             var csrf_token = "{{ csrf_token() }}";
