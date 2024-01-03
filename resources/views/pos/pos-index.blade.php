@@ -246,16 +246,37 @@
             display: flex;
             justify-content: flex-end;
         }
+
+        #order-type-options {
+            justify-content: space-evenly;
+            background-color: #8ea08e
+        }
+
+        #order-type-options div {
+            text-align: center;
+            padding: 10px;
+        }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="order-main-nav">
         <div class="flex flex-row mw-60" id=items-search-options>
             <input id="search-input" type="text" placeholder="Search by Name.." name="search">
             <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
         </div>
-        <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
-            <button class="btn h-full" id="DineIn" onclick="setOrderType('DineIn')">Dine In</button>
-            <button class="btn h-full" id="Takeaway" onclick="setOrderType('Takeaway')">Pick Up</button>
+
+        <div id="order-type-options" class="mw-40 flex flex-row align-middle text-center">
+            @php
+                $orderType = session()->get('orderType');
+            @endphp
+            <div id="dine_in" class="h-full mw-40 @if ($orderType == 'dine_in') active @endif">
+                <p>Dine In</p>
+            </div>
+            <div id="takeaway" class="h-full mw-40 @if ($orderType == 'takeaway') active @endif">
+                <p>Take Away</p>
+            </div>
+
         </div>
+
+    </div>
 
     </div>
     <div class="flex flex-row">
@@ -293,15 +314,19 @@
                     <i class="fa fa-user"></i>
                 </button>
 
-                @php
-                    $tableData = session()->get('tableData');
-                @endphp
-                <button data-tableid={{ $tableData['tableId'] }} class="btn order-options" id="table"
-                    title="Assign to Table">
-                    <i class="fa fa-table"></i>
-                    <br>
-                    {{ session()->get('tableData')['tableName'] }}
-                </button>
+                @if (session()->has('tableData'))
+                    @php
+                        $tableData = session()->get('tableData');
+                    @endphp
+                    <button data-tableid={{ $tableData['tableId'] }} class="btn order-options" id="table"
+                        title="Assign to Table">
+                        <i class="fa fa-table"></i>
+                        <br>
+                        {{ session()->get('tableData')['tableName'] }}
+                    </button>
+                @endif
+
+
             </div>
             <div id="order-items-table" class="items ">
                 <table class="table-auto flex flex-col">
@@ -602,7 +627,11 @@
                 timer = setTimeout(searchByName, 500)
             });
 
-            $("#DineIn").click();
+            @php
+                $orderType = session()->get('orderType');
+            @endphp
+
+            $('#{{ $orderType }}').click();
 
         });
 
@@ -700,20 +729,27 @@
                 alert('No Items Selected');
                 return;
             }
+            var tableId = null;
+
+            if ($("#takeaway").hasClass("active")) {
+                tableId = null;
+            } else {
+                tableId = $("#table").data('tableid');
+            }
 
             const order = {
                 orderItems: orderItems,
-                orderType: $("#order-type-options button.active").attr('id'),
                 paymentType: $("input[name='payment-type']:checked").next().text(),
                 specialInstructions: selectedNotes,
                 customer: customerData,
-                tableId: $("#table").data('tableid'),
+                tableId: tableId,
                 total: $("#total").text(),
                 discount: $("#discount").text(),
                 grandtotal: $("#grandtotal").text(),
-                printBill: $("#print-options input[name='bill']").prop('checked'),
-                printKOT: $("#print-options input[name='kot']").prop('checked'),
             };
+            const printBill = $("#print-options input[name='bill']").prop('checked');
+            const printKOT = $("#print-options input[name='kot']").prop('checked');
+
             console.log(order);
             var csrf_token = "{{ csrf_token() }}";
 
@@ -722,7 +758,9 @@
                 type: "POST",
                 data: {
                     order: order,
-                    source: 'pos'
+                    source: 'pos',
+                    printKOT: printKOT,
+                    printBill: printBill
                 },
                 headers: {
                     'X-CSRF-TOKEN': csrf_token
