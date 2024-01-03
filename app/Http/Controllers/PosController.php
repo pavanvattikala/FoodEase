@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderType;
 use App\Enums\TableStatus;
 use App\Helpers\TableHelper;
 use App\Models\Category;
@@ -35,7 +36,17 @@ class PosController extends Controller
     }
     public function addTableToSesstion(Request $request)
     {
-        TableHelper::addTableToSession($request->tableId);
+        $tableId = $request->tableId;
+        session()->forget('orderType');
+        session()->forget('tableData');
+
+        if ($tableId == -1) {
+            session()->put("orderType", OrderType::Takeaway->value);
+        } else {
+            TableHelper::addTableToSession($request->tableId);
+            session()->put("orderType", OrderType::DineIn->value);
+        }
+
         return response()->json(['message' => 'true']);
     }
 }

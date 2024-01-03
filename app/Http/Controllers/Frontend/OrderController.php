@@ -123,14 +123,10 @@ class OrderController extends Controller
 
         $specialInstructions = $order->get('specialInstructions') ? implode(',', $order->get('specialInstructions')) :  null;
 
-
         $commonData = collect([
             'tableId' => $order->get('tableId'),
             'specialInstructions' => $specialInstructions,
-            'printKot' => false,
-            "printBill" => false,
             "reOrder" => false,
-            "status" => OrderStatus::New->value,
         ]);
 
         if ($source == "waiter") {
@@ -143,7 +139,9 @@ class OrderController extends Controller
             $orderData["reOrder"] = true;
         }
 
+
         $kot =  $this->insertOrder($orderData);
+
 
         if ($kot == "failed") {
             return response()->json(["status" => "error", "message" => "order Submission Failed"]);
@@ -153,7 +151,8 @@ class OrderController extends Controller
             event(new OrderSubmittedToKitchen($kot));
         }
 
-        if ($request->printKot === true) {
+
+        if ($request->printKOT === true) {
             KitchenHelper::printKOT($kot);
         }
         if ($request->printBill === true) {
@@ -177,6 +176,8 @@ class OrderController extends Controller
         $reOrder = boolval($orderData->get("reOrder"));
         $orderItems = $orderData->get("orderItems");
 
+        $isPickUpOrder = $tableId ? false : true;
+
 
         $orderObject = [
             "KOT" => $kot,
@@ -187,7 +188,6 @@ class OrderController extends Controller
             "order_type" => $orderType,
             "waiter_id" => $waiterId
         ];
-
 
         try {
             DB::beginTransaction();
@@ -210,14 +210,15 @@ class OrderController extends Controller
             return "failed";
         }
 
-
-        if ($reOrder === true) {
-            Table::find($tableId)->update(['status' => TableStatus::Unavaliable]);
-        } else {
-            Table::find($tableId)->update([
-                'status' => TableStatus::Unavaliable,
-                'taken_at' => Carbon::now(),
-            ]);
+        if (!$isPickUpOrder) {
+            if ($reOrder === true) {
+                Table::find($tableId)->update(['status' => TableStatus::Unavaliable]);
+            } else {
+                Table::find($tableId)->update([
+                    'status' => TableStatus::Unavaliable,
+                    'taken_at' => Carbon::now(),
+                ]);
+            }
         }
 
         return $kot;
@@ -233,18 +234,22 @@ class OrderController extends Controller
             'orderItems' => $cart,
             'total' => $total,
             'orderType' => OrderType::DineIn->value,
+            "status" => OrderStatus::New->value,
         ]);
         return $commonData->merge($waiterSpecificData);
     }
     private function processPosOrder(Request $request, $commonData)
     {
         $order = $request->order;
+
+        $status =  session()->get("orderType") == "takeaway" ? OrderStatus::Closed->value : OrderStatus::New->value;
         $posSpecificData = collect([
             'customer' => $order["customer"],
             'waiterId' => auth()->user()->id,
             'orderItems' => $order["orderItems"],
             'total' => $order["total"],
-            'orderType' => OrderType::getValueFromDescription($order["orderType"])
+            'orderType' => session()->get("orderType"),
+            'status' => $status
 
         ]);
 
