@@ -1,7 +1,10 @@
 <x-waiter-layout>
     <div class="container">
         <h1 class="text-2xl font-semibold mb-4">Your Shopping Cart For Table
-            {{ session()->get('tableData')['tableName'] }}
+            @if (session()->has('tableData'))
+                {{ session()->get('tableData')['tableName'] }}
+                <p id="tableId" hidden> {{ session()->get('tableData')['tableId'] }}</p>
+            @endif
 
         </h1>
 
@@ -85,7 +88,7 @@
 
             const order = {
                 specialInstructions: selectedNotes,
-                tableId: "{{ session()->get('tableData')['tableId'] }}",
+                tableId: $("#tableId").text(),
             }
 
             const redirectUrl = "{{ route('order.step.one', [], false) }}";
