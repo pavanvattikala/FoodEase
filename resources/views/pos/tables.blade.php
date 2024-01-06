@@ -55,6 +55,10 @@
             font-weight: 600;
 
         }
+
+        .new_options div {
+            margin-right: 10px !important;
+        }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="table-main-nav">
         <div class="flex flex-row mw-60">
@@ -65,6 +69,32 @@
                     aria-hidden="true"></i>
             </button>
             <button class="btn h-full" id="Takeaway">Pick Up</button>
+        </div>
+
+    </div>
+    <div class="flex flex-row mb-2 mt-2" id="table-second-nav">
+        <div class="flex flex-row mw-60 new_options" style="justify-content: flex-start">
+            <div>
+                <a href="{{ route('reservations.step.one') }}">
+                    <button class="btn">Table Reservation</button>
+                </a>
+            </div>
+            <div>
+                <button class="btn">contatless</button>
+            </div>
+
+        </div>
+        <div id="table_type_options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
+
+            @foreach ($table_colors as $table_option_name => $table_color)
+                <div>
+                    <center>{{ $table_option_name }}
+                        <br>
+                        <span style="background-color: {{ $table_color }};">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    </center>
+                </div>
+            @endforeach
+
         </div>
 
     </div>
@@ -82,8 +112,7 @@
                         @elseif($table->status === App\Enums\TableStatus::Unavaliable)
                             <div class="unavailable-table-item">
                                 <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
-                                <a href="{{ route('pos.table.checkout', $table->id) }}"
-                                    class="btn btn-primary">Checkout</a>
+                                <p>Checkout</p>
                             </div>
                         @endif
                     @endforeach
@@ -94,8 +123,6 @@
 
     <script>
         $("#Takeaway").on("click", function() {
-
-            //tableid -1 for takeaway
             selectTable(-1);
         });
 

@@ -17,7 +17,7 @@ class PosController extends Controller
     {
         $categoriesWithMenus = Category::with('menus')->get();
 
-        $predefinedNotes = config('predefined_options.options');
+        $predefinedNotes = config('predefined_options.notes');
 
         return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes'));
     }
@@ -32,7 +32,9 @@ class PosController extends Controller
                     'taken_at' => $table['taken_at'],
                 ];
             })->values();
-        return view('pos.tables', compact('tables', 'takenTables'));
+
+        $table_colors =  config('predefined_options.table_colors');
+        return view('pos.tables', compact('tables', 'takenTables', 'table_colors'));
     }
     public function addTableToSesstion(Request $request)
     {
