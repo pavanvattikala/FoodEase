@@ -14,11 +14,12 @@ class BillHelper
 
     public static function generateBillID()
     {
+        $todayStart = now()->startOfDay();
+        $todayEnd = now()->endOfDay();
 
         $datePart = now()->format('Ymd');
 
-        $orderNumber = Bill::whereDate('created_at', now()->toDateString())
-            ->count() + 1;
+        $orderNumber = Bill::whereDate('created_at', '>=', $todayStart)->whereDate('created_at', '<=', $todayEnd)->count() + 1;
 
         $billId = $datePart . $orderNumber;
 
