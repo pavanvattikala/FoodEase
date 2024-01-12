@@ -10,7 +10,7 @@
             <div class="flex m-2 p-2 justify-between">
                 <a href="{{ route('admin.menus.create') }}"
                     class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">New Menu</a>
-                
+
                 <div class="date-pickers flex flex-row justify-between">
                     <div class="">
                         <label for="startDatePicker">Start Date</label>
@@ -21,12 +21,13 @@
                         <input type="text" class="datepicker" id="endDatePicker" placeholder="Select End date">
                     </div>
                     <div class="">
-                        <button id="searchByDate" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Search</button>
+                        <button id="searchByDate"
+                            class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Search</button>
                     </div>
                 </div>
             </div>
 
-        
+
             <div class="flex flex-col">
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block py-2 min-w-full sm:px-6 lg:px-8">
@@ -52,7 +53,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="bills-table-body">
-                                   
+
                                 </tbody>
                             </table>
                         </div>
@@ -62,18 +63,17 @@
         </div>
     </div>
     <script>
-
         let startDateObject;
         let endDateObject;
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             startDateObject = flatpickr("#startDatePicker", {
                 dateFormat: "d-M-y",
                 defaultDate: "today",
                 maxDate: "today",
             });
 
-            endDateObject= flatpickr("#endDatePicker", {
+            endDateObject = flatpickr("#endDatePicker", {
                 dateFormat: "d-M-y",
                 defaultDate: "today",
                 maxDate: "today",
@@ -83,10 +83,10 @@
         });
 
         function getSelectPickrFormattedDate(date) {
-            return date.selectedDates[0];//.format('MM-D-YYYY');
+            return date.selectedDates[0]; //.format('MM-D-YYYY');
         }
 
-        document.getElementById("searchByDate").addEventListener("click", function () {
+        document.getElementById("searchByDate").addEventListener("click", function() {
             startDate = new Date(getSelectPickrFormattedDate(startDateObject));
             endDate = getSelectPickrFormattedDate(endDateObject);
 
@@ -101,23 +101,32 @@
             console.log("Start Date:", startDate);
             console.log("End Date:", endDate);
 
-            let url = "{{ route('admin.bills.by.date',[],false) }}";
+            let url = "{{ route('admin.bills.by.date', [], false) }}";
             url += "?startDate=" + startDate;
             url += "&endDate=" + endDate;
 
             $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function (data) {
-                        var bills = data.bills;
-                        var tableBody = document.getElementById("bills-table-body");
-                        tableBody.innerHTML = bills;
-                        
-                    },
-                    error: function (error) {
-                        // Handle the error response
-                        console.error("Error:", error);
+                url: url,
+                method: 'GET',
+                success: function(data) {
+                    var bills = data.bills;
+                    var tableBody = document.getElementById("bills-table-body");
+                    tableBody.innerHTML = bills;
+                    let noOfBills = tableBody.rows.length;
+
+                    let sno = 1;
+                    for (let i = 0; i < noOfBills; i++) {
+                        let bill = bills[i];
+                        let billSno = tableBody.rows[i].cells[0];
+                        billSno.innerHTML = sno;
+                        sno++;
                     }
+
+                },
+                error: function(error) {
+                    // Handle the error response
+                    console.error("Error:", error);
+                }
             });
         });
 
@@ -132,6 +141,6 @@
             let formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
 
             return formattedDate;
-            }
+        }
     </script>
 </x-admin-layout>
