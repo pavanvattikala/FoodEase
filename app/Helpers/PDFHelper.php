@@ -18,10 +18,10 @@ class PDFHelper
         $bill = Bill::where('id', $id)->with('orders')->with('orders.orderDetails')->with('orders.orderDetails.menu')->first();
 
 
-        $billId = $bill->bill_id;
+        $billFullId = $bill->bill_id;
 
         $billDetails = collect([
-            'id' => $billId,
+            'id' => $billFullId,
             'table_no' => $bill->table_id,
             'grand_total' => $bill->grand_total,
             'discount' => $bill->discount,
@@ -53,7 +53,7 @@ class PDFHelper
         ];
 
 
-        $fileName = 'bill_' . $billId . '.pdf';
+        $fileName = 'bill_' . $billFullId . '.pdf';
 
         $html = view('admin.bills.print', compact('billDetails', 'orderDetails', 'restaurant'))->render();
 
@@ -92,29 +92,12 @@ class PDFHelper
         return $filePath;
     }
 
-    public static function printBill($id)
+    public static function printBill($billPath)
     {
-        $billId = Bill::where('id', $id)->first()->bill_id;
-        $billPath = "bills/bill_" . $billId . ".pdf";
         $pdfPath = Storage::path($billPath);
 
-        try {
-            $executablePath = Storage::path('printPdf.exe');
-            $printerPath = config('predefined_options.printer.pos');
+        $printer = new Printer(config('predefined_options.printer.pos'));
 
-            $command = "\"$executablePath\" \"$pdfPath\" \"$printerPath\"";
-
-            exec($command, $output, $returnCode);
-
-            if ($returnCode === 0) {
-                Log::info("PDF sent to printer successfully.");
-            } else {
-                Log::error("Error printing PDF. Return code: $returnCode");
-            }
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-        } finally {
-            Log::info("Print done");
-        }
+        $printer->printToNetworkPrinter($pdfPath);
     }
 }

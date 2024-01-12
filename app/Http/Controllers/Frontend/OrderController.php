@@ -13,6 +13,7 @@ use App\Helpers\ModuleHelper;
 use App\Helpers\PDFHelper;
 use App\Helpers\RestaurantHelper;
 use App\Http\Controllers\Controller;
+use App\Jobs\SaveAndPrintBill;
 use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
@@ -166,13 +167,13 @@ class OrderController extends Controller
             $discount = 0;
             $billId = null;
             if ($orderData->get('isPickUpOrder')) {
-                $billId = BillHelper::saveBill(OrderType::Takeaway, null, $kot, null, $paymentMethod, $discount);
+                $billId = BillHelper::createBill(OrderType::Takeaway, null, $kot, null, $paymentMethod, $discount);
             } else {
                 $tableId = $orderData->get('tableId');
-                $billId = BillHelper::saveBill(OrderType::DineIn, $tableId, $kot, null, $paymentMethod, $discount);
+                $billId = BillHelper::createBill(OrderType::DineIn, $tableId, $kot, null, $paymentMethod, $discount);
             }
 
-            PDFHelper::printBill($billId);
+            SaveAndPrintBill::dispatch($billId);
         }
 
         $this->clearCart();

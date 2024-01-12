@@ -25,7 +25,7 @@ class BillHelper
         return  $billId;
     }
 
-    public static function saveBill($orderType, $tableId, $kot, $notes, $paymentMethod, $discount)
+    public static function createBill($orderType, $tableId, $kot, $notes, $paymentMethod, $discount)
     {
         $orders = null;
 
@@ -47,8 +47,6 @@ class BillHelper
 
 
         $billId =  self::insertBill($billData);
-
-        PDFHelper::saveBillToDisk($billId);
 
         return $billId;
     }
