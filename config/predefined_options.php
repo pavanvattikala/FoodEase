@@ -15,4 +15,7 @@ return [
         'Paid Table' => 'yellow',
         'Running Kot Table' => 'orange'
     ],
+    'printer' => [
+        'pos' => "\\\pavan\home"
+    ]
 ];
