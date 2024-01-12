@@ -57,36 +57,15 @@ class PDFHelper
 
         $html = view('admin.bills.print', compact('billDetails', 'orderDetails', 'restaurant'))->render();
 
-        //option array
-
-        $width = 226.77; // 8cm
-        $height = 25;
-
-        $customPaper = array(0, 0, $width, $height);
-
-        $pdf = Pdf::loadHTML($html)->setPaper($customPaper);
-
-        $pdf->render();
-
-        $canvas = $pdf->getCanvas();
-
-        // Get the page count of the rendered PDF
-        $page_count = $canvas->get_page_number();
-
-        // dd($page_count);
-
-
-        unset($pdf);
-
-        //new pdf 
-
-        $newHeight = ($height * $page_count);
+        $paper = self::getNewOptimizedPaper($html);
 
         $dompdf = pdf::loadHTML($html);
-        $dompdf->set_paper(array(0, 0, $width, $newHeight));
+
+        $dompdf->set_paper($paper->toArray());
 
         // Save the PDF to storage
         $filePath = 'bills/' . $fileName;
+
         Storage::put($filePath, $dompdf->output());
 
         return $filePath;
@@ -99,5 +78,26 @@ class PDFHelper
         $printer = new Printer(config('predefined_options.printer.pos'));
 
         $printer->printToNetworkPrinter($pdfPath);
+    }
+
+    public static function  getNewOptimizedPaper($html)
+    {
+        $paper = Paper::getPaper();
+
+        $pdf = Pdf::loadHTML($html)->setPaper($paper->toArray());
+
+        $pdf->render();
+
+        $canvas = $pdf->getCanvas();
+
+        $page_count = $canvas->get_page_number();
+
+        unset($pdf); // clear old pdf
+
+        $newHeight = $paper->getHeight() * $page_count + 20;
+
+        $paper->setHeight($newHeight);
+
+        return $paper;
     }
 }
