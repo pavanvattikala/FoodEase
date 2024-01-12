@@ -16,6 +16,6 @@ return [
         'Running Kot Table' => 'orange'
     ],
     'printer' => [
-        'pos' => "\\\pavan\home"
+        'pos' => "home"
     ]
 ];
