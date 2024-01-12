@@ -1,39 +1,17 @@
 <?php
 
-/**
- * File-level doc comment for BillHelper.php
- *
- * PHP version 7.4.3
- *
- * @category Helpers
- * @package  App\Helpers
- * @author   Pavan Vattikala <pavanvattikala54@gmail.com>
- * @license  MIT License
- * @link     https://pavanvattikala.com/foodease/documentation
- */
 
 namespace App\Helpers;
 
+use App\Enums\OrderType;
 use App\Models\Bill;
+use App\Models\BillOrder;
+use App\Models\Order;
+use App\Models\Table;
 
-/**
- * Class BillHelper
- *
- * @category Helper
- * @package  App\Helpers
- * @author   Pavan Vattikala <pavanvattikala54@gmail.com>
- * @license  MIT License
- * @link     https://pavanvattikala.com/foodease/documentation
- */
 class BillHelper
 {
 
-
-    /**
-     * Generate a unique bill ID.
-     *
-     * @return string
-     */
     public static function generateBillID()
     {
 
@@ -47,8 +25,89 @@ class BillHelper
         return  $billId;
     }
 
-    public static function printBill()
+    public static function saveBill($orderType, $tableId, $kot, $notes, $paymentMethod, $discount)
     {
-        // handle print bill service
+        $orders = null;
+
+        if ($orderType == OrderType::Takeaway) {
+            $orders = self::processPickUpBill($kot);
+        }
+        if ($orderType === OrderType::DineIn) {
+            $orders = self::processTableBill($tableId);
+        }
+
+        $billData = collect([
+            'orders' => $orders,
+            'tableId' => $tableId,
+            'notes' => $notes,
+            'orderType' => $orderType,
+            'discount' => $discount,
+            'paymentMethod' => $paymentMethod,
+        ]);
+
+
+        $billId =  self::insertBill($billData);
+
+        PDFHelper::saveBillToDisk($billId);
+
+        return $billId;
+    }
+    public static function processPickUpBill($kot)
+    {
+        $orders = Order::where('kot', $kot)->get();
+        return $orders;
+    }
+    public static function processTableBill($tableId)
+    {
+        $table = Table::find($tableId);
+        $takenTime = $table->taken_at;
+
+        $orders = Order::where('table_id', $tableId)->where('created_at', '>=', $takenTime)->get();
+        return $orders;
+    }
+    private static function insertBill($billData)
+    {
+        $tableId = $billData->get('tableId');
+        $paymentMethod = $billData->get('paymentMethod');
+        $notes = $billData->get('notes');
+        $orderType = $billData->get('orderType');
+        $discount = $billData->get('discount');
+        $orders = $billData->get('orders');
+        $total = $orders->sum('total');
+        $grandTotal = $total - $discount;
+
+        $billId = BillHelper::generateBillID();
+
+        $billObject = [
+            'bill_id' => $billId,
+            'table_id' => $tableId,
+            'bill_amount' => $total,
+            'discount' => $discount,
+            'grand_total' => $grandTotal,
+            'payment_method' => $paymentMethod,
+            'notes' => $notes,
+        ];
+
+        $bill = Bill::create($billObject);
+
+        foreach ($orders as $order) {
+            BillOrder::create([
+                'bill_id' => $bill->id,
+                'order_id' => $order->id,
+            ]);
+
+            $order->update([
+                'status' => 'closed',
+            ]);
+        }
+
+        if ($orderType == OrderType::DineIn) {
+            $table = Table::find($tableId);
+            $table->update([
+                'status' => 'available',
+                'taken_at' => null,
+            ]);
+        }
+        return $bill->id;
     }
 }

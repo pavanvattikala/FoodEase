@@ -4,11 +4,13 @@ namespace App\Http\Controllers\FrontEnd;
 
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\PaymentMethods;
 use App\Enums\TableStatus;
 use App\Events\OrderSubmittedToKitchen;
 use App\Helpers\BillHelper;
 use App\Helpers\KitchenHelper;
 use App\Helpers\ModuleHelper;
+use App\Helpers\PDFHelper;
 use App\Helpers\RestaurantHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -119,6 +121,8 @@ class OrderController extends Controller
     {
 
         $source = $request->source;
+        $printBillEnabled = $request->printBill == "true" ? true : false;
+        $printKOTEnabled = $request->printKOT == "true" ? true : false;
         $order = collect($request->order);
 
         $specialInstructions = $order->get('specialInstructions') ? implode(',', $order->get('specialInstructions')) :  null;
@@ -127,6 +131,7 @@ class OrderController extends Controller
             'tableId' => $order->get('tableId'),
             'specialInstructions' => $specialInstructions,
             "reOrder" => false,
+            'isPickUpOrder' => $order->get('tableId') ? false : true
         ]);
 
         if ($source == "waiter") {
@@ -152,11 +157,22 @@ class OrderController extends Controller
         }
 
 
-        if ($request->printKOT === true) {
+        if ($printKOTEnabled) {
             KitchenHelper::printKOT($kot);
         }
-        if ($request->printBill === true) {
-            BillHelper::printBill($kot);
+        if ($printBillEnabled) {
+            //create bill
+            $paymentMethod = PaymentMethods::CASH->value;
+            $discount = 0;
+            $billId = null;
+            if ($orderData->get('isPickUpOrder')) {
+                $billId = BillHelper::saveBill(OrderType::Takeaway, null, $kot, null, $paymentMethod, $discount);
+            } else {
+                $tableId = $orderData->get('tableId');
+                $billId = BillHelper::saveBill(OrderType::DineIn, $tableId, $kot, null, $paymentMethod, $discount);
+            }
+
+            PDFHelper::printBill($billId);
         }
 
         $this->clearCart();
@@ -166,6 +182,7 @@ class OrderController extends Controller
 
     private function insertOrder($orderData)
     {
+
         $kot = KitchenHelper::generateKOT();
         $total = $orderData->get("total");
         $tableId = $orderData->get("tableId");
@@ -175,8 +192,7 @@ class OrderController extends Controller
         $waiterId = $orderData->get("waiterId");
         $reOrder = boolval($orderData->get("reOrder"));
         $orderItems = $orderData->get("orderItems");
-
-        $isPickUpOrder = $tableId ? false : true;
+        $isPickUpOrder = $orderData->get("isPickUpOrder");
 
 
         $orderObject = [
