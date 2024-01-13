@@ -55,8 +55,14 @@
                 <x-admin-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
                     {{ __('Bills') }}
                 </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.KOTs')" :active="request()->routeIs('admin.KOTs')">
-                    {{ __('KOTs') }}
+                <x-admin-nav-link :href="route('order.running')" :active="request()->routeIs('order.running')">
+                    {{ __('Running Orders') }}
+                </x-admin-nav-link>
+                <x-admin-nav-link :href="route('order.history')" :active="request()->routeIs('order.history')">
+                    {{ __('Order History') }}
+                </x-admin-nav-link>
+                <x-admin-nav-link :href="route('order.ready.for.pickup')" :active="request()->routeIs('order.ready.for.pickup')">
+                    {{ __('Ready For Pickup') }}
                 </x-admin-nav-link>
                 <x-admin-nav-link :href="route('restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
                     {{ __('Manage Restaurant') }}
