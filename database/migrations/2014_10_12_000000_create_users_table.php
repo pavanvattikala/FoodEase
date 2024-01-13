@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('is_admin')->default(false);
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('employee_categories');
             $table->rememberToken();
             $table->timestamps();
         });
