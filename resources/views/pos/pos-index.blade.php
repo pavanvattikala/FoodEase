@@ -328,6 +328,36 @@
 
 
             </div>
+
+            @if ($prevOrders->count() > 0)
+                <div id="prev-kots">
+                    <table class="table-auto flex flex-col">
+                        <thead>
+                            <tr>
+                                <th colspan="3" class="underline">Previous KOTs..</th>
+                            </tr>
+                        </thead>
+                        <tbody class="hidden">
+                            @foreach ($prevOrders as $order)
+                                <tr>
+                                    <td colspan="3">{{ $order->KOT }} &ThickSpace; Time
+                                        - {{ $order->created_at->format('h:i:a') }}
+                                    </td>
+                                </tr>
+                                @foreach ($order->orderDetails as $item)
+                                    <tr>
+                                        <td>{{ $item->menu->name }}
+                                        <td>{{ $item->quantity }}</td>
+                                        <td>{{ $item->quantity * $item->menu->price }}</td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                </div>
+
+            @endif
             <div id="order-items-table" class="items ">
                 <table class="table-auto flex flex-col">
                     <thead>
@@ -807,6 +837,13 @@
             };
             document.getElementById('customerDataModal').style.display = 'none';
 
+        });
+
+
+        // old KOT functions
+
+        $("#prev-kots").click(function() {
+            $("#prev-kots table tbody").toggleClass("hidden");
         });
     </script>
 </x-pos-layout>

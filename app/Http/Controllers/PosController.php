@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\TableStatus;
 use App\Helpers\TableHelper;
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\Order;
 use App\Models\Table;
 use Illuminate\Http\Request;
 
@@ -19,7 +21,17 @@ class PosController extends Controller
 
         $predefinedNotes = config('predefined_options.notes');
 
-        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes'));
+        $prevOrders = null;
+
+        if (session()->has('tableData')) {
+            $tableId = session()->get('tableData')['tableId'];
+            $prevOrders = Order::with('orderDetails')->with('orderDetails.menu')
+                ->where('table_id', $tableId)
+                ->where('status', '!=', OrderStatus::Closed)
+                ->get();
+        }
+
+        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes', 'prevOrders'));
     }
 
     public function tables()
@@ -34,6 +46,7 @@ class PosController extends Controller
             })->values();
 
         $table_colors =  config('predefined_options.table_colors');
+
         return view('pos.tables', compact('tables', 'takenTables', 'table_colors'));
     }
     public function addTableToSesstion(Request $request)
