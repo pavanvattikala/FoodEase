@@ -51,7 +51,7 @@ class BillController extends Controller
     }
 
 
-    function printBill($id)
+    function StreamBillToBrowser($id)
     {
         $billId = Bill::where('id', $id)->first()->bill_id;
         $fileName = 'bill_' . $billId . '.pdf';
