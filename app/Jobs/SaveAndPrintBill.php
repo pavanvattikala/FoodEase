@@ -16,7 +16,7 @@ class SaveAndPrintBill implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $billId;
-    private $billPath;
+    private $billFullId;
 
     /**
      * Create a new job instance.
@@ -36,7 +36,7 @@ class SaveAndPrintBill implements ShouldQueue
     public function handle()
     {
 
-        $this->billPath =  PDFHelper::saveBillToDisk($this->billId);
-        PDFHelper::printBill($this->billPath);
+        $this->billFullId =  PDFHelper::saveBillToDisk($this->billId);
+        PDFHelper::printBill($this->billFullId);
     }
 }

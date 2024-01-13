@@ -3,11 +3,11 @@
 namespace App\Helpers;
 
 use App\Models\Bill;
+use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-
 
 class PDFHelper
 {
@@ -55,6 +55,19 @@ class PDFHelper
 
         $fileName = 'bill_' . $billFullId . '.pdf';
 
+        self::saveAsTXT($restaurant, $billDetails, $orderDetails, $billFullId);
+
+        self::saveAsPDF($restaurant, $billDetails, $orderDetails, $billFullId);
+
+        return $billFullId;
+    }
+    public static function saveAsTXT($restaurant, $billDetails, $orderDetails, $billFullId)
+    {
+        BillGenerator::generateThermalPrint($restaurant, $billDetails, $orderDetails, $billFullId);
+    }
+    public static function saveAsPDF($restaurant, $billDetails, $orderDetails, $billFullId)
+    {
+        $fileName = 'bill_' . $billFullId . '.pdf';
         $html = view('admin.bills.print', compact('billDetails', 'orderDetails', 'restaurant'))->render();
 
         $paper = self::getNewOptimizedPaper($html);
@@ -71,13 +84,22 @@ class PDFHelper
         return $filePath;
     }
 
-    public static function printBill($billPath)
+    public static function printBill($billFullId)
     {
-        $pdfPath = Storage::path($billPath);
+        $printerName = config('predefined_options.printer.pos.name');
+        $printerIp = config('predefined_options.printer.pos.ip');
 
-        $printer = new Printer(config('predefined_options.printer.pos'));
+        $printer = new Printer($printerName, $printerIp);
 
-        $printer->printToNetworkPrinter($pdfPath);
+        $billPath = 'bills/bill_' . $billFullId;
+
+        $pdfPath = Storage::path($billPath . '.pdf');
+
+        //$printer->printToNetworkPrinter($pdfPath);
+
+        $txtPath = Storage::path($billPath . '.txt');
+
+        $printer->printToThermalPrinter($txtPath);
     }
 
     public static function  getNewOptimizedPaper($html)
@@ -99,5 +121,13 @@ class PDFHelper
         $paper->setHeight($newHeight);
 
         return $paper;
+    }
+
+    public static function saveKOTToDisk($KOT)
+    {
+    }
+
+    public static function printKOT($KOTPath)
+    {
     }
 }
