@@ -16,9 +16,6 @@ return [
         'Running Kot Table' => 'orange'
     ],
     'printer' => [
-        'pos' => [
-            'name' => 'home',
-            'ip' => '192.168.29.57',
-        ],
+        'pos' => 'home',
     ]
 ];

@@ -12,7 +12,7 @@
         <div class="flex space-x-2">
             <a href="{{ route('admin.view.bill', $bill->id) }}"
                 class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Edit/View</a>
-            <a href="{{ route('admin.print.bill', $bill->id) }} " target="_blank"
+            <a href="{{ route('admin.stream.bill', $bill->id) }} " target="_blank"
                 class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">Print</a>
             <form class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg text-white" method="POST"
                 action="{{ route('admin.tables.destroy', $bill->id) }}" onsubmit="return confirm('Are you sure?');">
