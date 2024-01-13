@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\OrderController as FrontendOrdersController;
 use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Frontend\WelcomeController;
 use App\Http\Controllers\KitchenController;
+use App\Http\Controllers\KOTController;
 use App\Http\Controllers\OrderSyncController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequestController;
@@ -118,6 +119,8 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::get('/bill/print/{id}', [BillController::class, 'printBill'])->name('print.bill');
 
     Route::get('/bills/fd', [BillController::class, 'getBills'])->name('bills.update');
+
+    Route::get('/KOTs', [KOTController::class, 'displayKOTs'])->name('KOTs');
 });
 /**
  * -----------------------------------------------------------------------------------------------------------------------------

@@ -55,6 +55,9 @@
                 <x-admin-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
                     {{ __('Bills') }}
                 </x-admin-nav-link>
+                <x-admin-nav-link :href="route('admin.KOTs')" :active="request()->routeIs('admin.KOTs')">
+                    {{ __('KOTs') }}
+                </x-admin-nav-link>
                 <x-admin-nav-link :href="route('restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
                     {{ __('Manage Restaurant') }}
                 </x-admin-nav-link>
