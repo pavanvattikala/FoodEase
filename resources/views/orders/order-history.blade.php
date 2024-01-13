@@ -33,7 +33,7 @@
         function markAsServed(orderId) {
             $.ajax({
                 type: "POST",
-                url: "{{ route('waiter.order.mark.as.served', [], false) }}",
+                url: "{{ route('order.mark.as.served', [], false) }}",
                 headers: {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 },
