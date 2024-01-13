@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\TableStatus;
+
 return [
     'notes' => [
         'less Spicy',
@@ -9,11 +11,11 @@ return [
         'less masala'
     ],
     'table_colors' => [
-        'Blank Table' => 'grey',
-        'Running Table' => 'blue',
-        'Printed Table' => 'green',
-        'Paid Table' => 'yellow',
-        'Running Kot Table' => 'orange'
+        TableStatus::Available->value => 'grey',
+        TableStatus::Running->value => 'blue',
+        TableStatus::Printed->value => 'green',
+        TableStatus::Paid->value => 'yellow',
+        TableStatus::RunningKOT->value => 'orange'
     ],
     'printer' => [
         'pos' => 'home',

@@ -88,7 +88,7 @@
 
             @foreach ($table_colors as $table_option_name => $table_color)
                 <div>
-                    <center>{{ $table_option_name }}
+                    <center>{{ ucfirst($table_option_name) }}
                         <br>
                         <span style="background-color: {{ $table_color }};">&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     </center>
@@ -104,17 +104,15 @@
                 <h2 class="category-header">{{ $location->name }} Tables</h2>
                 <div class="tables-container">
                     @foreach ($tables->where('location', $location) as $table)
-                        @if ($table->status === App\Enums\TableStatus::Available)
-                            <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})" class="table-item">
-                                <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
-                                <p>Guests: {{ $table->guest_number }}</p>
-                            </div>
-                        @elseif($table->status === App\Enums\TableStatus::Unavaliable)
-                            <div class="unavailable-table-item">
-                                <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
-                                <p>Checkout</p>
-                            </div>
-                        @endif
+                        @php
+
+                            $tableColor = $table_colors[$table->status->value];
+
+                        @endphp
+                        <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})" class="table-item"
+                            style="background-color: {{ $tableColor }}">
+                            <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
+                        </div>
                     @endforeach
                 </div>
             </div>
