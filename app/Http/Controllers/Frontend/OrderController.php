@@ -14,6 +14,7 @@ use App\Helpers\PDFHelper;
 use App\Helpers\RestaurantHelper;
 use App\Http\Controllers\Controller;
 use App\Jobs\SaveAndPrintBill;
+use App\Jobs\SaveAndPrintKOT;
 use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
@@ -159,7 +160,7 @@ class OrderController extends Controller
 
 
         if ($printKOTEnabled) {
-            KitchenHelper::printKOT($kot);
+            SaveAndPrintKOT::dispatch($kot);
         }
         if ($printBillEnabled) {
             //create bill

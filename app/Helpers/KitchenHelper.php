@@ -35,9 +35,10 @@ class KitchenHelper
      */
     public static function generateKOT()
     {
-        $lastKOT = Order::latest('id')->first();
+        $todayStart = now()->startOfDay();
+        $todayEnd = now()->endOfDay();
 
-        $nextKOTId = $lastKOT ? $lastKOT->id + 1 : 1;
+        $nextKOTId = Order::whereDate('created_at', '>=', $todayStart)->whereDate('created_at', '<=', $todayEnd)->count() + 1;
 
         $date = now()->format('Ymd');
 
@@ -47,5 +48,9 @@ class KitchenHelper
     public static function printKOT($kot)
     {
         //handle print kot service
+    }
+
+    public static function createKOT($kot)
+    {
     }
 }
