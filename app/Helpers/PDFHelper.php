@@ -55,7 +55,7 @@ class PDFHelper
 
         $fileName = 'bill_' . $billFullId . '.pdf';
 
-        self::saveAsTXT($restaurant, $billDetails, $orderDetails, $billFullId);
+        //self::saveAsTXT($restaurant, $billDetails, $orderDetails, $billFullId);
 
         self::saveAsPDF($restaurant, $billDetails, $orderDetails, $billFullId);
 
@@ -86,20 +86,19 @@ class PDFHelper
 
     public static function printBill($billFullId)
     {
-        $printerName = config('predefined_options.printer.pos.name');
-        $printerIp = config('predefined_options.printer.pos.ip');
+        $printerName = config('predefined_options.printer.pos');
 
-        $printer = new Printer($printerName, $printerIp);
+        $printer = new Printer($printerName);
 
         $billPath = 'bills/bill_' . $billFullId;
 
         $pdfPath = Storage::path($billPath . '.pdf');
 
-        //$printer->printToNetworkPrinter($pdfPath);
+        $printer->printToNetworkPrinter($pdfPath);
 
-        $txtPath = Storage::path($billPath . '.txt');
+        //$txtPath = Storage::path($billPath . '.txt');
 
-        $printer->printToThermalPrinter($txtPath);
+        //$printer->printToThermalPrinter($txtPath);
     }
 
     public static function  getNewOptimizedPaper($html)
