@@ -11,7 +11,7 @@ class ServeWithLocalIP extends Command
 
     public function handle()
     {
-        $localIP = "192.168.249.112";
+        $localIP = "192.168.29.57";
 
         $this->info("Running 'php artisan serve' with local Wi-Fi IP: $localIP");
 
