@@ -15,7 +15,7 @@ function markAsServed(orderId) {
         type: "POST",
         url: markAsServedRoute,
         headers: {
-            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         data: {
             orderId: orderId,

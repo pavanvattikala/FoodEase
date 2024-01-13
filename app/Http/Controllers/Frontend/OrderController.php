@@ -278,9 +278,9 @@ class OrderController extends Controller
     {
         $waiterId = auth()->user()->id;
         $orders = Order::with('orderDetails.menu')
+            ->where('created_at', '>=', Carbon::today())
             ->where('waiter_id', $waiterId)
             ->where('status', OrderStatus::Closed)
-            ->whereDate('created_at', now())
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -292,6 +292,7 @@ class OrderController extends Controller
     {
         $waiterId = auth()->user()->id;
         $orders = Order::with('orderDetails.menu')
+            ->where('created_at', '>=', Carbon::today())
             ->where('waiter_id', $waiterId)
             ->where('status', '!=', OrderStatus::Closed)
             ->orderBy('created_at', 'desc')
@@ -304,14 +305,16 @@ class OrderController extends Controller
     public function readyForPickUp()
     {
         $waiterId = auth()->user()->id;
+
         $orders = Order::with('orderDetails.menu')
             ->where('waiter_id', $waiterId)
+            ->where('created_at', '>=', Carbon::today())
             ->where('status', OrderStatus::ReadyForPickup)
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
 
+        $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
 
         return view('orders.order-history', compact('orders', 'waiterSyncTime'));
     }
