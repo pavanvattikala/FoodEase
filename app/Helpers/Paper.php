@@ -5,7 +5,7 @@ namespace App\Helpers;
 
 class Paper
 {
-    private $width = 283.6;
+    private $width = 240.6;
     private $height = 25;
 
     public function toArray()

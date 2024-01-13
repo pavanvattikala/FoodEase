@@ -58,7 +58,7 @@ class BillController extends Controller
         $filePath = 'bills/' . $fileName;
 
         if (!Storage::exists($filePath)) {
-            $filePath = PDFHelper::saveBillToDisk($id);
+            PDFHelper::saveBillToDisk($id);
         }
 
         $fileContent = Storage::get($filePath);
