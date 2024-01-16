@@ -1,3 +1,6 @@
+// Author: Pavan Vattikala
+
+// Menu Function Start
 function showMenu(categoryId) {
     $(".menu-items").addClass("hidden");
     $(".category button").removeClass("active");
@@ -8,6 +11,13 @@ function showMenu(categoryId) {
     $("#" + categoryId + "-btn").addClass("active");
 }
 
+// Menu Function End
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+// Order Table Functions Start
+
+// render the order table
 function renderOrderTable() {
     const orderItemsBody = $("#order-items-body");
     orderItemsBody.empty(); // Clear existing content
@@ -38,15 +48,7 @@ function renderOrderTable() {
     $(".menu-items button").show();
 }
 
-function scrollToTop() {
-    const lastChild = $("#order-items-body")[0].lastElementChild;
-
-    lastChild.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-    });
-}
-
+// add item to order
 function addItemToOrder(menuId) {
     playAudio();
     if ($("#noitems").length > 0) {
@@ -72,12 +74,7 @@ function addItemToOrder(menuId) {
     scrollToTop();
 }
 
-function playAudio() {
-    var audio = new Audio(audioUrl);
-    audio.volume = 0.1;
-    audio.play();
-}
-
+// increase quantity of an item
 function addQty(menuId) {
     const item = orderItems.find((item) => item.id === menuId);
     if (item) {
@@ -86,7 +83,7 @@ function addQty(menuId) {
         renderOrderTable();
     }
 }
-
+// decrease quantity of an item
 function remQty(menuId) {
     const item = orderItems.find((item) => item.id === menuId);
     if (item) {
@@ -101,6 +98,7 @@ function remQty(menuId) {
     }
 }
 
+// calculate total
 function calculateTotal() {
     let total = 0;
     orderItems.forEach((item) => {
@@ -114,10 +112,47 @@ function calculateTotal() {
     $("#total").text(total);
 }
 
-// DOM loaded
+// delete item from order
+function delItem(menuId) {
+    const item = orderItems.find((item) => item.id === menuId);
+    if (item) {
+        orderItems.splice(orderItems.indexOf(item), 1);
+        renderOrderTable();
+    }
+}
+
+// Order Table Functions End
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+// Order Table Helper Functions Start
+
+// scroll to top of the order table
+function scrollToTop() {
+    const lastChild = $("#order-items-body")[0].lastElementChild;
+
+    lastChild.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+    });
+}
+
+// play audio
+function playAudio() {
+    var audio = new Audio(audioUrl);
+    audio.volume = 0.1;
+    audio.play();
+}
+// Order Table Helper Functions End
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+// DOM Ready Functions Start
 $(document).ready(function () {
+    // Show the first category by default
     $(".category button:first-child").click();
 
+    // Add event listener to Shortcode input
     $("#shortcode-input").keypress(function (event) {
         console.log(event);
         if (event.which === 13) {
@@ -126,6 +161,7 @@ $(document).ready(function () {
         }
     });
 
+    // Add event listener to Customer Data input
     $("#customerName, #mobileNumber").on("keyup", function (event) {
         // Check if Enter key is pressed (key code 13)
         if (event.which === 13) {
@@ -134,13 +170,19 @@ $(document).ready(function () {
         }
     });
 
-    //use time out to prevent multiple calls
+    // Add event listener to Search input with debounce
     var timer = null;
     $("#search-input").keyup(function () {
         clearTimeout(timer);
         timer = setTimeout(searchByName, 500);
     });
 });
+
+// DOM Ready Functions End
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+// Search Functions Start
 
 function searchByShortcode() {
     var shortcodeInput = $("#shortcode-input").val().toLowerCase();
@@ -154,6 +196,7 @@ function searchByShortcode() {
     $("#shortcode-input").focus();
 }
 
+// Search by name
 function searchByName() {
     const searchInput = $("#search-input").val().toLowerCase().trim();
     console.log("called");
@@ -179,6 +222,13 @@ function searchByName() {
     });
 }
 
+// Search Functions End
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+// Order Functions Start
+
+// Cancel Order
 $("#cancel-order").click(function () {
     orderItems.splice(0, orderItems.length);
     renderOrderTable();
@@ -192,24 +242,20 @@ $("#cancel-order").click(function () {
     $("input[type='checkbox']").prop("checked", false);
 });
 
-function delItem(menuId) {
-    const item = orderItems.find((item) => item.id === menuId);
-    if (item) {
-        orderItems.splice(orderItems.indexOf(item), 1);
-        renderOrderTable();
-    }
-}
+// Order Functions End
 
-function setOrderType(orderType) {
-    $("#order-type-options button").removeClass("active");
-    $("#" + orderType).addClass("active");
-    console.log("Selected Order Type:", orderType);
-}
+//------------------------------------------------------------------------------------------------------------------------------
 
+// Modal Functions Start
+
+// Notes Modal Start
+
+// Add Notes Modal Open
 document.getElementById("add-notes-btn").addEventListener("click", function () {
     document.getElementById("addNotesModal").style.display = "block";
 });
 
+// Add Notes Modal Close
 document
     .querySelectorAll('[data-close="addNotesModal"]')
     .forEach(function (element) {
@@ -218,6 +264,7 @@ document
         });
     });
 
+// Notes Modal Save Button
 document.getElementById("saveNotesBtn").addEventListener("click", function () {
     $('input[name="notes"]:checked').each(function () {
         selectedNotes.push($(this).next().text());
@@ -232,7 +279,76 @@ document.getElementById("saveNotesBtn").addEventListener("click", function () {
     document.getElementById("addNotesModal").style.display = "none";
 });
 
-$("#save-order").click(function () {
+// Notes Modal End
+
+// Customer Modal Start
+
+// Add Customer Modal Open
+document
+    .getElementById("add-customer-btn")
+    .addEventListener("click", function () {
+        document.getElementById("customerDataModal").style.display = "block";
+        $("#customerName").focus();
+    });
+
+// Add Customer Modal Close
+document
+    .querySelectorAll('[data-close="customerDataModal"]')
+    .forEach(function (element) {
+        element.addEventListener("click", function () {
+            document.getElementById("customerDataModal").style.display = "none";
+        });
+    });
+
+// Customer Modal Save Button
+document
+    .getElementById("saveCustomerDataBtn")
+    .addEventListener("click", function () {
+        const customerName = $("#customerName").val();
+        const mobileNumber = $("#mobileNumber").val();
+
+        customerData = {
+            customerName,
+            mobileNumber,
+        };
+        document.getElementById("customerDataModal").style.display = "none";
+    });
+
+// Customer Modal End
+
+// Modal Functions End
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+// old KOT functions
+
+// Hide KOT by default
+$("#prev-kots").click(function () {
+    $("#prev-kots table tbody").toggleClass("hidden");
+});
+
+// old KOT functions end
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+// Save Order Functions Start
+
+// Bill Order function
+$("#bill-order").click(function () {
+    const printBill = true;
+
+    saveOrder(printBill);
+});
+
+// KOt Order function
+$("#kot-order").click(function () {
+    const printKOT = true;
+
+    saveOrder(printKOT);
+});
+
+// Save order
+function saveOrder(printBill = false, printKOT = false) {
     //validate order
     if (orderItems.length === 0) {
         alert("No Items Selected");
@@ -256,8 +372,6 @@ $("#save-order").click(function () {
         discount: $("#discount").text(),
         grandtotal: $("#grandtotal").text(),
     };
-    const printBill = $("#print-options input[name='bill']").prop("checked");
-    const printKOT = $("#print-options input[name='kot']").prop("checked");
 
     console.log(order);
     var csrf_token = "{{ csrf_token() }}";
@@ -290,38 +404,8 @@ $("#save-order").click(function () {
             alert("Order Save Failed");
         },
     });
-});
+}
 
-document
-    .getElementById("add-customer-btn")
-    .addEventListener("click", function () {
-        document.getElementById("customerDataModal").style.display = "block";
-        $("#customerName").focus();
-    });
+// Save Order Functions End
 
-document
-    .querySelectorAll('[data-close="customerDataModal"]')
-    .forEach(function (element) {
-        element.addEventListener("click", function () {
-            document.getElementById("customerDataModal").style.display = "none";
-        });
-    });
-
-document
-    .getElementById("saveCustomerDataBtn")
-    .addEventListener("click", function () {
-        const customerName = $("#customerName").val();
-        const mobileNumber = $("#mobileNumber").val();
-
-        customerData = {
-            customerName,
-            mobileNumber,
-        };
-        document.getElementById("customerDataModal").style.display = "none";
-    });
-
-// old KOT functions
-
-$("#prev-kots").click(function () {
-    $("#prev-kots table tbody").toggleClass("hidden");
-});
+//------------------------------------------------------------------------------------------------------------------------------

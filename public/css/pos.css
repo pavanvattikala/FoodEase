@@ -149,22 +149,14 @@ th {
     padding: 10px;
 }
 
-#print-options {
-    width: 50%;
-    justify-content: space-evenly;
-}
-
-#print-options div input {
-    padding: 10px;
-}
-
 #save-options {
-    width: 50%;
+    width: 100%;
     justify-content: space-evenly;
 }
 
 #save-options button {
     width: 80px;
+    height: 30px;
 }
 
 #items-search-options {

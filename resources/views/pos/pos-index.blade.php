@@ -68,11 +68,9 @@
                         {{ session()->get('tableData')['tableName'] }}
                     </button>
                 @endif
-
-
             </div>
-
-            @if ($prevOrders->count() > 0)
+            {{-- Display Previous KOTs --}}
+            @if ($prevOrders != null && $prevOrders->count() > 0)
                 <div id="prev-kots">
                     <table class="table-auto flex flex-col">
                         <thead>
@@ -108,7 +106,6 @@
                     </table>
 
                 </div>
-
             @endif
             <div id="order-items-table" class="items ">
                 <table class="table-auto flex flex-col">
@@ -158,18 +155,9 @@
                 </div>
             </div>
             <div id="save-and-bill-options" class="flex flex-row">
-                <div class="flex flex-row" id="print-options">
-                    <div>
-                        <input type="checkbox" name="bill" id="">
-                        <label>Print Bill</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" name="kot" id="">
-                        <label>Print KOT</label>
-                    </div>
-                </div>
                 <div id="save-options" class="flex flex-row">
-                    <button class="btn" id="save-order">Save</button>
+                    <button class="btn" id="bill-order">Bill & Print</button>
+                    <button class="btn" id="kot-order">Bill & Print</button>
                     <button class="btn" id="cancel-order" style="background-color: #f44336">Cancel</button>
                     <button class="btn" id="hold-order" style="background-color: rgb(42, 88, 161)">Hold</button>
                 </div>
