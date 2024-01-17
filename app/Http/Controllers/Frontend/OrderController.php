@@ -126,7 +126,10 @@ class OrderController extends Controller
         $source = $request->source;
         $printBillEnabled = $request->printBill == "true" ? true : false;
         $printKOTEnabled = $request->printKOT == "true" ? true : false;
+        $reOrder = $request->reOrder == "true" ? true : false;
         $order = collect($request->order);
+
+        $tableId = $order->get('tableId');
 
         $specialInstructions = $order->get('specialInstructions') ? implode(',', $order->get('specialInstructions')) :  null;
 
@@ -143,16 +146,22 @@ class OrderController extends Controller
             $orderData = $this->processPosOrder($request, $commonData);
         }
 
-        if ($request->reOrder === true) {
-            $orderData["reOrder"] = true;
-        }
-
-
         $kot =  $this->insertOrder($orderData);
-
 
         if ($kot == "failed") {
             return response()->json(["status" => "error", "message" => "order Submission Failed"]);
+        }
+
+        // if order is not a pickup order then mark table as running
+        // if order is reOrder then do not mark table as Taken
+        $isPickUpOrder = $orderData->get('isPickUpOrder');
+
+        if (!$isPickUpOrder) {
+            if ($reOrder) {
+                TableHelper::markTableAsRunning($tableId);
+            } else {
+                TableHelper::markTableAsTaken($tableId);
+            }
         }
 
         if (ModuleHelper::isKitchenModuleEnabled()) {
@@ -193,9 +202,7 @@ class OrderController extends Controller
         $specialInstructions = $orderData->get("specialInstructions");
         $orderType = $orderData->get("orderType");
         $waiterId = $orderData->get("waiterId");
-        $reOrder = boolval($orderData->get("reOrder"));
         $orderItems = $orderData->get("orderItems");
-        $isPickUpOrder = $orderData->get("isPickUpOrder");
 
 
         $orderObject = [
@@ -227,14 +234,6 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return "failed";
-        }
-
-        if (!$isPickUpOrder) {
-            if ($reOrder === true) {
-                TableHelper::markTableAsRunning($tableId);
-            } else {
-                TableHelper::markTableAsTaken($tableId);
-            }
         }
 
         return $kot;
