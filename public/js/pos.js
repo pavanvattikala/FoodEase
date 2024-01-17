@@ -468,7 +468,6 @@ $("#settle-order").click(function () {
         success: function (response) {
             console.log(response);
             if (response.status === "success") {
-                alert("Table Settled Successfully");
                 $("#cancel-order").click();
                 window.location.replace(indexUrl);
             } else {

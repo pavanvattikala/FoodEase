@@ -23,4 +23,9 @@ class Bill extends Model
     {
         return $this->belongsToMany(Order::class, 'bill_orders')->withTimestamps();
     }
+
+    public function table()
+    {
+        return $this->belongsTo(Table::class);
+    }
 }
