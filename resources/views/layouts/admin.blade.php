@@ -37,7 +37,7 @@
             </div>
             <nav :class="{ 'block': open, 'hidden': !open }"
                 class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-                <x-admin-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
+                <x-admin-nav-link :href="route('pos.index')" :openInNewTab="true" :active="request()->routeIs('pos.index')">
                     {{ __('POS') }}
                 </x-admin-nav-link>
                 <x-admin-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
