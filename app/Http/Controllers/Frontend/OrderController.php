@@ -12,6 +12,7 @@ use App\Helpers\KitchenHelper;
 use App\Helpers\ModuleHelper;
 use App\Helpers\PDFHelper;
 use App\Helpers\RestaurantHelper;
+use App\Helpers\TableHelper;
 use App\Http\Controllers\Controller;
 use App\Jobs\SaveAndPrintBill;
 use App\Jobs\SaveAndPrintKOT;
@@ -168,10 +169,10 @@ class OrderController extends Controller
             $discount = 0;
             $billId = null;
             if ($orderData->get('isPickUpOrder')) {
-                $billId = BillHelper::createBill(OrderType::Takeaway, null, $kot, null, $paymentMethod, $discount);
+                $billId = BillHelper::createPickUpBill($kot, null, $paymentMethod, $discount);
             } else {
                 $tableId = $orderData->get('tableId');
-                $billId = BillHelper::createBill(OrderType::DineIn, $tableId, $kot, null, $paymentMethod, $discount);
+                $billId = BillHelper::createTableBill($tableId,  null, $paymentMethod, $discount);
             }
 
             SaveAndPrintBill::dispatch($billId);
@@ -230,12 +231,9 @@ class OrderController extends Controller
 
         if (!$isPickUpOrder) {
             if ($reOrder === true) {
-                Table::find($tableId)->update(['status' => TableStatus::Unavaliable]);
+                TableHelper::markTableAsRunning($tableId);
             } else {
-                Table::find($tableId)->update([
-                    'status' => TableStatus::Unavaliable,
-                    'taken_at' => Carbon::now(),
-                ]);
+                TableHelper::markTableAsTaken($tableId);
             }
         }
 

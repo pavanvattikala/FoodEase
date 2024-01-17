@@ -4,6 +4,7 @@
 namespace App\Helpers;
 
 use App\Enums\OrderType;
+use App\Enums\TableStatus;
 use App\Models\Bill;
 use App\Models\BillOrder;
 use App\Models\Order;
@@ -26,31 +27,41 @@ class BillHelper
         return  $billId;
     }
 
-    public static function createBill($orderType, $tableId, $kot, $notes, $paymentMethod, $discount)
+    public static function createPickUpBill($kot, $notes, $paymentMethod, $discount)
     {
-        $orders = null;
-
-        if ($orderType == OrderType::Takeaway) {
-            $orders = self::processPickUpBill($kot);
-        }
-        if ($orderType === OrderType::DineIn) {
-            $orders = self::processTableBill($tableId);
-        }
+        $orders = self::processPickUpBill($kot);
 
         $billData = collect([
             'orders' => $orders,
-            'tableId' => $tableId,
             'notes' => $notes,
-            'orderType' => $orderType,
+            'orderType' => OrderType::Takeaway,
             'discount' => $discount,
             'paymentMethod' => $paymentMethod,
         ]);
-
 
         $billId =  self::insertBill($billData);
 
         return $billId;
     }
+
+    public static function createTableBill($tableId, $notes, $paymentMethod, $discount)
+    {
+        $orders = self::processTableBill($tableId);
+
+        $billData = collect([
+            'tableId' => $tableId,
+            'orders' => $orders,
+            'notes' => $notes,
+            'orderType' => OrderType::DineIn,
+            'discount' => $discount,
+            'paymentMethod' => $paymentMethod,
+        ]);
+
+        $billId =  self::insertBill($billData);
+
+        return $billId;
+    }
+
     public static function processPickUpBill($kot)
     {
         $orders = Order::where('kot', $kot)->get();
@@ -101,11 +112,7 @@ class BillHelper
         }
 
         if ($orderType == OrderType::DineIn) {
-            $table = Table::find($tableId);
-            $table->update([
-                'status' => 'available',
-                'taken_at' => null,
-            ]);
+            TableHelper::markTableAsPrinted($tableId);
         }
         return $bill->id;
     }
