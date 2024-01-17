@@ -105,13 +105,20 @@
                 <div class="tables-container">
                     @foreach ($tables->where('location', $location) as $table)
                         @php
-
                             $tableColor = $table_colors[$table->status->value];
 
+                            if ($table->taken_at != null) {
+                                $tableTotal = $table->orders->where('status', '!=', App\Enums\OrderStatus::Closed)->sum('total');
+                            }
                         @endphp
-                        <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})" class="table-item"
+
+                        <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
+                            class="table-item opacity-40 text-white text-center"
                             style="background-color: {{ $tableColor }}">
                             <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
+                            @if ($table->taken_at != null && $tableTotal)
+                                <p>{{ $tableTotal }}</p>
+                            @endif
                         </div>
                     @endforeach
                 </div>
