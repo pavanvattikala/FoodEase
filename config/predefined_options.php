@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TableStatus;
+use App\Models\Table;
 
 return [
     'notes' => [
@@ -15,7 +16,8 @@ return [
         TableStatus::Running->value => 'blue',
         TableStatus::Printed->value => 'green',
         TableStatus::Paid->value => 'yellow',
-        TableStatus::RunningKOT->value => 'orange'
+        TableStatus::RunningKOT->value => 'orange',
+        TableStatus::Unavaliable->value => 'red',
     ],
     'printer' => [
         'pos' => 'home',
