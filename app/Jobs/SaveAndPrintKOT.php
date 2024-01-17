@@ -35,7 +35,7 @@ class SaveAndPrintKOT implements ShouldQueue
     public function handle()
     {
 
-        $this->kOTPath =  PDFHelper::saveKOTToDisk($this->KOT);
-        PDFHelper::printKOT($this->kOTPath);
+        //$this->kOTPath =  PDFHelper::saveKOTToDisk($this->KOT);
+        //PDFHelper::printKOT($this->kOTPath);
     }
 }
