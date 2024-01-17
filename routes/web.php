@@ -146,6 +146,8 @@ Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(functio
     Route::get('/index', [PosController::class, 'index'])->name('main');
     Route::get('/tables', [PosController::class, 'tables'])->name('tables');
     Route::post('addtabletosession', [PosController::class, 'addTableToSesstion'])->name('table.add.toSession');
+    Route::post('/table/submit-for-billing', [PosController::class, 'billTable'])->name('table.bill');
+    Route::post('/table/settle', [PosController::class, 'settleTable'])->name('table.settle');
 });
 
 /**
