@@ -179,6 +179,11 @@ $(document).ready(function () {
 
     // set default payment type
     $("#cash").prop("checked", true);
+
+    // Hide KOT if Takeaway is selected
+    if ($("#takeaway").hasClass("active")) {
+        $("#kot-order").hide();
+    }
 });
 
 // DOM Ready Functions End
