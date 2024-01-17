@@ -59,6 +59,8 @@ class BillHelper
 
         $billId =  self::insertBill($billData);
 
+        TableHelper::markTableAsPrinted($tableId);
+
         return $billId;
     }
 
@@ -80,7 +82,6 @@ class BillHelper
         $tableId = $billData->get('tableId');
         $paymentMethod = $billData->get('paymentMethod');
         $notes = $billData->get('notes');
-        $orderType = $billData->get('orderType');
         $discount = $billData->get('discount');
         $orders = $billData->get('orders');
         $total = $orders->sum('total');
@@ -109,10 +110,6 @@ class BillHelper
             $order->update([
                 'status' => 'closed',
             ]);
-        }
-
-        if ($orderType == OrderType::DineIn) {
-            TableHelper::markTableAsPrinted($tableId);
         }
         return $bill->id;
     }

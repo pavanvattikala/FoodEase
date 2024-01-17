@@ -36,7 +36,7 @@ class SaveAndPrintBill implements ShouldQueue
     public function handle()
     {
 
-        $this->billFullId =  PDFHelper::saveBillToDisk($this->billId);
-        PDFHelper::printBill($this->billFullId);
+        //$this->billFullId =  PDFHelper::saveBillToDisk($this->billId);
+        //PDFHelper::printBill($this->billFullId);
     }
 }

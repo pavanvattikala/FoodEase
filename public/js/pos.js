@@ -406,7 +406,6 @@ function saveOrder(printBill = false, printKOT = false) {
         success: function (response) {
             console.log(response);
             if (response.status === "success") {
-                alert("Order Saved Successfully");
                 $("#cancel-order").click();
                 window.location.replace(indexUrl);
             } else {
@@ -438,7 +437,6 @@ function billTable() {
         success: function (response) {
             console.log(response);
             if (response.status === "success") {
-                alert("Table Billed Successfully");
                 $("#cancel-order").click();
                 window.location.replace(indexUrl);
             } else {
