@@ -184,6 +184,9 @@ $(document).ready(function () {
     if ($("#takeaway").hasClass("active")) {
         $("#kot-order").hide();
     }
+
+    //check if any previous KOTs exist
+    hasPrevOrders = $("#prev-kots").length > 0;
 });
 
 // DOM Ready Functions End
@@ -345,7 +348,7 @@ $("#showPrevKots").click(function () {
 // Bill Order function
 $("#bill-order").click(function () {
     let printBill = true;
-    hasPrevOrders = $("#prev-kots").length > 0;
+
     hasNewOrders = orderItems.length > 0;
     if (hasNewOrders) {
         saveOrder(printBill, false);
@@ -369,11 +372,16 @@ function saveOrder(printBill = false, printKOT = false) {
         return;
     }
     var tableId = null;
+    var reOrder = false;
 
     if ($("#takeaway").hasClass("active")) {
         tableId = null;
     } else {
         tableId = $("#table").data("tableid");
+    }
+
+    if (hasPrevOrders) {
+        reOrder = true;
     }
 
     const order = {
@@ -398,6 +406,7 @@ function saveOrder(printBill = false, printKOT = false) {
             source: "pos",
             printKOT: printKOT,
             printBill: printBill,
+            reOrder: reOrder,
         },
         headers: {
             "X-CSRF-TOKEN": csrf_token,
