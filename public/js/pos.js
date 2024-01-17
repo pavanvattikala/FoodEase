@@ -176,6 +176,9 @@ $(document).ready(function () {
         clearTimeout(timer);
         timer = setTimeout(searchByName, 500);
     });
+
+    // set default payment type
+    $("#cash").prop("checked", true);
 });
 
 // DOM Ready Functions End
@@ -323,8 +326,9 @@ document
 // old KOT functions
 
 // Hide KOT by default
-$("#prev-kots").click(function () {
+$("#showPrevKots").click(function () {
     $("#prev-kots table tbody").toggleClass("hidden");
+    $("#order-items-table").toggleClass("hidden");
 });
 
 // old KOT functions end
@@ -335,22 +339,27 @@ $("#prev-kots").click(function () {
 
 // Bill Order function
 $("#bill-order").click(function () {
-    const printBill = true;
-
-    saveOrder(printBill);
+    let printBill = true;
+    hasPrevOrders = $("#prev-kots").length > 0;
+    hasNewOrders = orderItems.length > 0;
+    if (hasNewOrders) {
+        saveOrder(printBill, false);
+    } else {
+        billTable();
+    }
 });
 
 // KOt Order function
 $("#kot-order").click(function () {
     const printKOT = true;
 
-    saveOrder(printKOT);
+    saveOrder(false, printKOT);
 });
 
 // Save order
 function saveOrder(printBill = false, printKOT = false) {
     //validate order
-    if (orderItems.length === 0) {
+    if (!hasPrevOrders && orderItems.length === 0) {
         alert("No Items Selected");
         return;
     }
@@ -374,10 +383,10 @@ function saveOrder(printBill = false, printKOT = false) {
     };
 
     console.log(order);
-    var csrf_token = "{{ csrf_token() }}";
+    var csrf_token = $('meta[name="csrf-token"]').attr("content");
 
     $.ajax({
-        url: "{{ route('order.submit', [], false) }}",
+        url: orderSubmitUrl,
         type: "POST",
         data: {
             order: order,
@@ -394,7 +403,7 @@ function saveOrder(printBill = false, printKOT = false) {
             if (response.status === "success") {
                 alert("Order Saved Successfully");
                 $("#cancel-order").click();
-                window.location.replace(" {{ route('pos.index') }}");
+                window.location.replace(indexUrl);
             } else {
                 alert("Order Save Failed");
             }
@@ -405,6 +414,70 @@ function saveOrder(printBill = false, printKOT = false) {
         },
     });
 }
+
+function billTable() {
+    let tableId = $("#table").data("tableid");
+    let csrf_token = $('meta[name="csrf-token"]').attr("content");
+
+    $.ajax({
+        url: billTableUrl,
+        type: "POST",
+        data: {
+            tableId: tableId,
+            paymentType: $("input[name='payment-type']:checked").next().text(),
+        },
+        headers: {
+            "X-CSRF-TOKEN": csrf_token,
+        },
+        contentType: "application/x-www-form-urlencoded",
+        success: function (response) {
+            console.log(response);
+            if (response.status === "success") {
+                alert("Table Billed Successfully");
+                $("#cancel-order").click();
+                window.location.replace(indexUrl);
+            } else {
+                alert("Table Billing Failed");
+            }
+        },
+        error: function (error) {
+            console.log(error);
+            alert("Table Billing Failed");
+        },
+    });
+}
+
+// close table
+$("#settle-order").click(function () {
+    var tableId = $("#table").data("tableid");
+    var csrf_token = $('meta[name="csrf-token"]').attr("content");
+
+    $.ajax({
+        url: settleTableUrl,
+        type: "POST",
+        data: {
+            tableId: tableId,
+        },
+        headers: {
+            "X-CSRF-TOKEN": csrf_token,
+        },
+        contentType: "application/x-www-form-urlencoded",
+        success: function (response) {
+            console.log(response);
+            if (response.status === "success") {
+                alert("Table Settled Successfully");
+                $("#cancel-order").click();
+                window.location.replace(indexUrl);
+            } else {
+                alert("Table Settlement Failed");
+            }
+        },
+        error: function (error) {
+            console.log(error);
+            alert("Table Settlement Failed");
+        },
+    });
+});
 
 // Save Order Functions End
 

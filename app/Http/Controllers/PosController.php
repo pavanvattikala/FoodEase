@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\TableStatus;
+use App\Helpers\BillHelper;
 use App\Helpers\TableHelper;
 use App\Models\Category;
 use App\Models\Menu;
@@ -22,6 +23,7 @@ class PosController extends Controller
         $predefinedNotes = config('predefined_options.notes');
 
         $prevOrders = null;
+        $isTableToBePaid = false;
 
         if (session()->has('tableData')) {
             $tableId = session()->get('tableData')['tableId'];
@@ -29,9 +31,11 @@ class PosController extends Controller
                 ->where('table_id', $tableId)
                 ->where('status', '!=', OrderStatus::Closed)
                 ->get();
+
+            $isTableToBePaid = Table::where('id', $tableId)->where('status', TableStatus::Printed)->exists();
         }
 
-        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes', 'prevOrders'));
+        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes', 'prevOrders', 'isTableToBePaid'));
     }
 
     public function tables()
@@ -63,5 +67,24 @@ class PosController extends Controller
         }
 
         return response()->json(['message' => 'true']);
+    }
+
+    public function billTable(Request $request)
+    {
+        $tableId = $request->tableId;
+        $notes = $request->notes ? $request->notes : '';
+        $paymentType = $request->paymentType;
+        $discount = $request->discount ? $request->discount : 0;
+
+        $billId = BillHelper::createTableBill($tableId, $request->notes, $paymentType, $discount);
+
+        return response()->json(['status' => 'success', 'billId' => $billId]);
+    }
+
+    public function settleTable(Request $request)
+    {
+        TableHelper::markTableAsPaid($request->tableId);
+
+        return response()->json(['status' => 'success']);
     }
 }

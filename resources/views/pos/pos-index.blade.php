@@ -73,7 +73,7 @@
             @if ($prevOrders != null && $prevOrders->count() > 0)
                 <div id="prev-kots">
                     <table class="table-auto flex flex-col">
-                        <thead>
+                        <thead id="showPrevKots">
                             <tr>
                                 <th colspan="3" class="underline">Previous KOTs..</th>
                             </tr>
@@ -102,6 +102,9 @@
                                     </tr>
                                 @endforeach
                             @endforeach
+                            <tr>
+                                <td colspan="3"> Bill Total {{ $prevOrders->sum('total') }}</td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -138,26 +141,31 @@
             </div>
             <div id="payment-types" class="flex flex-row">
                 <div>
-                    <input type="radio" name="payment-type" selected="true">
+                    <input id="cash" type="radio" name="payment-type" selected="true">
                     <label>Cash</label>
                 </div>
                 <div>
-                    <input type="radio" name="payment-type">
+                    <input id="card" type="radio" name="payment-type">
                     <label>Card</label>
                 </div>
                 <div>
-                    <input type="radio" name="payment-type">
+                    <input id="upi" type="radio" name="payment-type">
                     <label>UPI</label>
                 </div>
                 <div>
-                    <input type="radio" name="payment-type" id="">
+                    <input type="radio" name="payment-type" id="due">
                     <label>Due</label>
                 </div>
             </div>
+            @if ($isTableToBePaid == true)
+                <div>
+                    <button class="btn" id="settle-order">Settle And Save</button>
+                </div>
+            @endif
             <div id="save-and-bill-options" class="flex flex-row">
                 <div id="save-options" class="flex flex-row">
                     <button class="btn" id="bill-order">Bill & Print</button>
-                    <button class="btn" id="kot-order">Bill & Print</button>
+                    <button class="btn" id="kot-order">KOT & Print</button>
                     <button class="btn" id="cancel-order" style="background-color: #f44336">Cancel</button>
                     <button class="btn" id="hold-order" style="background-color: rgb(42, 88, 161)">Hold</button>
                 </div>
@@ -250,6 +258,14 @@
 
         let customerData = null;
         let audioUrl = "{{ asset('audio/select.wav') }}";
+
+        let hasPrevOrders = false;
+        let hasNewOrders = false;
+
+        const orderSubmitUrl = "{{ route('order.submit', [], false) }}";
+        const billTableUrl = "{{ route('pos.table.bill', [], false) }}";
+        const indexUrl = "{{ route('pos.tables', [], false) }}";
+        const settleTableUrl = "{{ route('pos.table.settle', [], false) }}";
     </script>
     <script src="{{ asset('js/pos.js') }}"></script>
 </x-pos-layout>
