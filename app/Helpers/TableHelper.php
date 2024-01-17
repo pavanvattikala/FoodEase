@@ -16,6 +16,9 @@ namespace App\Helpers;
 
 use App\Models\Table;
 use App\Enums\TableStatus;
+use App\Models\Bill;
+use App\Models\BillOrder;
+use App\Models\Order;
 
 /**
  * Class TableHelper
@@ -59,5 +62,52 @@ class TableHelper
         ];
 
         Session()->put("tableData", $tableData);
+    }
+
+    public static function markTableAsPrinted($tableId)
+    {
+        $table = Table::where('id', $tableId)->first();
+
+        $table->status = TableStatus::Printed;
+
+        $table->save();
+    }
+
+    public static function markTableAsPaid($tableId)
+    {
+        $table = Table::where('id', $tableId)->first();
+
+        $table->status = TableStatus::Available;
+
+        $table->save();
+    }
+
+    public static function markTableAsRunning($tableId)
+    {
+        $table = Table::where('id', $tableId)->first();
+
+        $table->status = TableStatus::Running;
+
+        $table->save();
+    }
+
+    public static function markTableAsUnavaliable($tableId)
+    {
+        $table = Table::where('id', $tableId)->first();
+
+        $table->status = TableStatus::Unavaliable;
+
+        $table->save();
+    }
+
+    public static function markTableAsTaken($tableId)
+    {
+        $table = Table::where('id', $tableId)->first();
+
+        $table->status = TableStatus::Running;
+
+        $table->taken_at = now();
+
+        $table->save();
     }
 }
