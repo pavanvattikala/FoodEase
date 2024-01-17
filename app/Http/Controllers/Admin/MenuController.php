@@ -54,13 +54,14 @@ class MenuController extends Controller
 
         $menu = Menu::create([
             'name' => $request->name,
+            'shortcode' => $request->shortCode,
             'description' => $description,
             'image' => $image,
             'price' => $request->price
         ]);
 
-        if ($request->has('categories')) {
-            $menu->categories()->attach($request->categories);
+        if ($request->has('category')) {
+            $menu->category()->attach($request->category);
         }
 
         return to_route('admin.menus.index')->with('success', 'Menu created successfully.');
@@ -90,7 +91,6 @@ class MenuController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'description' => 'required',
             'price' => 'required'
         ]);
         $image = $menu->image;
@@ -101,6 +101,7 @@ class MenuController extends Controller
 
         $menu->update([
             'name' => $request->name,
+            'shortcode' => $request->shortCode,
             'description' => $request->description,
             'image' => $image,
             'price' => $request->price
@@ -120,8 +121,10 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
-        Storage::delete($menu->image);
-        $menu->categories()->detach();
+        if ($menu->image) {
+            Storage::delete($menu->image);
+        }
+        $menu->category()->detach();
         $menu->delete();
         return to_route('admin.menus.index')->with('danger', 'Menu deleted successfully.');
     }

@@ -26,6 +26,16 @@
                             @enderror
                         </div>
                         <div class="sm:col-span-6">
+                            <label for="shortCode" class="block text-sm font-medium text-gray-700"> Short Code </label>
+                            <div class="mt-1">
+                                <input type="text" id="shortCode" name="shortCode"
+                                    class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                            </div>
+                            @error('shortCode')
+                                <div class="text-sm text-red-400">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="sm:col-span-6">
                             <label for="image" class="block text-sm font-medium text-gray-700"> Image </label>
                             <div class="mt-1">
                                 <input type="file" id="image" name="image"
@@ -38,7 +48,8 @@
                         <div class="sm:col-span-6">
                             <label for="price" class="block text-sm font-medium text-gray-700"> Price </label>
                             <div class="mt-1">
-                                <input type="number" min="0.00" max="10000.00" step="0.01" id="price" name="price"
+                                <input type="number" min="0.00" max="10000.00" step="0.01" id="price"
+                                    name="price"
                                     class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                             </div>
                             @error('price')
@@ -56,10 +67,9 @@
                             @enderror
                         </div>
                         <div class="sm:col-span-6 pt-5">
-                            <label for="categories" class="block text-sm font-medium text-gray-700">Categories</label>
+                            <label for="category" class="block text-sm font-medium text-gray-700">Categories</label>
                             <div class="mt-1">
-                                <select id="categories" name="categories[]" class="form-multiselect block w-full mt-1"
-                                    multiple>
+                                <select id="category" name="category" class="form-multiselect block w-full mt-1">
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
