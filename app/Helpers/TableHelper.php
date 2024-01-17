@@ -79,6 +79,8 @@ class TableHelper
 
         $table->status = TableStatus::Available;
 
+        $table->taken_at = null;
+
         $table->save();
     }
 
