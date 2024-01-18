@@ -53,4 +53,21 @@ class KitchenHelper
     public static function createKOT($kot)
     {
     }
+
+    public static function getKOTOrders($kot)
+    {
+        $order = Order::with('orderDetails')
+            ->where('kot', $kot)->first();
+
+        $orderDetails = collect([]);
+
+        foreach ($order->orderDetails as $details) {
+            $itemName = $details->menu->name;
+            $quantity = $details->quantity;
+
+            $orderDetails->put($itemName, $quantity);
+        }
+
+        return $orderDetails;
+    }
 }

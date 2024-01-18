@@ -3,12 +3,14 @@
 namespace App\Jobs;
 
 use App\Helpers\PDFHelper;
+use App\Helpers\Printers\ThermalPrinter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SaveAndPrintKOT implements ShouldQueue
 {
@@ -35,7 +37,12 @@ class SaveAndPrintKOT implements ShouldQueue
     public function handle()
     {
 
-        //$this->kOTPath =  PDFHelper::saveKOTToDisk($this->KOT);
-        //PDFHelper::printKOT($this->kOTPath);
+        $kitchenPrinter = config("predefined_options.printer.kitchen");
+
+        $printer = new ThermalPrinter($kitchenPrinter);
+
+        $printer->printKOT($this->KOT);
+
+        Log::info("KOT Printed " . $this->KOT);
     }
 }

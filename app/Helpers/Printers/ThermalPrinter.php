@@ -3,7 +3,9 @@
 namespace App\Helpers\Printers;
 
 use App\Helpers\BillHelper;
+use App\Helpers\KitchenHelper;
 use App\Models\Bill;
+use App\Models\Order;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
@@ -46,8 +48,11 @@ class ThermalPrinter
 
     public function printKOT($kot)
     {
-        $orderDetails = $kot->getOrderDetails();
-        $kotPrinter = new KOTPrinter($this->printer, $orderDetails);
+        $orderDetails = KitchenHelper::getKOTOrders($kot);
+        $KOTDetails =  $order = Order::with('waiter')
+            ->with('table')
+            ->where('kot', $kot)->first();
+        $kotPrinter = new KOTPrinter($this->printer, $KOTDetails, $orderDetails);
         $kotPrinter->print();
     }
 }
