@@ -38,8 +38,11 @@ class BillPrinter
         $this->printer->feed();
 
         // Order details
-        $this->printer->text("----------------------------------\n");
-        $this->printer->text("Name: " . $this->billDetails->customer_name ? $this->billDetails->customer_name : ' ' . "\n");
+
+        if ($this->billDetails->customer_name) {
+            $this->printer->text("----------------------------------\n");
+            $this->printer->text("Name: {$this->billDetails->customer_name} \n");
+        }
         $this->printer->text("----------------------------------\n");
 
         if ($this->billDetails->table_id == null) {

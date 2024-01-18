@@ -33,8 +33,9 @@ class KOTPrinter
         // Items
         $this->printer->text("Qty Item\n");
         $this->printer->text("------------------------------------\n");
-        foreach ($this->orderDetails as $order) {
-            $item = new KOTItem($order['name'], $order['quantity']);
+
+        foreach ($this->orderDetails as $name => $quantity) {
+            $item = new KOTItem($name, $quantity);
             $this->printer->text($item);
         }
 

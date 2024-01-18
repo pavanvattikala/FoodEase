@@ -20,13 +20,6 @@ class ThermalPrinter
         $this->printer = $this->getPrinterObject();
     }
 
-    public function __destruct()
-    {
-        if ($this->printer instanceof Printer) {
-            $this->printer->close();
-        }
-    }
-
     public function getPrinterObject()
     {
         $connector = new WindowsPrintConnector($this->printerName);
@@ -49,7 +42,7 @@ class ThermalPrinter
     public function printKOT($kot)
     {
         $orderDetails = KitchenHelper::getKOTOrders($kot);
-        $KOTDetails =  $order = Order::with('waiter')
+        $KOTDetails =  Order::with('waiter')
             ->with('table')
             ->where('kot', $kot)->first();
         $kotPrinter = new KOTPrinter($this->printer, $KOTDetails, $orderDetails);
