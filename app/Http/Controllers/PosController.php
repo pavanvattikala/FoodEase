@@ -7,6 +7,7 @@ use App\Enums\OrderType;
 use App\Enums\TableStatus;
 use App\Helpers\BillHelper;
 use App\Helpers\TableHelper;
+use App\Jobs\SaveAndPrintBill;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
@@ -77,6 +78,8 @@ class PosController extends Controller
         $discount = $request->discount ? $request->discount : 0;
 
         $billId = BillHelper::createTableBill($tableId, $request->notes, $paymentType, $discount);
+
+        SaveAndPrintBill::dispatch($billId);
 
         return response()->json(['status' => 'success', 'billId' => $billId]);
     }
