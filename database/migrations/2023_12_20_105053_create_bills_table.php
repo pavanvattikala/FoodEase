@@ -16,14 +16,15 @@ return new class extends Migration
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('bill_id');
+            $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('table_id');
             $table->foreign('table_id')->references('id')->on('tables')->onDelete('cascade');
             $table->decimal('bill_amount', 8, 2);
             $table->decimal('discount', 2, 2)->default(0.0);
             $table->decimal('grand_total', 8, 2);
-            $table->timestamps();           
-            $table->string('payment_method')->nullable(); 
-            $table->text('notes')->nullable(); 
+            $table->timestamps();
+            $table->string('payment_method')->nullable();
+            $table->text('notes')->nullable();
         });
 
         Schema::create('bill_orders', function (Blueprint $table) {
