@@ -361,6 +361,11 @@ $("#bill-order").click(function () {
 $("#kot-order").click(function () {
     const printKOT = true;
 
+    if (orderItems.length === 0) {
+        alert("No Items Selected");
+        return;
+    }
+
     saveOrder(false, printKOT);
 });
 
