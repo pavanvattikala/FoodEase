@@ -21,5 +21,6 @@ return [
     ],
     'printer' => [
         'pos' => 'home',
+        'kitchen' => 'home'
     ]
 ];
