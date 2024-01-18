@@ -114,7 +114,11 @@
 
                         <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
                             class="table-item opacity-40 text-white text-center"
-                            style="background-color: {{ $tableColor }}">
+                            style="background-color: {{ $tableColor }}"
+                            data-table-staus="{{ $table->status->value }}">
+
+                            <p id="elapsed-time" data-taken-at="{{ $table->taken_at }}"> </p>
+
                             <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
                             @if ($table->taken_at != null && $tableTotal)
                                 <p>{{ $tableTotal }}</p>
@@ -127,6 +131,28 @@
     </div>
 
     <script>
+        // global variables
+
+        var runningTables = [];
+
+        // DOM loaded
+        $(document).ready(function() {
+            // Select table
+            // Select all elements with class "table-item" where data-table-staus is not available
+            $(".table-item[data-table-staus!='available']").each(function() {
+                // Get the table ID and taken_at value
+                var tableId = $(this).prop("id");
+                var takenAt = $(this).find("#elapsed-time").attr("data-taken-at");
+
+                // Push an object with tableId and takenAt into the runningTables array
+                runningTables.push({
+                    tableId: tableId,
+                    takenAt: takenAt
+                });
+            });
+        });
+
+
         $("#Takeaway").on("click", function() {
             selectTable(-1);
         });
@@ -157,6 +183,35 @@
                     console.error('Error:', error);
                 }
             });
+        }
+
+        setInterval(() => {
+            runningTables.forEach(table => {
+                var elapsedString = getElapsedMinutes(table.takenAt);
+                $("#" + table.tableId).find("#elapsed-time").text(elapsedString);
+            }, 1000);
+        });
+
+        function getElapsedMinutes(originalTime) {
+            var takenTime = new Date(originalTime);
+            var currentTime = new Date();
+            var elapsedTime = currentTime - takenTime;
+            var elapsedMinutes = Math.floor(elapsedTime / (1000 * 60));
+            var elapsedHours = Math.floor(elapsedTime / (1000 * 60 * 60));
+            let elapsedString = "";
+
+            if (elapsedHours > 0) {
+                elapsedMinutes = elapsedMinutes - (elapsedHours * 60);
+            }
+            if (elapsedHours > 0) {
+                elapsedString = elapsedString + elapsedHours + "h ";
+            }
+            if (elapsedMinutes > 0) {
+                elapsedString = elapsedString + elapsedMinutes + "m";
+            }
+
+
+            return elapsedString;
         }
     </script>
 
