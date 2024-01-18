@@ -113,4 +113,33 @@ class BillHelper
         }
         return $bill->id;
     }
+
+    public static function getBillOrders($billId)
+    {
+        $billDetails = Bill::where('id', $billId)
+            ->with('orders')
+            ->with('orders.orderDetails')
+            ->with('orders.orderDetails.menu')
+            ->with('table')
+            ->first();
+
+        $orderDetails = collect([]);
+
+        foreach ($billDetails->orders as $order) {
+            foreach ($order->orderDetails as $orderDetail) {
+                $itemName = $orderDetail->menu->name;
+                $quantity = $orderDetail->quantity;
+                $price = $orderDetail->menu->price;
+
+                if ($orderDetails->has($itemName)) {
+                    $orderDetails[$itemName]['quantity'] += $quantity;
+                    $orderDetails[$itemName]['price'] += $price;
+                    $orderDetails[$itemName]['total'] = $orderDetails[$itemName]['quantity'] * $orderDetails[$itemName]['price'];
+                } else {
+                    $orderDetails->put($itemName, ['quantity' => $quantity, 'price' => $price, 'total' => $quantity * $price]);
+                }
+            }
+        }
+        return $orderDetails;
+    }
 }
