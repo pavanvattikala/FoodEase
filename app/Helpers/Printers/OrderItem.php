@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Helpers\Printers;
+
 class OrderItem
 {
     private $name;

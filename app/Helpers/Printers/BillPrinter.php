@@ -2,11 +2,9 @@
 
 namespace App\Helpers\Printers;
 
-use App\Helpers\BillHelper;
 use App\Helpers\RestaurantHelper;
 use Mike42\Escpos\Printer;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-use OrderItem;
+use App\Helpers\Printers\OrderItem;
 
 class BillPrinter
 {
