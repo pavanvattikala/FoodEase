@@ -28,7 +28,7 @@ class Order extends Model
 
     public function table()
     {
-        return $this->belongsTo(Table::class, 'tableNo');
+        return $this->belongsTo(Table::class, 'table_id');
     }
 
     public function waiter()
