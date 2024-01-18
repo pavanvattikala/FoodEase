@@ -84,23 +84,6 @@ class PDFHelper
         return $filePath;
     }
 
-    public static function printBill($billFullId)
-    {
-        $printerName = config('predefined_options.printer.pos');
-
-        $printer = new Printer($printerName);
-
-        $billPath = 'bills/bill_' . $billFullId;
-
-        $pdfPath = Storage::path($billPath . '.pdf');
-
-        $printer->printToNetworkPrinter($pdfPath);
-
-        //$txtPath = Storage::path($billPath . '.txt');
-
-        //$printer->printToThermalPrinter($txtPath);
-    }
-
     public static function  getNewOptimizedPaper($html)
     {
         $paper = Paper::getPaper();

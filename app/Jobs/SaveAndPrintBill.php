@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\PDFHelper;
+use App\Helpers\Printers\ThermalPrinter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,7 +17,6 @@ class SaveAndPrintBill implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $billId;
-    private $billFullId;
 
     /**
      * Create a new job instance.
@@ -35,8 +35,10 @@ class SaveAndPrintBill implements ShouldQueue
      */
     public function handle()
     {
+        $billerPrinter = config("predefined_options.printer.pos");
 
-        //$this->billFullId =  PDFHelper::saveBillToDisk($this->billId);
-        //PDFHelper::printBill($this->billFullId);
+        $printer = new ThermalPrinter($billerPrinter);
+
+        $printer->printBill($this->billId);
     }
 }
