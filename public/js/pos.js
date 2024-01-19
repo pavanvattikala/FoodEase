@@ -474,6 +474,7 @@ $("#settle-order").click(function () {
         type: "POST",
         data: {
             tableId: tableId,
+            paymentType: $("input[name='payment-type']:checked").next().text(),
         },
         headers: {
             "X-CSRF-TOKEN": csrf_token,
