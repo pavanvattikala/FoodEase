@@ -59,6 +59,66 @@
         .new_options div {
             margin-right: 10px !important;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            /* Adjust the width as needed */
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .modal-body {
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
     </style>
     <div class="flex flex-row mb-2 mt-2" id="table-main-nav">
         <div class="flex flex-row mw-60">
@@ -110,6 +170,12 @@
                             if ($table->taken_at != null) {
                                 $tableTotal = $table->orders->where('status', '!=', App\Enums\OrderStatus::Closed)->sum('total');
                             }
+
+                            $isTableToBePaid = false;
+
+                            if ($table->status == App\Enums\TableStatus::Printed) {
+                                $isTableToBePaid = true;
+                            }
                         @endphp
 
                         <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
@@ -123,11 +189,55 @@
                             @if ($table->taken_at != null && $tableTotal)
                                 <p>{{ $tableTotal }}</p>
                             @endif
+
+                            @if ($isTableToBePaid == true)
+                                <div>
+                                    <button style="background-color: white; color: black" class="btn"
+                                        id="settle-order"><i class="fas fa-save"></i></button>
+                                </div>
+                            @endif
                         </div>
                     @endforeach
                 </div>
             </div>
         @endforeach
+
+
+    </div>
+
+    {{-- modal window for payment options --}}
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-overlay" tabindex="-1" data-close="paymentModal"></div>
+        <div class="modal-container bg-white mx-auto mt-10 p-6 rounded-lg shadow-lg w-1/2">
+            <div class="modal-header flex justify-between items-center border-b pb-4">
+                <span class="text-2xl font-bold">Payment Options</span>
+                <span class="modal-close cursor-pointer" data-close="paymentModal">&times;</span>
+            </div>
+            <div class="modal-body mt-4 flex flex-wrap justify-between">
+                <input type="number" value="0" id="paymentTableId" hidden>
+                <div>
+                    <input id="cash" type="radio" name="payment-type" value="cash" selected="true">
+                    <label>Cash</label>
+                </div>
+                <div>
+                    <input id="card" type="radio" value="card" name="payment-type">
+                    <label>Card</label>
+                </div>
+                <div>
+                    <input id="upi" type="radio" value="upi" name="payment-type">
+                    <label>UPI</label>
+                </div>
+                <div>
+                    <input type="radio" name="payment-type" value="radio" id="due">
+                    <label>Due</label>
+                </div>
+            </div>
+            <div class="modal-footer mt-4 flex justify-end">
+                <button type="button" class="btn  mr-2" data-close="paymentModal">Close</button>
+                <button type="button" class="btn bg-green-500" id="savePaymentDataBtn">Save And Settle Table</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -212,6 +322,77 @@
 
 
             return elapsedString;
+        }
+
+        // Payment Modal Open
+        document
+            .getElementById("settle-order")
+            .addEventListener("click", function() {
+                event.stopPropagation()
+                document.getElementById("paymentModal").style.display = "block";
+                $("#cash").prop("checked", true);
+
+                let tableId = this.parentElement.parentElement.id;
+
+                document.getElementById("paymentTableId").value = tableId;
+
+            });
+
+        // Payment Modal Close
+        document
+            .querySelectorAll('[data-close="paymentModal"]')
+            .forEach(function(element) {
+                element.addEventListener("click", function() {
+                    document.getElementById("paymentModal").style.display = "none";
+                });
+            });
+
+        // Customer Modal Save Button
+        document
+            .getElementById("savePaymentDataBtn")
+            .addEventListener("click", function() {
+                console.log($("#paymentTableId"));
+                const tableId = $("#paymentTableId").val();
+                const paymentType = $("input[name='payment-type']:checked").val();
+                settleTable(tableId, paymentType);
+                document.getElementById("paymentModal").style.display = "none";
+            });
+
+        // Customer Modal End
+
+
+        function settleTable(tableId, paymentType) {
+            var csrf_token = $('meta[name="csrf-token"]').attr("content");
+            var settleTableUrl = "{{ route('pos.table.settle', [], false) }}";
+            var indexUrl = "{{ route('pos.tables', [], false) }}";
+
+            $.ajax({
+
+                url: settleTableUrl,
+                type: "POST",
+                data: {
+                    tableId: tableId,
+                    paymentType: paymentType,
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrf_token,
+                },
+                contentType: "application/x-www-form-urlencoded",
+                success: function(response) {
+                    console.log(response);
+                    if (response.status === "success") {
+                        $("#cancel-order").click();
+                        window.location.replace(indexUrl);
+                    } else {
+                        alert("Table Settlement Failed");
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert("Table Settlement Failed");
+                },
+            });
+
         }
     </script>
 
