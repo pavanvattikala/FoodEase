@@ -107,9 +107,9 @@ class BillHelper
                 'order_id' => $order->id,
             ]);
 
-            $order->update([
-                'status' => 'closed',
-            ]);
+            // $order->update([
+            //     'status' => 'closed',
+            // ]);
         }
         return $bill->id;
     }

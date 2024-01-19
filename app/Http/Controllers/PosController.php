@@ -8,6 +8,7 @@ use App\Enums\TableStatus;
 use App\Helpers\BillHelper;
 use App\Helpers\TableHelper;
 use App\Jobs\SaveAndPrintBill;
+use App\Models\Bill;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
@@ -87,6 +88,24 @@ class PosController extends Controller
     public function settleTable(Request $request)
     {
         TableHelper::markTableAsPaid($request->tableId);
+
+        $tableId = $request->tableId;
+
+        $table = Table::find($tableId);
+
+        $orders = $table->orders()->where('status', '!=', OrderStatus::Closed)->get();
+
+        foreach ($orders as $order) {
+            $order->status = OrderStatus::Closed;
+            $order->save();
+        }
+
+        $lastBill = Bill::where('table_id', $request->tableId)->latest()->first();
+
+        $lastBill->payment_method = $request->paymentType;
+
+        $lastBill->save();
+
 
         return response()->json(['status' => 'success']);
     }
