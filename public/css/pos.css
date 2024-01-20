@@ -240,3 +240,27 @@ th {
     text-align: center;
     padding: 10px;
 }
+
+.menu-items {
+    background-color: #8ebc8e;
+    width: 80% !important;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+.menu-items button {
+    width: 150px;
+    height: 69px;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category {
+    background-color: #8ea08e;
+    width: 20%;
+}
+
+#order-panel {
+    background-color: #8ea08e;
+}

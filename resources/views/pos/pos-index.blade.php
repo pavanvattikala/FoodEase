@@ -34,7 +34,7 @@
             @foreach ($categoriesWithMenus as $category)
                 <div id="c{{ $category->id }}" class="menu-items flex flex-row hidden">
                     @foreach ($category->menus as $menu)
-                        <button class="w-40 h-20 m-2 p-2 rounded-lg shadow-lg" id="{{ $menu->id }}"
+                        <button class=" rounded-lg shadow-lg" id="{{ $menu->id }}"
                             onclick="addItemToOrder({{ $menu->id }})" data-price="{{ $menu->price }}"
                             data-shortcode="{{ $menu->shortcode }}">{{ $menu->name }}</button>
                         @php
