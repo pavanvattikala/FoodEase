@@ -18,8 +18,8 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::all();
-        return view('admin.menus.index', compact('menus'));
+        $categoriesWithMenu = Category::with('menus')->get();
+        return view('admin.menus.index', compact('categoriesWithMenu'));
     }
 
     /**
@@ -93,6 +93,7 @@ class MenuController extends Controller
             'name' => 'required',
             'price' => 'required'
         ]);
+
         $image = $menu->image;
         if ($request->hasFile('image')) {
             Storage::delete($menu->image);
@@ -107,8 +108,8 @@ class MenuController extends Controller
             'price' => $request->price
         ]);
 
-        if ($request->has('categories')) {
-            $menu->categories()->sync($request->categories);
+        if ($request->has('category')) {
+            $menu->category()->sync($request->category);
         }
         return to_route('admin.menus.index')->with('success', 'Menu updated successfully.');
     }
