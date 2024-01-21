@@ -171,10 +171,14 @@
                                 $tableTotal = $table->orders->where('status', '!=', App\Enums\OrderStatus::Closed)->sum('total');
                             }
 
+                            $isTableToBeBilled = false;
                             $isTableToBePaid = false;
 
                             if ($table->status == App\Enums\TableStatus::Printed) {
                                 $isTableToBePaid = true;
+                            }
+                            if ($table->status != App\Enums\TableStatus::Printed && $table->status != App\Enums\TableStatus::Available) {
+                                $isTableToBeBilled = true;
                             }
                         @endphp
 
@@ -190,12 +194,22 @@
                                 <p>{{ $tableTotal }}</p>
                             @endif
 
-                            @if ($isTableToBePaid == true)
-                                <div>
-                                    <button style="background-color: white; color: black" class="btn"
-                                        id="settle-order"><i class="fas fa-save"></i></button>
-                                </div>
-                            @endif
+                            <div class="flex table-options justify-center align-middle">
+                                @if ($isTableToBeBilled == true)
+                                    <div>
+                                        <button style="background-color: white; color: black" class="btn"
+                                            id="print-table" onclick="printTable({{ $table->id }})"><i
+                                                class="fas fa-print"></i></button>
+                                    </div>
+                                @endif
+                                @if ($isTableToBePaid == true)
+                                    <div>
+                                        <button style="background-color: white; color: black" class="btn"
+                                            id="settle-order"><i class="fas fa-save"></i></button>
+                                    </div>
+                                @endif
+                            </div>
+
                         </div>
                     @endforeach
                 </div>
@@ -244,6 +258,10 @@
         // global variables
 
         var runningTables = [];
+
+        var billTableUrl = "{{ route('pos.table.bill', [], false) }}";
+        var indexUrl = "{{ route('pos.tables', [], false) }}";
+        var settleTableUrl = "{{ route('pos.table.settle', [], false) }}";
 
         // DOM loaded
         $(document).ready(function() {
@@ -332,7 +350,7 @@
                 document.getElementById("paymentModal").style.display = "block";
                 $("#cash").prop("checked", true);
 
-                let tableId = this.parentElement.parentElement.id;
+                let tableId = this.parentElement.parentElement.parentElement.id;
 
                 document.getElementById("paymentTableId").value = tableId;
 
@@ -362,10 +380,13 @@
 
 
         function settleTable(tableId, paymentType) {
-            var csrf_token = $('meta[name="csrf-token"]').attr("content");
-            var settleTableUrl = "{{ route('pos.table.settle', [], false) }}";
-            var indexUrl = "{{ route('pos.tables', [], false) }}";
 
+            if (tableId == null || paymentType == null) {
+                alert("Table Settlement Failed data is missing reload the page and try again");
+                return;
+            }
+            event.stopPropagation();
+            var csrf_token = $('meta[name="csrf-token"]').attr("content");
             $.ajax({
 
                 url: settleTableUrl,
@@ -393,6 +414,35 @@
                 },
             });
 
+        }
+
+        function printTable(tableId) {
+            event.stopPropagation()
+            let csrf_token = $('meta[name="csrf-token"]').attr("content");
+
+            $.ajax({
+                url: billTableUrl,
+                type: "POST",
+                data: {
+                    tableId: tableId,
+                },
+                headers: {
+                    "X-CSRF-TOKEN": csrf_token,
+                },
+                contentType: "application/x-www-form-urlencoded",
+                success: function(response) {
+                    console.log(response);
+                    if (response.status === "success") {
+                        window.location.replace(indexUrl);
+                    } else {
+                        alert("Table Billing Failed");
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    alert("Table Billing Failed");
+                },
+            });
         }
     </script>
 
