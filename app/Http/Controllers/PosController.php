@@ -75,7 +75,7 @@ class PosController extends Controller
     {
         $tableId = $request->tableId;
         $notes = $request->notes ? $request->notes : '';
-        $paymentType = $request->paymentType;
+        $paymentType = $request->paymentType ? $request->paymentType : 'cash';
         $discount = $request->discount ? $request->discount : 0;
 
         $billId = BillHelper::createTableBill($tableId, $request->notes, $paymentType, $discount);
