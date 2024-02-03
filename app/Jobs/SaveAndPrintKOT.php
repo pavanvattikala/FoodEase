@@ -39,10 +39,13 @@ class SaveAndPrintKOT implements ShouldQueue
 
         $kitchenPrinter = config("predefined_options.printer.kitchen");
 
-        $printer = new ThermalPrinter($kitchenPrinter);
+        try {
+            $printer = new ThermalPrinter($kitchenPrinter);
 
-        $printer->printKOT($this->KOT);
-
-        Log::info("KOT Printed " . $this->KOT);
+            $printer->printKOT($this->KOT);
+            Log::info("KOT Printed " . $this->KOT);
+        } catch (\Exception $e) {
+            Log::error("Error in printing KOT " . $e->getMessage());
+        }
     }
 }

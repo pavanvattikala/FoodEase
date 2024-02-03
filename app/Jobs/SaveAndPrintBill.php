@@ -37,10 +37,14 @@ class SaveAndPrintBill implements ShouldQueue
     {
         $billerPrinter = config("predefined_options.printer.pos");
 
-        $printer = new ThermalPrinter($billerPrinter);
+        try {
+            $printer = new ThermalPrinter($billerPrinter);
 
-        $printer->printBill($this->billId);
+            $printer->printBill($this->billId);
 
-        Log::info("Bill Printed " . $this->billId);
+            Log::info("Bill Printed " . $this->billId);
+        } catch (\Exception $e) {
+            Log::error("Error in printing Bill " . $e->getMessage());
+        }
     }
 }
