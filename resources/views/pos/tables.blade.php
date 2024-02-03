@@ -1,4 +1,5 @@
 <x-pos-layout>
+    @section('title', 'Choose Table')
     <style>
         .category-header {
             cursor: pointer;
@@ -125,8 +126,7 @@
             <h1>Table View</h1>
         </div>
         <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
-            <button class="btn h-full" id="reload" onclick="location.reload()"><i class="fa fa-refresh"
-                    aria-hidden="true"></i>
+            <button class="btn h-full" id="reload" onclick="location.reload()"><i class="fa fa-refresh">Refresh</i>
             </button>
             <button class="btn h-full" id="Takeaway">Pick Up</button>
         </div>
