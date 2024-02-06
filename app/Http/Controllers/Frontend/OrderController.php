@@ -108,7 +108,7 @@ class OrderController extends Controller
     public function cart()
     {
         $cart = session()->get('cart', []);
-        $predefinedNotes = config('predefined_options.options');
+        $predefinedNotes = config('predefined_options.notes');
         return view('orders.cart', compact('cart', 'predefinedNotes'));
     }
 
