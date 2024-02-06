@@ -14,7 +14,7 @@ class OrderComponentForWaiter extends Component
      */
     public function __construct($order)
     {
-        $this->order=$order;
+        $this->order = $order;
     }
 
     /**
@@ -24,6 +24,6 @@ class OrderComponentForWaiter extends Component
      */
     public function render()
     {
-        return view('components.order-component-for-waiter');
+        return view('components.order.order-component-for-waiter');
     }
 }
