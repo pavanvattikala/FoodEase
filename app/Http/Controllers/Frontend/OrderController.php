@@ -273,13 +273,21 @@ class OrderController extends Controller
 
     public function orderHistory()
     {
-        $waiterId = auth()->user()->id;
+        /** @var \App\User */
+        $waiter = auth()->user();
+
         $orders = Order::with('orderDetails.menu')
             ->where('created_at', '>=', Carbon::today())
-            ->where('waiter_id', $waiterId)
             ->where('status', OrderStatus::Closed)
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
+
+
+        if ($waiter->hasPermission(1)) {
+            //admin
+            $orders = $orders->get();
+        } else {
+            $orders = $orders->where('waiter_id', $waiter->id)->get();
+        }
 
         return view('orders.order-history', ['orders' => $orders]);
     }
@@ -287,29 +295,41 @@ class OrderController extends Controller
 
     public function runningOrders()
     {
-        $waiterId = auth()->user()->id;
+        /** @var \App\User */
+        $waiter = auth()->user();
+
         $orders = Order::with('orderDetails.menu')
             ->where('created_at', '>=', Carbon::today())
-            ->where('waiter_id', $waiterId)
             ->where('status', '!=', OrderStatus::Closed)
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
 
+        if ($waiter->hasPermission(1)) {
+            //admin
+            $orders = $orders->get();
+        } else {
+            $orders = $orders->where('waiter_id', $waiter->id)->get();
+        }
 
         return view('orders.running-orders', ['orders' => $orders]);
     }
 
     public function readyForPickUp()
     {
-        $waiterId = auth()->user()->id;
+
+        /** @var \App\User */
+        $waiter = auth()->user();
 
         $orders = Order::with('orderDetails.menu')
-            ->where('waiter_id', $waiterId)
             ->where('created_at', '>=', Carbon::today())
             ->where('status', OrderStatus::ReadyForPickup)
-            ->orderBy('updated_at', 'desc')
-            ->get();
+            ->orderBy('updated_at', 'desc');
 
+        if ($waiter->hasPermission(1)) {
+            //admin
+            $orders = $orders->get();
+        } else {
+            $orders = $orders->where('waiter_id', $waiter->id)->get();
+        }
 
         $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
 
