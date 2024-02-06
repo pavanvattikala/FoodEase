@@ -12,12 +12,12 @@ class ModuleHelper
     public static function isKitchenModuleEnabled()
     {
 
-        return false;
+        return true;
     }
 
     public static function isWaiterModuleEnabled()
     {
 
-        return false;
+        return true;
     }
 }
