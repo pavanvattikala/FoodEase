@@ -1,6 +1,6 @@
 @php
     $adminLayout = 'admin-layout';
-    $adminOrderComponent = 'order-component-for-admin';
+    $adminOrderComponent = 'order-running-component-for-admin';
     $waiterLayout = 'waiter-layout';
     $waiterOrderComponent = 'order-component-for-waiter';
 
