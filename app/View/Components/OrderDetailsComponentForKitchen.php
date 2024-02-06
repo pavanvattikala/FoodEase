@@ -23,6 +23,6 @@ class OrderDetailsComponentForKitchen extends Component
      */
     public function render()
     {
-        return view('components.order-details-component-for-kitchen');
+        return view('components.order.order-details-component-for-kitchen');
     }
 }

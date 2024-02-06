@@ -16,7 +16,7 @@ class NewOrderComponentForKitchen extends Component
     public function __construct($order)
     {
         //
-        $this->order=$order;
+        $this->order = $order;
     }
 
     /**
@@ -26,6 +26,6 @@ class NewOrderComponentForKitchen extends Component
      */
     public function render()
     {
-        return view('components.new-order-component-for-kitchen');
+        return view('components.order.new-order-component-for-kitchen');
     }
 }
