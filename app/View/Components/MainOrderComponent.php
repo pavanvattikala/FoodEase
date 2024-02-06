@@ -27,6 +27,6 @@ class MainOrderComponent extends Component
      */
     public function render()
     {
-        return view('components.main-order-component');
+        return view('components.order.main-order-component');
     }
 }
