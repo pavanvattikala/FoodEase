@@ -40,6 +40,7 @@
         var markAsServedRoute = "{{ route('order.mark.as.served', [], false) }}";
         var checkPickUpOrderUpdatesRoute = "{{ route('sync.pickup.orders', [], false) }}";
         var checkOrderUpdatesRoute = "{{ route('sync.pending.orders', [], false) }}";
+        var markAsPreparedRoute = "{{ route('order.mark.as.prepared', [], false) }}";
     </script>
     <script src="{{ asset('js/order.js') }}"></script>
 </x-dynamic-component>

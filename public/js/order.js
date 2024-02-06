@@ -30,6 +30,26 @@ function markAsServed(orderId) {
         },
     });
 }
+function markAsPrepared(orderId) {
+    $.ajax({
+        type: "POST",
+        url: markAsPreparedRoute,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        data: {
+            orderId: orderId,
+        },
+        success: function (response) {
+            console.log(response);
+            if (response.status === "success") {
+                window.location.reload();
+            } else {
+                alert("Something went wrong");
+            }
+        },
+    });
+}
 
 // function checkOrderUpdates() {
 //     var lastOrderId = getLastOrderId();

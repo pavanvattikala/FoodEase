@@ -184,6 +184,7 @@ Route::middleware(['auth'])->name('order.')->prefix('order')->group(function () 
 
 
     Route::post('/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('mark.as.served');
+    Route::post('/mark-as-prepared', [FrontendOrdersController::class, 'markAsPrepared'])->name('mark.as.prepared');
 });
 
 /**

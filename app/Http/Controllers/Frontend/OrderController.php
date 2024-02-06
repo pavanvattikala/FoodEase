@@ -353,4 +353,21 @@ class OrderController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Order served  successfully'], 200);
     }
+    public function markAsPrepared(Request $request)
+    {
+        $orderId = $request->orderId;
+
+        $order = new Order();
+        $order = $order->find($orderId);
+
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        $order->status = OrderStatus::ReadyForPickup;
+
+        $order->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Order Marked As Prepared'], 200);
+    }
 }
