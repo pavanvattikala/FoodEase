@@ -1,4 +1,5 @@
 <x-pos-layout>
+    @section('title', 'POS')
     <link rel="stylesheet" href="{{ asset('css/pos.css') }}">
     <div class="flex flex-row mb-2 mt-2" id="order-main-nav">
         <div class="flex flex-row mw-60" id=items-search-options>
