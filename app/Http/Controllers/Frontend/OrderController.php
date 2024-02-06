@@ -257,7 +257,7 @@ class OrderController extends Controller
     {
         $order = $request->order;
 
-        $status =  session()->get("orderType") == "takeaway" ? OrderStatus::Closed->value : OrderStatus::New->value;
+        $status = OrderStatus::New->value;
         $posSpecificData = collect([
             'customer' => $order["customer"],
             'waiterId' => auth()->user()->id,
@@ -296,7 +296,7 @@ class OrderController extends Controller
             ->get();
 
 
-        return view('orders.order-history', ['orders' => $orders]);
+        return view('orders.running-orders', ['orders' => $orders]);
     }
 
     public function readyForPickUp()
@@ -313,7 +313,7 @@ class OrderController extends Controller
 
         $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
 
-        return view('orders.order-history', compact('orders', 'waiterSyncTime'));
+        return view('orders.ready-for-pickup', compact('orders', 'waiterSyncTime'));
     }
 
     public function markAsServed(Request $request)
