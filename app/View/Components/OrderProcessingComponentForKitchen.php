@@ -25,6 +25,6 @@ class OrderProcessingComponentForKitchen extends Component
      */
     public function render()
     {
-        return view('components.order-processing-component-for-kitchen');
+        return view('components.order.order-processing-component-for-kitchen');
     }
 }
