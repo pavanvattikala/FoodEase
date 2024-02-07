@@ -271,71 +271,6 @@ class OrderController extends Controller
         return $commonData->merge($posSpecificData);
     }
 
-    public function orderHistory()
-    {
-        /** @var \App\User */
-        $waiter = auth()->user();
-
-        $orders = Order::with('orderDetails.menu')
-            ->where('created_at', '>=', Carbon::today())
-            ->where('status', OrderStatus::Closed)
-            ->orderBy('created_at', 'desc');
-
-
-        if ($waiter->hasPermission(1)) {
-            //admin
-            $orders = $orders->get();
-        } else {
-            $orders = $orders->where('waiter_id', $waiter->id)->get();
-        }
-
-        return view('orders.order-history', ['orders' => $orders]);
-    }
-
-
-    public function runningOrders()
-    {
-        /** @var \App\User */
-        $waiter = auth()->user();
-
-        $orders = Order::with('orderDetails.menu')
-            ->where('created_at', '>=', Carbon::today())
-            ->where('status', '!=', OrderStatus::Closed)
-            ->orderBy('created_at', 'desc');
-
-        if ($waiter->hasPermission(1)) {
-            //admin
-            $orders = $orders->get();
-        } else {
-            $orders = $orders->where('waiter_id', $waiter->id)->get();
-        }
-
-        return view('orders.running-orders', ['orders' => $orders]);
-    }
-
-    public function readyForPickUp()
-    {
-
-        /** @var \App\User */
-        $waiter = auth()->user();
-
-        $orders = Order::with('orderDetails.menu')
-            ->where('created_at', '>=', Carbon::today())
-            ->where('status', OrderStatus::ReadyForPickup)
-            ->orderBy('updated_at', 'desc');
-
-        if ($waiter->hasPermission(1)) {
-            //admin
-            $orders = $orders->get();
-        } else {
-            $orders = $orders->where('waiter_id', $waiter->id)->get();
-        }
-
-        $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
-
-        return view('orders.ready-for-pickup', compact('orders', 'waiterSyncTime'));
-    }
-
     public function markAsServed(Request $request)
     {
         $orderId = $request->orderId;
@@ -369,5 +304,47 @@ class OrderController extends Controller
         $order->save();
 
         return response()->json(['status' => 'success', 'message' => 'Order Marked As Prepared'], 200);
+    }
+
+    public function markAsClosed(Request $request)
+    {
+        $orderId = $request->orderId;
+
+        $order = new Order();
+        $order = $order->find($orderId);
+
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
+        }
+
+        $order->status = OrderStatus::Closed;
+
+        $order->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Order Marked As Closed'], 200);
+    }
+
+    public function KOTView()
+    {
+        /** @var \App\User */
+        $waiter = auth()->user();
+
+        $tables = Table::where('status', TableStatus::Running)->get();
+
+        $orders = Order::with('orderDetails.menu')
+            ->where('created_at', '>=', Carbon::today())
+            ->where('status', '!=', OrderStatus::Closed)
+            ->orderBy('created_at', 'desc');
+
+        if ($waiter->hasPermission(1)) {
+            //admin
+            $orders = $orders->get();
+        } else {
+            $orders = $orders->where('waiter_id', $waiter->id)->get();
+        }
+
+        $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
+
+        return view('orders.kot-view', compact('tables', 'orders', 'waiterSyncTime'));
     }
 }
