@@ -175,16 +175,11 @@ Route::middleware(['auth'])->name('order.')->prefix('order')->group(function () 
     //order submit to kitchen
     Route::post('/submit', [FrontendOrdersController::class, 'submit'])->name('submit');
 
-    //orders history
-    Route::get('/history', [FrontendOrdersController::class, 'orderHistory'])->name('history');
-
-    Route::get('/running', [FrontendOrdersController::class, 'runningOrders'])->name('running');
-
-    Route::get('/ready-for-pickup', [FrontendOrdersController::class, 'readyForPickUp'])->name('ready.for.pickup');
-
+    Route::get('/KOT-view', [FrontendOrdersController::class, 'KOTView'])->name('KOT.view');
 
     Route::post('/mark-as-served', [FrontendOrdersController::class, 'markAsServed'])->name('mark.as.served');
     Route::post('/mark-as-prepared', [FrontendOrdersController::class, 'markAsPrepared'])->name('mark.as.prepared');
+    Route::post('/mark-as-closed', [FrontendOrdersController::class, 'markAsClosed'])->name('mark.as.closed');
 });
 
 /**
