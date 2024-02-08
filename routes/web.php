@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\PosController;
-
+use App\Http\Controllers\RedirectController;
 
 /**
  * -----------------------------------------------------------------------------------------------------------------------------
@@ -42,9 +42,8 @@ Route::get('/thankyou', [WelcomeController::class, 'thankyou'])->name('thankyou'
  * Routes for Dashboard
  * -----------------------------------------------------------------------------------------------------------------------------
  */
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+
+Route::middleware(['auth'])->get('/dashboard', [RedirectController::class, 'dashboard'])->name('dashboard');
 
 /**
  * -----------------------------------------------------------------------------------------------------------------------------
@@ -67,7 +66,7 @@ Route::name('request.')->prefix('request')->group(function () {
 Route::middleware(['auth', 'waiter'])->name('waiter.')->prefix('waiter')->group(function () {
 
     //waiter home page 
-    Route::get('/', [WaiterController::class, 'index'])->name('home');
+    Route::get('/', [WaiterController::class, 'index'])->name('index');
 
     Route::get('/choosetable', [WaiterController::class, 'chooseTable'])->name('choose.table');
 

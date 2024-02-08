@@ -14,31 +14,33 @@
 <body class="font-sans antialiased">
     <div class="flex-col">
         {{-- main nav --}}
-        <div
-            class="flex flex-row justify-around w-full pt-5 text-gray-700 bg-slate-100 dark:text-gray-200 dark:bg-gray-800">
-            <nav class="flex-grow px-4 pb-4 ">
-                <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                    {{ __('FoodEase') }}
-                </x-pos-nav-link>
-                <x-pos-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
-                    {{ __('New Order') }}
-                </x-pos-nav-link>
-            </nav>
-            <nav class="align-middle justify-center flex-grow px-4 pb-4 ">
-                <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
-                    {{ __('Tables') }}
-                </x-pos-nav-link>
-                <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                    {{ __('Categories') }}
-                </x-pos-nav-link>
-                <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                    {{ __('Categories') }}
-                </x-pos-nav-link>
-                <x-pos-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                    {{ __('Categories') }}
-                </x-pos-nav-link>
-            </nav>
+        <div class="flex">
+            <img src="{{ asset('FoodEase.png') }}" alt="foodease logo" width="250px" height="100px"
+                class="dark:bg-gray-800">
+            <div class="flex flex-row justify-around  w-full pt-5 text-gray-700 bg-slate-100 dark:text-gray-200 dark:bg-gray-800"
+                style="align-items: flex-end">
+                <nav class="flex flex-grow px-4 pb-4  items-end">
 
+                    <x-pos-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
+                        {{ __('New Order') }}
+                    </x-pos-nav-link>
+                </nav>
+                <nav class="align-middle justify-center flex-grow px-4 pb-4 ">
+                    <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
+                        {{ __('Tables') }}
+                    </x-pos-nav-link>
+                    <x-pos-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
+                        {{ __('Bills') }}
+                    </x-pos-nav-link>
+                    <x-pos-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
+                        {{ __('KOT View') }}
+                    </x-pos-nav-link>
+                    <x-pos-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('DashBoard') }}
+                    </x-pos-nav-link>
+                </nav>
+
+            </div>
         </div>
         <main class="m-2 p-8 w-full">
             <div>
