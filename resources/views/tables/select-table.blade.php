@@ -1,5 +1,10 @@
 <x-waiter-layout>
     <style>
+        main {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
         .modal-content {
             border-radius: 10px;
         }
@@ -92,7 +97,7 @@
                     console.log('table is selected:', response.message);
 
                     if (response.message == "true") {
-                        alert("Table " + tableId + " is selected");
+                        //alert("Table " + tableId + " is selected");
                         window.location.replace(" {{ route('order.step.one') }}");
                     } else {
                         alert("You cannot select it");
@@ -155,7 +160,7 @@
                     console.log('table is selected:', response.message);
 
                     if (response.message == "true") {
-                        alert("Table " + tableId + " is selected");
+                        // alert("Table " + tableId + " is selected");
                         window.location.replace(" {{ route('order.step.one') }}");
                     } else {
                         alert("You cannot select it");
@@ -187,7 +192,7 @@
                 success: function(response) {
 
                     if (response.status == "success") {
-                        alert("Table " + tableId + " is submitted for billing");
+                        //alert("Table " + tableId + " is submitted for billing");
                         window.location.replace(" {{ route('order.step.one') }}");
                     } else {
                         alert("You cannot submit it");
