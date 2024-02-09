@@ -47,17 +47,9 @@
     $waiterLayout = 'waiter-layout';
     $waiterOrderComponent = 'order-component-for-waiter';
 
-    $currentLayout = auth()
-        ->user()
-        ->hasPermission(1)
-        ? $adminLayout
-        : $waiterLayout;
+    $currentLayout = auth()->user()->hasPermission(1) ? $adminLayout : $waiterLayout;
 
-    $currentOrderComponent = auth()
-        ->user()
-        ->hasPermission(1)
-        ? $adminOrderComponent
-        : $waiterOrderComponent;
+    $currentOrderComponent = auth()->user()->hasPermission(1) ? $adminOrderComponent : $waiterOrderComponent;
 @endphp
 {{-- choosing dynamic layouts based on user permissions --}}
 <x-dynamic-component :component="$currentLayout">
