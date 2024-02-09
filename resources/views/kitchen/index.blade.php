@@ -1,6 +1,27 @@
 <x-kitchen-layout>
+    <style>
+        .pending-orders {
+            min-width: 20%;
+            max-width: 20%;
+
+        }
+
+        .processing-orders {
+            min-width: 60%;
+
+            max-width: 60%;
+
+        }
+
+        .items-counts {
+            min-width: 20%;
+
+            max-width: 20%;
+
+        }
+    </style>
     <div class="container flex flex-row">
-        <div class="container max-w-xs px-4 pending-orders">
+        <div class="container  px-4 pending-orders">
             <h1 class="text-2xl font-semibold w-full text-center mb-4">Pending Orders</h1>
             @if ($newOrders->isEmpty())
                 <p class="text-gray-500 w-full">No order available.</p>
@@ -10,7 +31,7 @@
                 @endforeach
             @endif
         </div>
-        <div class="container max-w-max px-2 processing-orders">
+        <div class="container px-2 processing-orders">
             <h1 class="text-2xl font-semibold w-full align-top text-center">Current Orders</h1>
             <div class="flex flex-wrap">
                 @if ($processingOrders->isEmpty())
@@ -23,7 +44,7 @@
                 @endif
             </div>
         </div>
-        <div class="items-counts" style="min-width: 15rem;">
+        <div class="items-counts">
             <h1 class="text-2xl font-semibold w-full align-top text-center">Items Count</h1>
             <div class="flex flex-col pt-4">
 

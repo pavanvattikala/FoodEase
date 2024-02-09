@@ -77,11 +77,12 @@ class KitchenController extends Controller
 
         $order = Order::with('orderDetails.menu')
             ->with('waiter')
+            ->with('table')
             ->where('KOT', $KOT)
             ->orderBy('created_at')
             ->first();
 
-        $html = view('components.new-order-component-for-kitchen', compact('order'))->render();
+        $html = view('components.order.new-order-component-for-kitchen', compact('order'))->render();
 
         return response()->json(['html' => $html]);
     }
