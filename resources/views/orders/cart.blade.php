@@ -91,7 +91,7 @@
                 tableId: $("#tableId").text(),
             }
 
-            const redirectUrl = "{{ route('order.step.one', [], false) }}";
+            const redirectUrl = "{{ route('waiter.choose.table', [], false) }}";
 
             var csrf_token = "{{ csrf_token() }}";
 
@@ -103,7 +103,8 @@
                 },
                 data: {
                     order: order,
-                    source: 'waiter'
+                    source: 'waiter',
+                    printKOT: true
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 success: function(response) {
