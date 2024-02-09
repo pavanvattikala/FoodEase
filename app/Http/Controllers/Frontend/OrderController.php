@@ -36,7 +36,12 @@ class OrderController extends Controller
 
         $cart = session()->get('cart', []);
 
-        return view('orders.step-one', compact('categoriesWithMenus', 'cart'));
+        $restaurantDetails = RestaurantHelper::getCachedRestaurantDetails();
+
+        $currency = $restaurantDetails->currency_symbol;
+
+
+        return view('orders.step-one', compact('categoriesWithMenus', 'cart', 'currency'));
     }
 
     public function addToCart(Request $request)
