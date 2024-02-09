@@ -70,6 +70,15 @@ class TableHelper
 
         $table->status = TableStatus::Printed;
 
+        //get orders
+
+        $orders = Order::where('table_id', $tableId)->where('status', '!=', 'closed')->get();
+
+        foreach ($orders as $order) {
+            $order->status = 'served';
+            $order->save();
+        }
+
         $table->save();
     }
 
