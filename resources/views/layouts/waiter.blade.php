@@ -36,14 +36,8 @@
                 <x-waiter-nav-link :href="route('waiter.choose.table')" :active="request()->routeIs('waiter.choose.table')">
                     {{ __('Create Order') }}
                 </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('order.running')" :active="request()->routeIs('order.running')">
-                    {{ __('Running Orders') }}
-                </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('order.history')" :active="request()->routeIs('order.history')">
-                    {{ __('Order History') }}
-                </x-waiter-nav-link>
-                <x-waiter-nav-link :href="route('order.ready.for.pickup')" :active="request()->routeIs('order.ready.for.pickup')">
-                    {{ __('Ready For Pickup') }}
+                <x-waiter-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
+                    {{ __('KOT View') }}
                 </x-waiter-nav-link>
                 <x-user-dropdown />
             </nav>
