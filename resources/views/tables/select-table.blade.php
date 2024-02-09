@@ -38,9 +38,10 @@
                                     <p>Guests: {{ $table->guest_number }}</p>
                                 </div>
                             </div>
-                        @elseif($table->status === App\Enums\TableStatus::Unavaliable)
-                            <div onclick="openModel({{ $table->id }})" id="table{{ $table->id }}"
-                                style="margin-right: 0.5rem" class="w-30 p-4 bg-red-500 text-center rounded">
+                        @elseif($table->status === App\Enums\TableStatus::Running)
+                            <div onclick="reOrder({{ $table->id }})" id="table{{ $table->id }}"
+                                style="margin-right: 0.5rem; background-color: blue"
+                                class="w-40 m-4 p-4 border rounded cursor-pointer text-center  opacity-40 text-white">
                                 <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
                                 <div class="flex flex-wrap">
                                     <p class="text-white" id="timer{{ $table->id }}"></p>
@@ -133,7 +134,7 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            getAllTables();
+            // getAllTables();
 
             document.getElementById('modal-window').classList.add('hidden');
         });
