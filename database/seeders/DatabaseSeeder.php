@@ -14,7 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        $this->call(Admin::class);
+        //seed users
+        $this->call(UserSeeder::class);
+        //seed restaurant
+        $this->call(RestaurantSeeder::class);
+        //seed menus
+        $this->call(MenuSeeder::class);
+        //seed tables
+        $this->call(TableSeeder::class);
     }
 }
