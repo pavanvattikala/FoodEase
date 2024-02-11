@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('guest_number');
             $table->string('status')->default('avaliable');
             $table->string('location');
+            $table->timestamp('taken_at')->nullable();
             $table->timestamps();
         });
     }
