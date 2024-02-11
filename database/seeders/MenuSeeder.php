@@ -44,25 +44,28 @@ class MenuSeeder extends Seeder
             ];
 
             foreach ($specialsMenuItems as $menuItem) {
-                Menu::create([
+                $menu = Menu::create([
                     'name' => $menuItem['name'],
+                    'shortcode' => $menuItem['shortcode'],
                     'price' => $menuItem['price'],
-                    'category_id' => 1,
                 ]);
+                $menu->category()->attach(1);
             }
             foreach ($vegMenuItems as $menuItem) {
-                Menu::create([
+                $menu = Menu::create([
                     'name' => $menuItem['name'],
+                    'shortcode' => $menuItem['shortcode'],
                     'price' => $menuItem['price'],
-                    'category_id' => 2,
                 ]);
+                $menu->category()->attach(2);
             }
             foreach ($nonVegMenuItems as $menuItem) {
-                Menu::create([
+                $menu = Menu::create([
                     'name' => $menuItem['name'],
+                    'shortcode' => $menuItem['shortcode'],
                     'price' => $menuItem['price'],
-                    'category_id' => 3,
                 ]);
+                $menu->category()->attach(3);
             }
         }
     }
