@@ -28,4 +28,7 @@ echo "Installation completed. Don't forget to configure your web server and set 
 
 echo "dont forget to configure pusher in .env file"
 
+read -p "Press Enter to exit..."
+
+
 exit 0
