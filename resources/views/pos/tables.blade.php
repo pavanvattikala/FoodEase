@@ -196,14 +196,13 @@
 
                             <div class="flex table-options justify-center align-middle">
                                 @if ($isTableToBeBilled == true)
-                                    <div>
+                                    <div onclick="printTable({{ $table->id }})">
                                         <button style="background-color: white; color: black" class="btn"
-                                            id="print-table" onclick="printTable({{ $table->id }})"><i
-                                                class="fas fa-print"></i></button>
+                                            id="print-table"><i class="fas fa-print"></i></button>
                                     </div>
                                 @endif
                                 @if ($isTableToBePaid == true)
-                                    <div>
+                                    <div onclick="setttleTable({{ $table->id }})">
                                         <button style="background-color: white; color: black" class="btn"
                                             id="settle-order"><i class="fas fa-save"></i></button>
                                     </div>
@@ -342,19 +341,14 @@
             return elapsedString;
         }
 
-        // Payment Modal Open
-        document
-            .getElementById("settle-order")
-            .addEventListener("click", function() {
-                event.stopPropagation()
-                document.getElementById("paymentModal").style.display = "block";
-                $("#cash").prop("checked", true);
+        // Payment Modal Open or settle table
 
-                let tableId = this.parentElement.parentElement.parentElement.id;
-
-                document.getElementById("paymentTableId").value = tableId;
-
-            });
+        function setttleTable(tableId) {
+            event.stopPropagation()
+            document.getElementById("paymentModal").style.display = "block";
+            $("#cash").prop("checked", true);
+            document.getElementById("paymentTableId").value = tableId;
+        }
 
         // Payment Modal Close
         document
