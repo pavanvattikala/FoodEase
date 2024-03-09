@@ -337,7 +337,7 @@ class OrderController extends Controller
         $tables = Table::where('status', TableStatus::Running)->get();
 
         $orders = Order::with('orderDetails.menu')
-            ->where('created_at', '>=', Carbon::today())
+            // ->where('created_at', '>=', Carbon::today())
             ->where('status', '!=', OrderStatus::Closed)
             ->orderBy('created_at', 'desc');
 
