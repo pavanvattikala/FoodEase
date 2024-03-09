@@ -3,7 +3,11 @@
     <div class="flex">
         <div class="w-1/4">
             <p class="mb-2 px-4 order-time">{{ $order->created_at->format('g:i a') }}</p>
-            <p class="mb-2 px-4">Table: {{ $order->table->name }}</p>
+            @if ($order->table)
+                <p class="mb-2 px-4">Table: {{ $order->table->name }}</p>
+            @else
+                <p class="mb-2 px-4">Takeaway</p>
+            @endif
         </div>
         <div class="w-3/4">
             <p class="mb-2 px-4 waiter-name">{{ $order->waiter->name }}</p>
