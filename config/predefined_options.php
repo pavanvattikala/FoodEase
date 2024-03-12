@@ -20,7 +20,7 @@ return [
         TableStatus::Unavaliable->value => 'red',
     ],
     'printer' => [
-        'pos' => 'home',
-        'kitchen' => 'home'
+        'pos' => env('BILLER_PRINTER', 'biller'),
+        'kitchen' => env('KITCHEN_PRINTER', 'biller'),
     ]
 ];
