@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +29,14 @@ class LoginRequest extends FormRequest
      */
     public function rules()
     {
+        // If 'pin' is provided, no need for 'email' and 'password'
+        if ($this->filled('pin')) {
+            return [
+                'pin' => ['required', 'string'],
+            ];
+        }
+
+        // Otherwise, require 'email' and 'password'
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
@@ -43,18 +52,48 @@ class LoginRequest extends FormRequest
      */
     public function authenticate()
     {
-        $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $this->ensureIsNotRateLimited();
+        // If 'pin' is provided, authenticate with pin
+        $this->filled('pin') ? $this->authenticateWithPin() : $this->authenticateWithEmail();
+
+        RateLimiter::clear($this->throttleKey());
+    }
+    public function authenticateWithPin()
+    {
+        // Retrieve the user by the provided pin
+        $user = User::where('pin', $this->input('pin'))->first();
+
+        if ($user->hasPermission(1)) {
+            $this->ensureIsNotRateLimited();
+            throw ValidationException::withMessages([
+                'email' => trans('login via email and password for extra secuirty'),
+            ]);
+        }
+
+        // Check if the user exists and if the PIN matches
+        if (!$user) {
+            // If the user doesn't exist, or if the PIN doesn't match, throw a validation exception
+            throw ValidationException::withMessages([
+                'pin' => trans('auth.failed'),
+            ]);
+        }
+
+        // Log in the user
+        Auth::login($user, $this->boolean('remember'));
+    }
+
+    public function authenticateWithEmail()
+    {
+        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
-
-        RateLimiter::clear($this->throttleKey());
     }
+
 
     /**
      * Ensure the login request is not rate limited.
@@ -65,7 +104,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited()
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -88,6 +127,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey()
     {
-        return Str::lower($this->input('email')).'|'.$this->ip();
+        return Str::lower($this->input('email')) . '|' . $this->ip();
     }
 }
