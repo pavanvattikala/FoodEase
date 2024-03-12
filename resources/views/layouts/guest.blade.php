@@ -9,15 +9,32 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     @include('layouts.scripts')
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1 0 auto;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="bg-white shadow-md" x-data="{ isOpen: false }">
+<body class="font-sans text-gray-900 antialiased">
+    <div class="bg-white shadow-md">
         <nav class="container px-6 py-8 mx-auto md:flex md:justify-between md:items-center">
             <div class="flex items-center justify-between">
                 <a class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 md:text-2xl hover:text-green-400"
                     href="/">
-                    Srinu Hotels
+                    Food Ease
                 </a>
                 <!-- Mobile menu button -->
                 <div @click="isOpen = !isOpen" class="flex md:hidden">
@@ -44,11 +61,11 @@
                     href="{{ route('menus.index') }}">Our Menu</a>
                 <a class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 hover:text-green-400"
                     href="{{ route('reservations.step.one') }}">Make Reservation</a>
-        
+
             </div>
         </nav>
     </div>
-    <div class="font-sans text-gray-900 antialiased min-h-screen">
+    <div class="content bg-gray-100">
         {{ $slot }}
     </div>
     <footer class="bg-gray-800 border-t border-gray-200">
