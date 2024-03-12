@@ -26,12 +26,15 @@
                     </x-pos-nav-link>
                 </nav>
                 <nav class="align-middle justify-center flex-grow px-4 pb-4 ">
-                    <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
-                        {{ __('Tables') }}
-                    </x-pos-nav-link>
-                    <x-pos-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
-                        {{ __('Bills') }}
-                    </x-pos-nav-link>
+                    @if (auth()->user()->hasPermission(App\Enums\UserRole::Admin))
+                        <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
+                            {{ __('Tables') }}
+                        </x-pos-nav-link>
+                        <x-pos-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
+                            {{ __('Bills') }}
+                        </x-pos-nav-link>
+                    @endif
+
                     <x-pos-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
                         {{ __('KOT View') }}
                     </x-pos-nav-link>
