@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('bill_id');
             $table->string('customer_name')->nullable();
-            $table->unsignedBigInteger('table_id');
+            $table->unsignedBigInteger('table_id')->nullable();
             $table->foreign('table_id')->references('id')->on('tables')->onDelete('cascade')->nullable();
             $table->decimal('bill_amount', 8, 2);
             $table->decimal('discount', 2, 2)->default(0.0);
