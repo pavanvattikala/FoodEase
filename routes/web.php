@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\BillerController;
 use App\Http\Controllers\Frontend\CategoryController as FrontendCategoryController;
 use App\Http\Controllers\Frontend\MenuController as FrontendMenuController;
 use App\Http\Controllers\Frontend\ReservationController as FrontendReservationController;
@@ -121,6 +122,17 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
 
     Route::get('/KOTs', [KOTController::class, 'displayKOTs'])->name('KOTs');
 });
+
+/**
+ * -----------------------------------------------------------------------------------------------------------------------------
+ * Routes for Biller
+ * -----------------------------------------------------------------------------------------------------------------------------
+ */
+
+Route::middleware(['auth', 'biller'])->name('biller.')->prefix('biller')->group(function () {
+    Route::get('/', [BillerController::class, 'index'])->name('index');
+});
+
 /**
  * -----------------------------------------------------------------------------------------------------------------------------
  * Routes for Restaurant
@@ -140,7 +152,7 @@ Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')-
  */
 
 
-Route::middleware(['auth', 'admin'])->name('pos.')->prefix('pos')->group(function () {
+Route::middleware(['auth', 'biller'])->name('pos.')->prefix('pos')->group(function () {
     Route::redirect('/', '/pos/tables')->name('index');
     Route::get('/index', [PosController::class, 'index'])->name('main');
     Route::get('/tables', [PosController::class, 'tables'])->name('tables');

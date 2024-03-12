@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\Admin;
+use App\Http\Middleware\BillerMiddleware;
 use App\Http\Middleware\KitchenMiddleware;
 use App\Http\Middleware\WaiterMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -68,6 +69,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => Admin::class,
         'waiter' => WaiterMiddleware::class,
-        'kitchen'=> KitchenMiddleware::class
+        'kitchen' => KitchenMiddleware::class,
+        'biller' => BillerMiddleware::class
     ];
 }
