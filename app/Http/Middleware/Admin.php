@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\EmployeeCategory;
@@ -17,13 +18,14 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        $adminCategory = EmployeeCategory::where('name',"admin")->first()->id;
+        $user = $request->user();
 
-        if (auth()->user()->category_id == $adminCategory) {
+        if ($user->hasPermission(UserRole::Admin)) {
             return $next($request);
         }
 
-        abort(403, 'Unauthorized access.'); 
+        // Redirect or respond as needed for non-waiter users
+        abort(403, 'Unauthorized access.'); // You can customize the response as needed
 
     }
 }

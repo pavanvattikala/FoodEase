@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -41,10 +42,15 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'category_id' => UserRole::class,
     ];
 
-    public function hasPermission($role)
+    public function hasPermission(UserRole $role)
     {
+        // if current user is admin
+        if ($this->category_id == UserRole::Admin) {
+            return true;
+        }
         return $this->category_id  == $role;
     }
 }

@@ -43,13 +43,25 @@
 </style>
 @php
     $adminLayout = 'admin-layout';
+    $billerLayout = 'biller-layout';
     $adminOrderComponent = 'order-running-component-for-admin';
     $waiterLayout = 'waiter-layout';
     $waiterOrderComponent = 'order-component-for-waiter';
 
-    $currentLayout = auth()->user()->hasPermission(1) ? $adminLayout : $waiterLayout;
+    $user = auth()->user();
 
-    $currentOrderComponent = auth()->user()->hasPermission(1) ? $adminOrderComponent : $waiterOrderComponent;
+    if ($user->hasPermission(App\Enums\UserRole::Admin)) {
+        $currentLayout = $adminLayout;
+    } elseif ($user->hasPermission(App\Enums\UserRole::Biller)) {
+        $currentLayout = $billerLayout;
+    } else {
+        $currentLayout = $waiterLayout;
+    }
+    $currentOrderComponent = auth()
+        ->user()
+        ->hasPermission(App\Enums\UserRole::Biller)
+        ? $adminOrderComponent
+        : $waiterOrderComponent;
 @endphp
 {{-- choosing dynamic layouts based on user permissions --}}
 <x-dynamic-component :component="$currentLayout">

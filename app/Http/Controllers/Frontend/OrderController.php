@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentMethods;
 use App\Enums\TableStatus;
+use App\Enums\UserRole;
 use App\Events\OrderSubmittedToKitchen;
 use App\Helpers\BillHelper;
 use App\Helpers\KitchenHelper;
@@ -341,7 +342,7 @@ class OrderController extends Controller
             ->where('status', '!=', OrderStatus::Closed)
             ->orderBy('created_at', 'desc');
 
-        if ($waiter->hasPermission(1)) {
+        if ($waiter->hasPermission(UserRole::Biller)) {
             //admin
             $orders = $orders->get();
         } else {

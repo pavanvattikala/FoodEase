@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
@@ -64,7 +65,7 @@ class LoginRequest extends FormRequest
         // Retrieve the user by the provided pin
         $user = User::where('pin', $this->input('pin'))->first();
 
-        if ($user->hasPermission(1)) {
+        if ($user->hasPermission(UserRole::Admin)) {
             $this->ensureIsNotRateLimited();
             throw ValidationException::withMessages([
                 'email' => trans('login via email and password for extra secuirty'),
