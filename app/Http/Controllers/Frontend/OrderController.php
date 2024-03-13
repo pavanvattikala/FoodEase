@@ -170,9 +170,14 @@ class OrderController extends Controller
             }
         }
 
-        if (ModuleHelper::isKitchenModuleEnabled()) {
-            event(new OrderSubmittedToKitchen($kot));
+         if (ModuleHelper::isKitchenModuleEnabled()) {
+            try {
+                event(new OrderSubmittedToKitchen($kot));
+            } catch (Exception) {
+                Log::error("Unable to connect with pusher api - internet issue");
+            }
         }
+
 
 
         if ($printKOTEnabled) {
