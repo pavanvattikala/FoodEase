@@ -11,11 +11,11 @@ class ModuleHelper
 
     public static function isKitchenModuleEnabled()
     {
-        return env('KITCHEN_MODULE_ENABLED', false);
+        return boolval(env('KITCHEN_MODULE_ENABLED', false));
     }
 
     public static function isWaiterModuleEnabled()
     {
-        return env('WAITER_MODULE_ENABLED ', false);
+        return boolval(env('WAITER_MODULE_ENABLED ', false));
     }
 }
