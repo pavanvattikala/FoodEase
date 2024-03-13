@@ -1500,7 +1500,11 @@ var Echo = /*#__PURE__*/function () {
   }, {
     key: "connect",
     value: function connect() {
-      if (this.options.broadcaster == 'pusher') {
+      if (this.options.broadcaster == 'reverb') {
+        this.connector = new PusherConnector(_extends(_extends({}, this.options), {
+          cluster: ''
+        }));
+      } else if (this.options.broadcaster == 'pusher') {
         this.connector = new PusherConnector(this.options);
       } else if (this.options.broadcaster == 'socket.io') {
         this.connector = new SocketIoConnector(this.options);
@@ -6368,7 +6372,7 @@ __webpack_require__.r(__webpack_exports__);
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: "pusher",
-  key: "b5d4d505a2f2eb459fe1",
+  key: "24926435665875e208a7",
   cluster: "ap2",
   forceTLS: true
 });
