@@ -24,7 +24,9 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Table;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -170,10 +172,10 @@ class OrderController extends Controller
             }
         }
 
-         if (ModuleHelper::isKitchenModuleEnabled()) {
+        if (ModuleHelper::isKitchenModuleEnabled()) {
             try {
                 event(new OrderSubmittedToKitchen($kot));
-            } catch (Exception) {
+            } catch (Exception $e) {
                 Log::error("Unable to connect with pusher api - internet issue");
             }
         }
