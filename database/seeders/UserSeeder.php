@@ -27,6 +27,10 @@ class UserSeeder extends Seeder
         EmployeeCategory::create([
             'name' => 'kitchen'
         ]);
+        EmployeeCategory::create([
+            'name' => 'biller'
+        ]);
+
 
 
         User::create([
@@ -55,6 +59,15 @@ class UserSeeder extends Seeder
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
             'category_id' => 3
+        ]);
+        User::create([
+            'name' => 'Biller',
+            'email' => 'biller@gmail.com',
+            'pin' => '4',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+            'category_id' => 4
         ]);
     }
 }
