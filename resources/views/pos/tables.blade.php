@@ -168,7 +168,9 @@
                             $tableColor = $table_colors[$table->status->value];
 
                             if ($table->taken_at != null) {
-                                $tableTotal = $table->orders->where('status', '!=', App\Enums\OrderStatus::Closed)->sum('total');
+                                $tableTotal = $table->orders
+                                    ->where('status', '!=', App\Enums\OrderStatus::Closed)
+                                    ->sum('total');
                             }
 
                             $isTableToBeBilled = false;
@@ -177,14 +179,16 @@
                             if ($table->status == App\Enums\TableStatus::Printed) {
                                 $isTableToBePaid = true;
                             }
-                            if ($table->status != App\Enums\TableStatus::Printed && $table->status != App\Enums\TableStatus::Available) {
+                            if (
+                                $table->status != App\Enums\TableStatus::Printed &&
+                                $table->status != App\Enums\TableStatus::Available
+                            ) {
                                 $isTableToBeBilled = true;
                             }
                         @endphp
 
                         <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
-                            class="table-item opacity-40 text-white text-center"
-                            style="background-color: {{ $tableColor }}"
+                            class="table-item text-white text-center" style="background-color: {{ $tableColor }}"
                             data-table-staus="{{ $table->status->value }}">
 
                             <p id="elapsed-time" data-taken-at="{{ $table->taken_at }}"> </p>
