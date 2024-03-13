@@ -142,4 +142,10 @@ class BillHelper
         }
         return $orderDetails;
     }
+
+    public static function getLatestBillId($tableId)
+    {
+        $bill = Bill::where('table_id', $tableId)->latest()->first();
+        return $bill->id;
+    }
 }

@@ -38,6 +38,16 @@ class ThermalPrinter
         $billPrinter = new BillPrinter($this->printer, $billDetails, $orderDetails);
         $billPrinter->print();
     }
+    public function printDuplicateBill($billId)
+    {
+        $billDetails = Bill::where('id', $billId)
+            ->with('table')
+            ->first();
+        $orderDetails =  BillHelper::getBillOrders($billId);
+
+        $billPrinter = new BillPrinter($this->printer, $billDetails, $orderDetails);
+        $billPrinter->printDuplicate();
+    }
 
     public function printKOT($kot)
     {

@@ -78,6 +78,13 @@ class PosController extends Controller
         $paymentType = $request->paymentType ? $request->paymentType : 'cash';
         $discount = $request->discount ? $request->discount : 0;
 
+        if ($request->has('printDuplicateBill')) {
+            $billId = BillHelper::getLatestBillId($tableId);
+            SaveAndPrintBill::dispatch($billId, $printDuplicateBill = true);
+
+            return response()->json(['status' => 'success', 'message' => 'Duplicate bill printed']);
+        }
+
         $billId = BillHelper::createTableBill($tableId, $request->notes, $paymentType, $discount);
 
         SaveAndPrintBill::dispatch($billId);

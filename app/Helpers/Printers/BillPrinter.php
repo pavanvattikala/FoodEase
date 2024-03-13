@@ -78,4 +78,10 @@ class BillPrinter
 
         $this->printer->close();
     }
+
+    public function printDuplicate(): Void
+    {
+        // implment logic to print duplicate bill
+        $this->print();
+    }
 }

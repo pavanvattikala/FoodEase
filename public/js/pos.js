@@ -350,8 +350,11 @@ $("#bill-order").click(function () {
     let printBill = true;
 
     hasNewOrders = orderItems.length > 0;
+    let isTableToBePaid = $("#settle-order").length > 0;
     if (hasNewOrders) {
         saveOrder(printBill, false);
+    } else if (isTableToBePaid) {
+        printDuplicateBill();
     } else {
         billTable();
     }
@@ -498,4 +501,35 @@ $("#settle-order").click(function () {
 
 // Save Order Functions End
 
+// Print Duplicate Bill
+function printDuplicateBill() {
+    var tableId = $("#table").data("tableid");
+    var csrf_token = $('meta[name="csrf-token"]').attr("content");
+
+    $.ajax({
+        url: billTableUrl,
+        type: "POST",
+        data: {
+            tableId: tableId,
+            printDuplicateBill: true,
+        },
+        headers: {
+            "X-CSRF-TOKEN": csrf_token,
+        },
+        contentType: "application/x-www-form-urlencoded",
+        success: function (response) {
+            console.log(response);
+            if (response.status === "success") {
+                $("#cancel-order").click();
+                window.location.replace(indexUrl);
+            } else {
+                alert("Bill Print Failed");
+            }
+        },
+        error: function (error) {
+            console.log(error);
+            alert("Bill Print Failed");
+        },
+    });
+}
 //------------------------------------------------------------------------------------------------------------------------------

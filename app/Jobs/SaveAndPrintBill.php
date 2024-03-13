@@ -17,15 +17,17 @@ class SaveAndPrintBill implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $billId;
+    private $printDuplicateBill;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($billId)
+    public function __construct($billId, $printDuplicateBill = false)
     {
         $this->billId = $billId;
+        $this->printDuplicateBill = $printDuplicateBill;
     }
 
     /**
@@ -40,7 +42,15 @@ class SaveAndPrintBill implements ShouldQueue
         try {
             $printer = new ThermalPrinter($billerPrinter);
 
-            $printer->printBill($this->billId);
+            if ($this->printDuplicateBill) {
+                Log::info("Bill Printed Duplicate " . $this->billId);
+                $printer->printDuplicateBill($this->billId);
+            } else {
+
+                Log::info("Bill Printed " . $this->billId);
+                $printer->printBill($this->billId);
+            }
+
 
             Log::info("Bill Printed " . $this->billId);
         } catch (\Exception $e) {
