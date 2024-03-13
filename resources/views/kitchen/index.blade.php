@@ -67,8 +67,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            window.Echo.channel('orderSubmitted')
-                .listen('OrderSubmittedToKitchen', (event) => {
+            window.Echo.channel('order-submitted-to-kitchen')
+                .listen('.OrderSubmittedToKitchen', (event) => {
                     console.log('KOT submitted to kitchen:', event.kot);
                     const url = '{{ route('kitchen.get.new.order.component', [], false) }}';
                     var csrf_token = "{{ csrf_token() }}";

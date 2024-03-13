@@ -28,16 +28,16 @@ class OrderSubmittedToKitchen implements ShouldBroadcast
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
-        return new Channel('orderSubmitted');
+        return [
+            new Channel('order-submitted-to-kitchen'),
+        ];
     }
 
-    public function broadcastWith()
+    public function broadcastAs(): string
     {
 
-        return [
-            'kot' => $this->kot,
-        ];
+        return 'OrderSubmittedToKitchen';
     }
 }

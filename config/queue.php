@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => "sync", //env('QUEUE_CONNECTION', 'sync'),
 
     /*
     |--------------------------------------------------------------------------
