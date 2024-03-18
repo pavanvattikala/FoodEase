@@ -6,9 +6,10 @@
         }
 
         .category-window {
-            padding: 10px;
-            height: 370px !important;
-            width: 46% !important;
+            margin: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
         }
 
         .menus-body {
@@ -51,7 +52,7 @@
                     @foreach ($category->menus as $menu)
                         <tbody class="menus-body">
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td class="py-4 px-6  text-sm font-medium text-gray-900 whitespace-pre dark:text-white">
+                                <td class="py-4 px-6 text-sm font-medium text-gray-900  dark:text-white">
                                     {{ $menu->name }}
                                 </td>
                                 <td

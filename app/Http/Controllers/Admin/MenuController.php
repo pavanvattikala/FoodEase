@@ -61,6 +61,7 @@ class MenuController extends Controller
         ]);
 
         if ($request->has('category')) {
+            dd($request->category);
             $menu->category()->attach($request->category);
         }
 
@@ -91,8 +92,11 @@ class MenuController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'price' => 'required'
+            'price' => 'required',
+            'shortCode' => ['required', 'unique:menus,shortcode', 'regex:/^\S*$/'],
+            'category' => ['required']
         ]);
+
 
         $image = $menu->image;
         if ($request->hasFile('image')) {

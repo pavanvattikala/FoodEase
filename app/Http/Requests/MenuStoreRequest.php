@@ -27,7 +27,9 @@ class MenuStoreRequest extends FormRequest
             'name' => ['required'],
             //'description' => ['required'],
             'price' => ['required'],
-            //'image' => ['required', 'image'],
+            'shortCode' => ['required', 'unique:menus,shortcode', 'regex:/^\S*$/'],
+            //'image' => ['required', 'image'],\
+            'category' => ['required']
         ];
     }
 }
