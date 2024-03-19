@@ -73,4 +73,11 @@ class BillController extends Controller
         // Stream the file to the browser
         return response($fileContent, 200, $headers);
     }
+
+    public function destroy($billid)
+    {
+        $bill = Bill::find($billid);
+        $bill->delete();
+        return redirect()->route('admin.bills.index')->with('success', 'Bill deleted successfully.');
+    }
 }

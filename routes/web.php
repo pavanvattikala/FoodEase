@@ -109,7 +109,10 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
 
     Route::get("/bills", function () {
         return view('admin.bills.index');
-    })->name('bills');
+    })->name('bills.index');
+
+    Route::delete('/bill/{id}', [BillController::class, 'destroy'])->name('bill.destroy');
+
 
     Route::get('/bills-by-date', [BillController::class, 'getBillsByDate'])->name('bills.by.date');
 

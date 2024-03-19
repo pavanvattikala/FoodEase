@@ -52,7 +52,7 @@
                 <x-admin-nav-link :href="route('admin.reservations.index')" :active="request()->routeIs('admin.reservations.index')">
                     {{ __('Reservations') }}
                 </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
+                <x-admin-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">
                     {{ __('Bills') }}
                 </x-admin-nav-link>
                 <x-admin-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">

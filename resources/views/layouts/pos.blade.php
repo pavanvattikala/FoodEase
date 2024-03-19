@@ -30,7 +30,7 @@
                         <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
                             {{ __('Tables') }}
                         </x-pos-nav-link>
-                        <x-pos-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
+                        <x-pos-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">
                             {{ __('Bills') }}
                         </x-pos-nav-link>
                     @endif
