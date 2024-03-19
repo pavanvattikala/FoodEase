@@ -1,18 +1,18 @@
 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-    <td class="bill-sno py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    <td class="bill-sno py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap  ">
 
     </td>
-    <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap  ">
         {{ $bill->bill_id }}
     </td>
-    <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap  ">
         @if ($bill->table_id == null)
             <span class="text-red-500">Take Away</span>
         @else
             Dine In - {{ $bill->table->name }}
         @endif
     </td>
-    <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+    <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap  ">
         {{ $bill->grand_total }}
     </td>
     <td class="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">

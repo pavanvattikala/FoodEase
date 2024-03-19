@@ -1,11 +1,31 @@
 <x-admin-layout>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.1/css/buttons.dataTables.css">
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.1/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.print.min.js"></script>
+    <style>
+        #table-bills {
+            color: grey !important;
+        }
+
+        main {
+            padding: 0px !important;
+            margin: 0px !important;
+        }
+    </style>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex m-2 p-2 justify-between">
                 <a href="{{ route('admin.menus.create') }}"
@@ -26,13 +46,18 @@
                     </div>
                 </div>
             </div>
+            <div class="flex m-2 p-2 justify-start">
+                <h1>Total Sales</h1>
+                <h1 id="totalSales" class="ml-2"></h1>
+            </div>
+
 
 
             <div class="flex flex-col">
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block py-2 min-w-full sm:px-6 lg:px-8">
                         <div class="overflow-hidden shadow-md sm:rounded-lg">
-                            <table class="min-w-full">
+                            <table id="bills-table" class="min-w-full">
                                 <thead class="bg-gray-50 dark:bg-gray-700">
                                     <tr>
                                         <th scope="col"
@@ -85,6 +110,8 @@
             });
 
             $("#searchByDate").trigger("click");
+
+
         });
 
         function getSelectPickrFormattedDate(date) {
@@ -114,6 +141,9 @@
                 url: url,
                 method: 'GET',
                 success: function(data) {
+
+                    $('#bills-table').DataTable().destroy();
+
                     var bills = data.bills;
                     var tableBody = document.getElementById("bills-table-body");
                     tableBody.innerHTML = bills;
@@ -126,6 +156,47 @@
                         billSno.innerHTML = sno;
                         sno++;
                     }
+
+                    let totalSales = data.totalSales;
+
+                    $("#totalSales").text(totalSales);
+
+                    var filename = "Bills-" + startDate + "-" + endDate;
+
+
+                    $('#bills-table').DataTable({
+                        "paging": true,
+                        dom: 'Bfrtip',
+                        buttons: [{
+                                extend: 'csv',
+                                exportOptions: {
+                                    columns: ':lt(4)'
+                                },
+                                filename: filename
+                            },
+                            {
+                                extend: 'excel',
+                                exportOptions: {
+                                    columns: ':lt(4)'
+                                },
+                                filename: filename
+                            },
+                            {
+                                extend: 'pdf',
+                                exportOptions: {
+                                    columns: ':lt(4)'
+                                },
+                                filename: filename
+                            },
+                            {
+                                extend: 'print',
+                                exportOptions: {
+                                    columns: ':lt(4)'
+                                },
+                                filename: filename
+                            }
+                        ]
+                    });
 
                 },
                 error: function(error) {

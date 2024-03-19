@@ -27,6 +27,8 @@ class BillController extends Controller
 
         $bills = Bill::whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc')->get();
 
+        $totalSales = $bills->sum('grand_total');
+
         //dd($bills);
 
         $html = '';
@@ -38,7 +40,7 @@ class BillController extends Controller
             $html = $html . $data;
         }
 
-        return response()->json(["status" => "success", 'bills' => $html]);
+        return response()->json(["status" => "success", 'bills' => $html, 'totalSales' => $totalSales]);
     }
 
 
