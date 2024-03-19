@@ -61,6 +61,9 @@
                 {{-- <x-admin-nav-link :href="route('restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
                     {{ __('Manage Restaurant') }}
                 </x-admin-nav-link> --}}
+                <x-admin-nav-link :href="route('kitchen.index')" :openInNewTab="true" :active="request()->routeIs('kitchen.index')">
+                    {{ __('Kitchen View') }}
+                </x-admin-nav-link>
                 <x-user-dropdown />
             </nav>
         </div>

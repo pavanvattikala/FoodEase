@@ -22,7 +22,7 @@ class KitchenMiddleware
 
         $user = $request->user();
 
-        if ($user->hasPermission(UserRole::Kitchen)) {
+        if ($user->hasPermission(UserRole::Kitchen) || $user->hasPermission(UserRole::Biller)) {
             return $next($request);
         }
 
