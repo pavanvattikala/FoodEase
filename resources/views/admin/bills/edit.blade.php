@@ -1,121 +1,101 @@
 <x-admin-layout>
-
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            
-        }
-        td,th{
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-            width: max-content;
-        }
-    </style>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Edit Bill') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="w-full">
-            <div class="flex m-2 p-2">
-                <a href="{{ route('admin.bills') }}"
-                    class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Bill Index</a>
-            </div>
-            <div class="m-2 p-2 bg-slate-100 rounded">
-                <div class="space-y-8 divide-y divide-gray-200 w-1/2 mt-10">
-                    <form method="POST" action="{{ route('admin.bills.update', $bill->id) }}"
-                        enctype="multipart/form-data">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+
+                    <!-- Bill Form -->
+                    <form method="POST" action="{{ route('admin.bills.update', $bill->id) }}">
                         @csrf
                         @method('PUT')
-                        <div class="sm:col-span-6">
-                            <label for="name" class="block text-sm font-medium text-gray-700"> Bill No </label>
-                            <div class="mt-1">
-                                <input type="text" id="name" name="name" value="{{ $bill->created_at->format('Ymd') }}{{ $bill->id }}"
-                                    class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                            </div>
+
+                        <!-- Bill Number -->
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Bill Number</label>
+                            <input type="text" id="name" name="name"
+                                value="{{ $bill->created_at->format('Ymd') }}{{ $bill->id }}"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             @error('name')
-                                <div class="text-sm text-red-400">{{ $message }}</div>
+                                <div class="text-sm text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="sm:col-span-6">
-                            <label for="price" class="block text-sm font-medium text-gray-700"> Grand Total </label>
-                            <div class="mt-1">
-                                <input type="number" min="0.00" max="10000.00" step="0.01" id="price" name="price"
-                                    value="{{ $bill->grand_total }}"
-                                    class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                            </div>
+
+                        <!-- Grand Total -->
+                        <div class="mb-4">
+                            <label for="price" class="block text-sm font-medium text-gray-700">Grand Total</label>
+                            <input type="number" min="0.00" max="10000.00" step="0.01" id="price"
+                                name="price" value="{{ $bill->grand_total }}"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             @error('price')
-                                <div class="text-sm text-red-400">{{ $message }}</div>
+                                <div class="text-sm text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="table-auto">
-                            <h1>Orders</h1>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Order id</th>
-                                        <th>KOT</th>
-                                        <th>Table Id</th>
-                                        <th>Order Type</th>
-                                        <th>Waiter Id</th>
-                                        <th>Menu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($bill->orders as $order)
+                        <!-- Orders Table -->
+                        <div class="mb-4">
+                            <h1 class="text-lg font-semibold mb-2">Orders</h1>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
                                         <tr>
-                                            <td>{{ $order->id }}</td>
-                                            <td>{{ $order->KOT }}</td>
-                                            <td>{{ $order->table_id }}</td>
-                                            <td>{{ $order->order_type->name }}</td>
-                                            <td>{{ $order->waiter_id }}</td>
-                                            <td>
-                                                <table class="table-auto">
-                                                    <thead>
-                                                        <tr>Name</tr>
-                                                        <tr>Quantity</tr>
-                                                        <tr>Price</tr>
-                                                        <tr>Total</tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($order->orderDetails as $orderDetail)
-                                                            <tr>
-                                                                <td>{{ $orderDetail->menu->name }} </td>
-                                                                <td>{{ $orderDetail->quantity }}</td>
-                                                                <td>{{ $orderDetail->menu->price }}</td>
-                                                                <td>{{ $orderDetail->total }}</td>
-                                                                <td>{{ $orderDetail->menu->price * $orderDetail->quantity }}</td>
-                                                            </tr>
-                                                        
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            </td>
-
-                                            
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Order id</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                KOT</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Table Id</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Order Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Waiter Id</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Menu</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="sm:col-span-6 pt-5">
-                            <label for="categories" class="block text-sm font-medium text-gray-700">Orders</label>
-                            <div class="mt-1">
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach ($bill->orders as $order)
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $order->id }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $order->KOT }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $order->table_id }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $order->order_type->name }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $order->waiter_id }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <ul>
+                                                        @foreach ($order->orderDetails as $orderDetail)
+                                                            <li>{{ $orderDetail->menu->name }} -
+                                                                {{ $orderDetail->quantity }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="mt-6 p-4">
+
+                        <!-- Update Button -->
+                        <div class="flex justify-end">
                             <button type="submit"
                                 class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Update</button>
                         </div>
                     </form>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
