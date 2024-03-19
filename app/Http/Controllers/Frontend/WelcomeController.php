@@ -14,7 +14,7 @@ class WelcomeController extends Controller
 
         // return view('welcome', compact('specials'));
 
-        return redirect()->route('pos.index');
+        return redirect()->route('dashboard');
     }
     public function thankyou()
     {
