@@ -270,13 +270,15 @@ class OrderController extends Controller
     {
         $order = $request->order;
 
+        $orderType = $commonData['isPickUpOrder'] ? OrderType::Takeaway->value : OrderType::DineIn->value;
+
         $status = OrderStatus::New->value;
         $posSpecificData = collect([
             'customer' => $order["customer"],
             'waiterId' => auth()->user()->id,
             'orderItems' => $order["orderItems"],
             'total' => $order["total"],
-            'orderType' => session()->get("orderType"),
+            'orderType' => $orderType,
             'status' => $status
 
         ]);

@@ -9,17 +9,29 @@
     <title>{{ config('app.name', 'FoodEase') }}-@yield('title')</title>
     @include('layouts.scripts')
 
+    <style>
+        #pos-nav {
+            max-height: 60px !important;
+        }
+
+        #pos-nav img {
+            max-height: 60px !important;
+        }
+    </style>
+
 </head>
 
 <body class="font-sans antialiased">
     <div class="flex-col">
         {{-- main nav --}}
-        <div class="flex">
-            <img src="{{ asset('FoodEase.png') }}" alt="foodease logo" width="250px" height="100px"
-                class="dark:bg-gray-800">
+        <div class="flex" id="pos-nav">
+            <a href="{{ route('pos.index') }}">
+                <img src="{{ asset('FoodEase.png') }}" alt="foodease logo" width="250px" height="100px"
+                    class="dark:bg-gray-800">
+            </a>
             <div class="flex flex-row justify-around  w-full pt-5 text-gray-700 bg-slate-100 dark:text-gray-200 dark:bg-gray-800"
                 style="align-items: flex-end">
-                <nav class="flex flex-grow px-4 pb-4  items-end">
+                <nav class="align-middle justify-center flex-grow px-4 pb-4">
 
                     <x-pos-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
                         {{ __('New Order') }}

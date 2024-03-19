@@ -264,3 +264,7 @@ th {
 #order-panel {
     background-color: #8ea08e;
 }
+
+#order-type-options {
+    cursor: pointer;
+}

@@ -120,7 +120,15 @@ function delItem(menuId) {
         renderOrderTable();
     }
 }
+function toggleOrderType() {
+    $("#takeaway").toggleClass("active");
 
+    $("#kot-order").toggle();
+
+    $("#dine_in").toggleClass("active");
+
+    $("#table").toggleClass("hidden");
+}
 // Order Table Functions End
 
 //------------------------------------------------------------------------------------------------------------------------------
@@ -187,6 +195,10 @@ $(document).ready(function () {
 
     //check if any previous KOTs exist
     hasPrevOrders = $("#prev-kots").length > 0;
+
+    // Add event listener to Toggle Takeaway & Dine In button
+    $("#takeaway").click(toggleOrderType);
+    $("#dine_in").click(toggleOrderType);
 });
 
 // DOM Ready Functions End
