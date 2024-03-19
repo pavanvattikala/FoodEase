@@ -20,7 +20,9 @@
 
         }
     </style>
+    <x-user-dropdown />
     <div class="container flex flex-row">
+
         <div class="container  px-4 pending-orders">
             <h1 class="text-2xl font-semibold w-full text-center mb-4">Pending Orders</h1>
             @if ($newOrders->isEmpty())
