@@ -20,6 +20,10 @@ class KitchenMiddleware
     {
         // Check if the authenticated user is a waiter
 
+        if (env('KITCHEN_MODULE_ENABLED ') == false) {
+            abort(402, 'Only Paid access.'); // You can customize the response as needed
+        }
+
         $user = $request->user();
 
         if ($user->hasPermission(UserRole::Kitchen) || $user->hasPermission(UserRole::Biller)) {

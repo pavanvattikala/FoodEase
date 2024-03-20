@@ -19,6 +19,10 @@ class WaiterMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        if (env('WAITER_MODULE_ENABLED  ') == false) {
+            abort(402, 'Only Paid access.'); // You can customize the response as needed
+        }
+
         // Check if the authenticated user is a waiter
 
         $user = $request->user();
