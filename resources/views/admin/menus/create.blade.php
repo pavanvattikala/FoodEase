@@ -1,4 +1,8 @@
 <x-admin-layout>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
@@ -70,15 +74,43 @@
                             @enderror
                         </div>
                         <div class="sm:col-span-6 pt-5">
+                            <label class="block text-sm font-medium text-gray-700">Type</label>
+                            <div class="mt-2">
+                                <div class="flex items-center">
+                                    <input id="type_stock" name="type" type="radio" value="stock"
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <label for="type_stock" class="ml-2 block text-sm text-gray-900">Stock</label>
+                                </div>
+                                <div class="flex items-center mt-2">
+                                    <input checked id="type_service" name="type" type="radio" value="service"
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <label for="type_service" class="ml-2 block text-sm text-gray-900">Service</label>
+                                </div>
+                            </div>
+                            @error('type')
+                                <div class="text-sm text-red-400">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div id="quantity_input" class="sm:col-span-6 pt-5">
+                            <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+                            <div class="mt-1">
+                                <input value="50" id="quantity" type="number" name="quantity"
+                                    value="{{ old('quantity') }}"
+                                    class="shadow-sm focus:ring-indigo-500 appearance-none bg-white border py-2 px-3 text-base leading-normal transition duration-150 ease-in-out focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                            @error('quantity')
+                                <div class="text-sm text-red-400">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="sm:col-span-6 pt-5">
                             <label for="category" class="block text-sm font-medium text-gray-700">Categories</label>
                             <div class="mt-1">
                                 <select id="category" name="category" class="form-multiselect block w-full mt-1">
                                     <option value="">~Select~</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            @if (old('category') == $category->id) selected @endif>
-                                            {{ $category->name }}
-                                        </option>
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -86,6 +118,7 @@
                                 <div class="text-sm text-red-400">{{ $message }}</div>
                             @enderror
                         </div>
+
 
                         <div class="mt-6 p-4">
                             <button type="submit"
@@ -97,4 +130,30 @@
             </div>
         </div>
     </div>
+
+    <script>
+        //on document ready
+        document.addEventListener('DOMContentLoaded', function() {
+
+            $('#category').select2();
+
+            $(document).on('select2:open', () => {
+                document.querySelector('.select2-search__field').focus();
+            });
+
+            $("#quantity_input").hide();
+
+            $('input[name="type"]').change(function() {
+                console.log($(this).val());
+                if ($(this).val() === 'stock') {
+                    $('#quantity_input').show();
+                } else {
+                    $('#quantity').val(0);
+                    $('#quantity_input').hide();
+
+                }
+            });
+
+        });
+    </script>
 </x-admin-layout>

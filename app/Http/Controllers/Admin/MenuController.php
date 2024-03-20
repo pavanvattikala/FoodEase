@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\MenuType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuStoreRequest;
 use App\Models\Category;
@@ -51,17 +52,22 @@ class MenuController extends Controller
             $description = $request->description;
         }
 
+        $menuType = MenuType::from($request->type);
+
+        $menuQuantity = $request->quantity ? $request->quantity : 0;
+
 
         $menu = Menu::create([
             'name' => $request->name,
             'shortcode' => $request->shortCode,
             'description' => $description,
             'image' => $image,
-            'price' => $request->price
+            'price' => $request->price,
+            'type' => $menuType,
+            'quantity' => $menuQuantity
         ]);
 
         if ($request->has('category')) {
-            dd($request->category);
             $menu->category()->attach($request->category);
         }
 
