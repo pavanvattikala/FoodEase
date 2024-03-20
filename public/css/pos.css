@@ -1,15 +1,27 @@
+:root {
+    --primary-backgorund-color: #c8c8c8;
+    --secondary-backgorund-color: #2e3a57;
+    --primary-text-color: #ffffff;
+    --secondary-text-color: #d1d5db;
+    --primary-btn-color: #59c45d;
+    --secondary-btn-color: #276a29;
+    --danger-btn-color: #f44336;
+    --primary-order-color: #5e7bb3;
+    --secondary-order-color: #2e3a57;
+}
+
 main {
     margin: 0% !important;
     padding: 0% !important;
 }
 
 button {
-    background-color: #59c45d;
+    background-color: var(--primary-btn-color);
     border-radius: 8px;
 }
 
 .active {
-    background-color: #276a29 !important;
+    background-color: var(--secondary-btn-color) !important;
 }
 
 .mw-60 {
@@ -42,20 +54,20 @@ button {
 }
 
 #order-items-heading {
-    background-color: #666b66;
-    color: white;
+    background-color: var(--secondary-backgorund-color);
+    color: var(--primary-text-color);
 }
 
 #order-items-body tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: var(--primary-order-color);
 }
 
 #order-items-body tr:nth-child(odd) {
-    background-color: #ffffff;
+    background-color: var(--primary-order-color);
 }
 
 #order-items-body tr:hover {
-    background-color: #ddd;
+    background-color: var(--secondary-order-color);
 }
 
 #order-items-body tr td:first-child {
@@ -64,9 +76,9 @@ button {
 }
 
 .del-item {
-    background-color: #f44336;
+    background-color: var(--danger-btn-color);
     border-radius: 45%;
-    color: white;
+    color: var(--primary-text-color);
     width: 30px !important;
     height: 30px !important;
     margin: 10px;
@@ -92,7 +104,7 @@ button {
 
 #order-items-body {
     scrollbar-width: auto;
-    scrollbar-color: #888 transparent;
+    scrollbar-color: var(--primary-backgorund-color);
 }
 
 #order-items-body tr {
@@ -118,16 +130,16 @@ th {
 }
 
 .addQty {
-    background-color: #4caf50;
+    background-color: var(--primary-btn-color);
 }
 
 .remQty {
-    background-color: #f44336;
+    background-color: var(--danger-btn-color);
 }
 
 #payment-types {
     justify-content: space-evenly;
-    background-color: #8ea08e;
+    background-color: var(--primary-backgorund-color);
 }
 
 #payment-types div {
@@ -141,7 +153,7 @@ th {
 
 #save-and-bill-options {
     justify-content: space-between;
-    background-color: #6a6a6a;
+    background-color: var(--primary-backgorund-color);
 }
 
 #save-and-bill-options div {
@@ -160,6 +172,10 @@ th {
 
 #items-search-options {
     justify-content: space-evenly;
+    background-color: var(--primary-backgorund-color) !important;
+}
+#order-main-nav {
+    background-color: var(--primary-backgorund-color) !important;
 }
 
 #items-search-options input {
@@ -178,7 +194,7 @@ th {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--primary-backgorund-color);
 }
 
 .modal-overlay {
@@ -194,7 +210,7 @@ th {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    background-color: var(--secondary-backgorund-color);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -233,7 +249,6 @@ th {
 
 #order-type-options {
     justify-content: space-evenly;
-    background-color: #8ea08e;
 }
 
 #order-type-options div {
@@ -242,7 +257,7 @@ th {
 }
 
 .menu-items {
-    background-color: #8ea08e;
+    background-color: var(--primary-backgorund-color);
     width: 80% !important;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -257,14 +272,22 @@ th {
 }
 
 .category {
-    background-color: #8ea08e;
+    background-color: var(--primary-backgorund-color);
     width: 20%;
 }
 
 #order-panel {
-    background-color: #8ea08e;
+    background-color: var(--primary-backgorund-color);
 }
 
 #order-type-options {
     cursor: pointer;
+}
+
+#order-main-nav,
+#order-main-nav input,
+input::placeholder {
+    background-color: var(--secondary-backgorund-color) !important;
+    color: var(--primary-text-color);
+    font-weight: bold;
 }

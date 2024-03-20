@@ -1,26 +1,27 @@
 <x-pos-layout>
     @section('title', 'POS')
     <link rel="stylesheet" href="{{ asset('css/pos.css') }}">
-    <div class="flex flex-row mb-2 mt-2" id="order-main-nav">
-        <div class="flex flex-row mw-60" id=items-search-options>
-            <input id="search-input" type="text" placeholder="Search by Name.." name="search">
-            <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
-        </div>
-
-        <div id="order-type-options" class="mw-40 flex flex-row align-middle text-center">
-            @php
-                $orderType = session()->get('orderType');
-            @endphp
-            <div id="dine_in" class="h-full mw-40 @if ($orderType == 'dine_in') active @endif">
-                <p>Dine In</p>
-            </div>
-            <div id="takeaway" class="h-full mw-40 @if ($orderType == 'takeaway') active @endif">
-                <p>Take Away</p>
+    <div id="pos">
+        <div class="flex flex-row" id="order-main-nav">
+            <div class="flex flex-row mw-60" id=items-search-options>
+                <input id="search-input" type="text" placeholder="Search by Name.." name="search">
+                <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
             </div>
 
-        </div>
+            <div id="order-type-options" class="mw-40 flex flex-row align-middle text-center">
+                @php
+                    $orderType = session()->get('orderType');
+                @endphp
+                <div id="dine_in" class="h-full mw-40 @if ($orderType == 'dine_in') active @endif">
+                    <p>Dine In</p>
+                </div>
+                <div id="takeaway" class="h-full mw-40 @if ($orderType == 'takeaway') active @endif">
+                    <p>Take Away</p>
+                </div>
 
-    </div>
+            </div>
+
+        </div>
 
     </div>
     <div class="flex flex-row">
@@ -240,6 +241,7 @@
 
 
 
+    </div>
     </div>
     <script>
         //
