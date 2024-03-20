@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('errors.base-message')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>403 Forbidden</title>
-</head>
-
-<body>
-    <h1>403 Forbidden</h1>
-    <p>Access to this resource is forbidden.</p>
-    <a href="{{ route('dashboard') }}">Go to Home</a>
-</body>
-
-</html>
+@section('error-message')
+    <h1>403 - No Access</h1>
+    <a href="/dashboard">Return To Dashboard</a>
+@endsection
