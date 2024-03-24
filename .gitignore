@@ -13,3 +13,10 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# Ignore compiled assets in the public directory
+/public/css/
+/public/js/
+
+# Ignore mix-manifest.json file
+/public/mix-manifest.json
