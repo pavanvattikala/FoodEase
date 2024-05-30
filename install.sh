@@ -1,14 +1,18 @@
 #!/bin/bash
+# commands start
 
 # Install Composer dependencies
 composer install
 
-# Install NPM dependencies and compile assets if needed
+# Install NPM dependencies 
 npm install
-# or yarn install
-# npm run dev (for development) or npm run production (for production)
 
-# Create an environment file if it doesn't exist
+# compile assets 
+npm run dev # (for development) 
+#or
+npm run production  # (for production)
+
+# Create an environment file 
 cp .env.example .env
 
 # Generate application key
@@ -23,8 +27,11 @@ php artisan db:seed --class=DatabaseSeeder
 # Give appropriate permissions to storage and cache directories
 chmod -R 775 storage bootstrap/cache
 
-# Inform the user about any additional steps needed
-echo "Installation completed. Don't forget to configure your web server and set up any additional services if needed."
+
+# commands end
+
+# Inform the user about for additional steps needed
+echo "Installation completed. Don't forget to configure your web server and set up pusher service if needed."
 
 echo "dont forget to configure pusher in .env file"
 
