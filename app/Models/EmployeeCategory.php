@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class EmployeeCategory extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name'];
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\TableController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillerController;
 use App\Http\Controllers\Frontend\CategoryController as FrontendCategoryController;
@@ -103,6 +104,7 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::resource('/menus', MenuController::class);
     Route::resource('/tables', TableController::class);
     Route::resource('/reservations', ReservationController::class);
+    Route::resource('/users', UserController::class);
 
 
     // Route::get('/bills', [BillController::class, 'getBills'])->name('bills');
