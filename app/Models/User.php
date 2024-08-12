@@ -53,4 +53,24 @@ class User extends Authenticatable
         }
         return $this->category_id  == $role;
     }
+
+    public function isAdmin()
+    {
+        return $this->category_id == UserRole::Admin;
+    }
+
+    public function isWaiter()
+    {
+        return $this->category_id == UserRole::Waiter;
+    }
+
+    public function isBilller()
+    {
+        return $this->category_id == UserRole::Biller;
+    }
+
+    public function isKitchen()
+    {
+        return $this->category_id == UserRole::Kitchen;
+    }
 }
