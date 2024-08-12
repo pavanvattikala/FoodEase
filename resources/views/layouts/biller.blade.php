@@ -16,6 +16,9 @@
 
 </head>
 
+
+{{ dd(Hash::make('srinu')) }}
+
 <body class="font-sans antialiased">
     <div class="flex-col w-full md:flex md:flex-row md:min-h-screen">
         <div @click.away="open = false"
@@ -40,27 +43,14 @@
                 <x-admin-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
                     {{ __('POS') }}
                 </x-admin-nav-link>
-                {{-- <x-admin-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                    {{ __('Categories') }}
-                </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.menus.index')" :active="request()->routeIs('admin.menus.index')">
-                    {{ __('Menus') }}
-                </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">
-                    {{ __('Tables') }}
-                </x-admin-nav-link> --}}
-                {{-- <x-admin-nav-link :href="route('admin.reservations.index')" :active="request()->routeIs('admin.reservations.index')">
-                    {{ __('Reservations') }}
-                </x-admin-nav-link>
-                <x-admin-nav-link :href="route('admin.bills')" :active="request()->routeIs('admin.bills')">
+
+                <x-admin-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">
                     {{ __('Bills') }}
-                </x-admin-nav-link> --}}
+                </x-admin-nav-link>
                 <x-admin-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
                     {{ __('KOT View') }}
                 </x-admin-nav-link>
-                {{-- <x-admin-nav-link :href="route('restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
-                    {{ __('Manage Restaurant') }}
-                </x-admin-nav-link> --}}
+
                 <x-admin-nav-link :href="route('kitchen.index')" :openInNewTab="true" :active="request()->routeIs('kitchen.index')">
                     {{ __('Kitchen View') }}
                 </x-admin-nav-link>
