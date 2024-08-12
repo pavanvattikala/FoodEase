@@ -20,6 +20,22 @@ class Admin
     {
         $user = $request->user();
 
+
+        if ($user->hasPermission(UserRole::Biller)) {
+
+            $allowedRoutesForBiller = [
+                'admin.bills.index',
+                'admin.bill.destroy',
+                'admin.bills.by.date',
+                'admin.view.bill',
+                'admin.stream.bill'
+            ];
+
+            if ($user->hasPermission(UserRole::Biller) && in_array($request->route()->getName(), $allowedRoutesForBiller)) {
+                return $next($request);
+            }
+        }
+
         if ($user->hasPermission(UserRole::Admin)) {
             return $next($request);
         }

@@ -1,4 +1,18 @@
-<x-admin-layout>
+@php
+    $adminLayout = 'admin-layout';
+    $billerLayout = 'biller-layout';
+
+    $user = auth()->user();
+
+    if ($user->hasPermission(App\Enums\UserRole::Admin)) {
+        $currentLayout = $adminLayout;
+    } elseif ($user->hasPermission(App\Enums\UserRole::Biller)) {
+        $currentLayout = $billerLayout;
+    }
+
+@endphp
+{{-- choosing dynamic layouts based on user permissions --}}
+<x-dynamic-component :component="$currentLayout">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.1/css/buttons.dataTables.css">
     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
@@ -219,4 +233,4 @@
             return formattedDate;
         }
     </script>
-</x-admin-layout>
+</x-dynamic-component>
