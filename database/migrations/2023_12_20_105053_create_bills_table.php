@@ -25,6 +25,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('payment_method')->nullable();
             $table->text('notes')->nullable();
+            $table->softDeletes();
         });
 
         Schema::create('bill_orders', function (Blueprint $table) {
@@ -34,6 +35,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

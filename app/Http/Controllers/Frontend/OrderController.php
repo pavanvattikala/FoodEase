@@ -132,8 +132,8 @@ class OrderController extends Controller
     {
 
         $source = $request->source;
-        $printBillEnabled = $request->printBill == "true" ? true : false;
-        $printKOTEnabled = $request->printKOT == "true" ? true : false;
+        $printBillEnabled = $request->printBill === "true" ? true : false;
+        $printKOTEnabled = $request->printKOT === "true" ? true : false;
         $reOrder = $request->reOrder == "true" ? true : false;
         $order = collect($request->order);
 
@@ -180,11 +180,9 @@ class OrderController extends Controller
             }
         }
 
+        // print KOT on every Order
+        SaveAndPrintKOT::dispatch($kot);
 
-
-        if ($printKOTEnabled) {
-            SaveAndPrintKOT::dispatch($kot);
-        }
         if ($printBillEnabled) {
             //create bill
             $paymentMethod = PaymentMethods::CASH->value;
