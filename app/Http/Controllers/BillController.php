@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Helpers\PDFHelper;
 use App\Models\Bill;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class BillController extends Controller
@@ -23,13 +25,27 @@ class BillController extends Controller
         $startDate = Carbon::parse($request->input('startDate'));
         $endDate = Carbon::parse($request->input('endDate'))->addDay();
 
-        //dd($endDate);
+        $includeDeleted = $request->input('includeDeleted') === 'true';
+        $onlyDeleted = $request->input('onlyDeleted') === 'true';
 
-        $bills = Bill::whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc')->get();
+        /** @var \App\User */
+        $user = auth()->user();
 
-        $totalSales = $bills->sum('grand_total');
+        $billsQuery = Bill::whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc');
 
-        //dd($bills);
+        $totalSales = $billsQuery->get()->sum('grand_total');
+
+        // include delted bills for admin
+        if ($user->hasPermission(UserRole::Admin) && $includeDeleted) {
+            $billsQuery->withTrashed();
+        }
+
+        // only deleted bills for admin 
+        if ($user->hasPermission(UserRole::Admin) && $onlyDeleted) {
+            $billsQuery->onlyTrashed();
+        }
+
+        $bills = $billsQuery->get();
 
         $html = '';
 

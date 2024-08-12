@@ -16,21 +16,29 @@
         {{ $bill->grand_total }}
     </td>
     <td class="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-        <div class="flex space-x-2">
-            <a href="{{ route('admin.view.bill', $bill->id) }}"
-                class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">
-                Edit/View
-            </a>
-            <a href="{{ route('admin.stream.bill', $bill->id) }} " target="_blank"
-                class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">
-                Print
-            </a>
-            <form class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg text-white" method="POST"
-                action="{{ route('admin.bill.destroy', $bill->id) }}" onsubmit="return confirm('Are you sure?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit">Delete</button>
-            </form>
-        </div>
+
+        @if ($bill->trashed())
+            {{-- Check if the bill is soft-deleted --}}
+            <p class="px-4 py-2 bg-red-700 rounded-lg  text-white disabled text-center">
+                This Bill is Deteted
+            </p>
+        @else
+            <div class="flex space-x-2">
+                <a href="{{ route('admin.view.bill', $bill->id) }}"
+                    class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">
+                    Edit/View
+                </a>
+                <a href="{{ route('admin.stream.bill', $bill->id) }} " target="_blank"
+                    class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg  text-white">
+                    Print
+                </a>
+                <form class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg text-white" method="POST"
+                    action="{{ route('admin.bill.destroy', $bill->id) }}" onsubmit="return confirm('Are you sure?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        @endif
     </td>
 </tr>

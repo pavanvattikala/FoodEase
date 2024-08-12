@@ -54,12 +54,25 @@
                         <label for="endDatePicker">End Date</label>
                         <input type="text" class="datepicker" id="endDatePicker" placeholder="Select End date">
                     </div>
+                    <!-- only show if current layout is admin -->
+                    @if ($currentLayout == $adminLayout)
+                        <div class="flex items-center">
+                            <input type="checkbox" id="includeDeleted" name="includeDeleted">
+                            <label for="includeDeleted" class="ml-2">Include <br> Deleted Bills</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="onlyDeleted" name="onlyDeleted">
+                            <label for="onlyDeleted" class="ml-2">Show Only <br> Deleted Bills</label>
+                        </div>
+                    @endif
                     <div class="">
                         <button id="searchByDate"
                             class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Search</button>
                     </div>
+
                 </div>
             </div>
+
             <div class="flex m-2 p-2 justify-start">
                 <h1>Total Sales</h1>
                 <h1 id="totalSales" class="ml-2"></h1>
@@ -133,9 +146,10 @@
         }
 
         document.getElementById("searchByDate").addEventListener("click", function() {
-            startDate = new Date(getSelectPickrFormattedDate(startDateObject));
-            endDate = getSelectPickrFormattedDate(endDateObject);
-
+            let startDate = new Date(getSelectPickrFormattedDate(startDateObject));
+            let endDate = getSelectPickrFormattedDate(endDateObject);
+            let includeDeleted = document.getElementById("includeDeleted").checked ? 'true' : 'false';
+            let onlyDeleted = document.getElementById("onlyDeleted").checked ? 'true' : 'false';
 
             if (startDate > endDate) {
                 alert("Start date should be less than end date");
@@ -144,39 +158,24 @@
 
             startDate = formatDateToYYYYMMDD(startDate);
             endDate = formatDateToYYYYMMDD(endDate);
-            console.log("Start Date:", startDate);
-            console.log("End Date:", endDate);
 
-            let url = "{{ route('admin.bills.by.date', [], false) }}";
-            url += "?startDate=" + startDate;
-            url += "&endDate=" + endDate;
+            let url =
+                `{{ route('admin.bills.by.date', [], false) }}?startDate=${startDate}&endDate=${endDate}&includeDeleted=${includeDeleted}&onlyDeleted=${onlyDeleted}`;
 
             $.ajax({
                 url: url,
                 method: 'GET',
                 success: function(data) {
-
                     $('#bills-table').DataTable().destroy();
-
-                    var bills = data.bills;
-                    var tableBody = document.getElementById("bills-table-body");
+                    let bills = data.bills;
+                    let tableBody = document.getElementById("bills-table-body");
                     tableBody.innerHTML = bills;
-                    let noOfBills = tableBody.rows.length;
-
-                    let sno = 1;
-                    for (let i = 0; i < noOfBills; i++) {
-                        let bill = bills[i];
-                        let billSno = tableBody.rows[i].cells[0];
-                        billSno.innerHTML = sno;
-                        sno++;
-                    }
 
                     let totalSales = data.totalSales;
 
                     $("#totalSales").text(totalSales);
 
-                    var filename = "Bills-" + startDate + "-" + endDate;
-
+                    var filename = `Bills-${startDate}-${endDate}`;
 
                     $('#bills-table').DataTable({
                         "paging": true,
@@ -211,10 +210,8 @@
                             }
                         ]
                     });
-
                 },
                 error: function(error) {
-                    // Handle the error response
                     console.error("Error:", error);
                 }
             });
