@@ -185,17 +185,12 @@ class OrderController extends Controller
             }
         }
 
-        // if printKOT is enabled then print KOT
-        if (env('KOT_PRINT_ENABLED')) {
-            SaveAndPrintKOT::dispatch($kot);
-        }
-
+        $billId = null;
 
         if ($printBillEnabled) {
             //create bill
             $paymentMethod = PaymentMethods::CASH->value;
             $discount = 0;
-            $billId = null;
             if ($orderData->get('isPickUpOrder')) {
                 $billId = BillHelper::createPickUpBill($kot, null, $paymentMethod, $discount);
             } else {
@@ -207,6 +202,12 @@ class OrderController extends Controller
                 SaveAndPrintBill::dispatch($billId);
             }
         }
+
+        // if printKOT is enabled then print KOT
+        if (env('KOT_PRINT_ENABLED')) {
+            SaveAndPrintKOT::dispatch($kot, $billId);
+        }
+
 
         $this->clearCart();
 

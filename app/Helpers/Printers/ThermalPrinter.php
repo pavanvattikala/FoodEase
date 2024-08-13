@@ -49,13 +49,21 @@ class ThermalPrinter
         $billPrinter->printDuplicate();
     }
 
-    public function printKOT($kot)
+    public function printKOT($kot, $billId)
     {
         $orderDetails = KitchenHelper::getKOTOrders($kot);
         $KOTDetails =  Order::with('waiter')
             ->with('table')
             ->where('kot', $kot)->first();
-        $kotPrinter = new KOTPrinter($this->printer, $KOTDetails, $orderDetails);
+
+        $bill_complete_id = null;
+
+        if ($billId) {
+            $bill_complete_id = Bill::where('id', $billId)->first()->bill_id;
+        }
+
+        $kotPrinter = new KOTPrinter($this->printer, $KOTDetails, $orderDetails, $bill_complete_id);
+
         $kotPrinter->print();
     }
 }

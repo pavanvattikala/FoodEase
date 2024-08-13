@@ -11,12 +11,18 @@ class KOTPrinter
     private Printer $printer;
     private $KOTDetails;
     private $orderDetails;
+    private $isTakeAwayKOT;
+    private $bill_complete_id;
 
-    public function __construct(Printer $printer,   $KOTDetails, $orderDetails)
+    public function __construct(Printer $printer,  $KOTDetails, $orderDetails, $bill_complete_id)
     {
         $this->printer = $printer;
         $this->KOTDetails = $KOTDetails;
         $this->orderDetails = $orderDetails;
+        // isTakeAwayKOT is used to check if the KOT is for take away or dine in
+        // If billId is present then it is a take away KOT
+        $this->isTakeAwayKOT = $bill_complete_id ? true : false;
+        $this->bill_complete_id = $bill_complete_id;
     }
     public function print()
     {
@@ -24,10 +30,15 @@ class KOTPrinter
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
         $this->printer->setEmphasis(true);
         $this->printer->setTextSize(2, 2);
-        $this->printer->text("{$this->KOTDetails->KOT}\n");
+
+        // If the KOT is for take away then print Take Away else print Dine In
+        if ($this->isTakeAwayKOT) {
+            $this->printer->text("{$this->bill_complete_id}\n");
+        }
         $this->printer->setTextSize(1, 1);
         $this->printer->setEmphasis(false);
         $this->printer->feed();
+        $this->printer->text("{$this->KOTDetails->KOT}\n");
         if ($this->KOTDetails->table_id == null) {
             $this->printer->text("Date: {$this->KOTDetails->created_at->format('Y-m-d h:i A')}          Take Away\n");
         } else {

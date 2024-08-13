@@ -18,15 +18,17 @@ class SaveAndPrintKOT implements ShouldQueue
 
     private $KOT;
     private $kOTPath;
+    private $billId;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($KOT)
+    public function __construct($KOT, $billId)
     {
         $this->KOT = $KOT;
+        $this->billId = $billId;
     }
 
     /**
@@ -41,8 +43,7 @@ class SaveAndPrintKOT implements ShouldQueue
 
         try {
             $printer = new ThermalPrinter($kitchenPrinter);
-
-            $printer->printKOT($this->KOT);
+            $printer->printKOT($this->KOT, $this->billId);
             Log::info("KOT Printed " . $this->KOT);
         } catch (\Exception $e) {
             Log::error("Error in printing KOT " . $e->getMessage());
