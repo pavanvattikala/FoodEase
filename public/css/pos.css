@@ -271,7 +271,9 @@ th {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.category {
+#category {
+    max-height: 85vh;
+    overflow-y: auto;
     background-color: var(--primary-backgorund-color);
     width: 20%;
 }
