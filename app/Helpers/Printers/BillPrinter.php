@@ -60,6 +60,7 @@ class BillPrinter
         } else {
             $this->printer->text("Date: {$this->billDetails->created_at->format('Y-m-d h:i A')}       Dine In: {$this->billDetails->table->name}\n");
         }
+        $this->printer->text("\n");
         $this->printer->text("Bill ID: {$this->billDetails->bill_id}\n");
 
         // -----------------------------------
