@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Restaurant extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'tagline',
@@ -16,6 +16,7 @@ class Restaurant extends Model
         'phone',
         'email',
         'website',
+        'GST',
         'pending_order_sync_time',
         'waiter_sync_time',
         'minimum_delivery_time',
@@ -23,5 +24,4 @@ class Restaurant extends Model
         'order_live_view',
         'kot_live_view',
     ];
-
 }

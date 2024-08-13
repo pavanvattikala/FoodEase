@@ -15,14 +15,15 @@ class RestaurantController extends Controller
     public function updateConfig(Request $request)
     {
         $id = $request->id;
-      // dd($request->all());
+        // dd($request->all());
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'tagline' => 'required|string|max:255',
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
-            'email' => 'required|email|max:255',
-            'website' => 'nullable|url|max:255',
+            'GST' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'website' => 'nullable|string|max:255',
             'pending_order_sync_time' => 'required|in:5,15,30,60',
             'waiter_sync_time' => 'required|numeric|in:5,15,30,60',
             'minimum_delivery_time' => 'required|numeric|min:1',
@@ -37,7 +38,7 @@ class RestaurantController extends Controller
 
         RestaurantHelper::refreshAndCacheRestaurantDetails();
 
-        
+
         return redirect()->route('restaurant.show.config')->with('success', 'Configuration updated successfully.');
     }
 

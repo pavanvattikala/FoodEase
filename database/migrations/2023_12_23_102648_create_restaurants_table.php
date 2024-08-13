@@ -15,13 +15,14 @@ return new class extends Migration
     {
 
         Schema::create('restaurants', function (Blueprint $table) {
-            
+
             $table->id();
             $table->string('name');
             $table->string('tagline');
             $table->text('address');
             $table->string('phone');
-            $table->string('email');
+            $table->string("GST")->nullable();
+            $table->string('email')->nullable();
             $table->string('website')->nullable();
             $table->boolean('takeout_enabled')->default(true);
             $table->boolean('delivery_enabled')->default(true);
