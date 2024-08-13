@@ -148,8 +148,8 @@
         document.getElementById("searchByDate").addEventListener("click", function() {
             let startDate = new Date(getSelectPickrFormattedDate(startDateObject));
             let endDate = getSelectPickrFormattedDate(endDateObject);
-            let includeDeleted = document.getElementById("includeDeleted").checked ? 'true' : 'false';
-            let onlyDeleted = document.getElementById("onlyDeleted").checked ? 'true' : 'false';
+            let includeDeleted = document.getElementById("includeDeleted")?.checked ?? 'false';
+            let onlyDeleted = document.getElementById("onlyDeleted")?.checked ?? 'false';
 
             if (startDate > endDate) {
                 alert("Start date should be less than end date");
