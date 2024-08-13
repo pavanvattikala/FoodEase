@@ -18,4 +18,16 @@ class ModuleHelper
     {
         return boolval(env('WAITER_MODULE_ENABLED ', false));
     }
+
+    public static function getDiabledModules()
+    {
+        $modules = [];
+        if (!self::isKitchenModuleEnabled()) {
+            $modules[] = 'Kitchen';
+        }
+        if (!self::isWaiterModuleEnabled()) {
+            $modules[] = 'Waiter';
+        }
+        return $modules;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ModuleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\User;
@@ -11,6 +12,22 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Get Employee Categories ( Only Enabled Modules )
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+
+    public function getEmployeeCategories()
+    {
+        // Fetch employee categories for the dropdown dont include disabled modules
+        $disabledModules = ModuleHelper::getDiabledModules();
+
+        $categories = EmployeeCategory::whereNotIn('name', [...$disabledModules])->get();
+
+        return $categories;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -33,8 +50,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        // Fetch employee categories for the dropdown except admin
-        $categories = EmployeeCategory::where('name', '!=', 'Admin')->get();
+
+        $categories = $this->getEmployeeCategories();
 
         return view('admin.users.create', compact('categories'));
     }
@@ -47,6 +64,11 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
+        // if password is not provided, set it to default value
+        if (!$request->filled('password')) {
+            $request->merge(['password' => env('DEFAULT_USER_PASSWORD')]);
+        }
+
         User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -66,7 +88,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $categories = EmployeeCategory::all();
+        $categories = $this->getEmployeeCategories();
 
         return view('admin.users.edit', compact('user', 'categories'));
     }
@@ -80,19 +102,20 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->update([
+
+        $updateData = [
             'name' => $request->name,
             'email' => $request->email,
             'pin' => $request->pin,
             'category_id' => $request->category_id,
-        ]);
+        ];
 
         // Update password if it is provided
         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-            $user->save();
+            $updateData['password'] = Hash::make($request->password);
         }
 
+        $user->update($updateData);
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }

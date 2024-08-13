@@ -28,7 +28,7 @@ class UserStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'pin' => ['required', 'string', 'unique:users'],
+            'pin_value' => ['required', 'string', 'unique:users'],
             'category_id' => ['required', 'exists:employee_categories,id'],
         ];
     }
