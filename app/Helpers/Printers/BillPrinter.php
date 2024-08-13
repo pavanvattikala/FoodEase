@@ -5,6 +5,8 @@ namespace App\Helpers\Printers;
 use App\Helpers\RestaurantHelper;
 use Mike42\Escpos\Printer;
 use App\Helpers\Printers\OrderItem;
+use Illuminate\Support\Facades\Auth;
+use Mike42\Escpos\CapabilityProfile;
 
 class BillPrinter
 {
@@ -12,9 +14,13 @@ class BillPrinter
     private $restaurentName;
     private $restaurentAddress;
     private $restaurentPhone;
+    private $GST;
+    private $email;
+    private $website;
     private $tagLine;
     private Printer $printer;
     private $orderDetails;
+    private $billerName;
 
     public function __construct(Printer $printer, $billDetails, $orderDetails)
     {
@@ -22,10 +28,14 @@ class BillPrinter
         $this->restaurentName = $restarurentDetais->name;
         $this->restaurentAddress = $restarurentDetais->address;
         $this->restaurentPhone = $restarurentDetais->phone;
+        $this->GST = $restarurentDetais->GST;
+        $this->email = $restarurentDetais->email;
+        $this->website = $restarurentDetais->website;
         $this->tagLine = $restarurentDetais->tagline;
         $this->billDetails = $billDetails;
         $this->orderDetails = $orderDetails;
         $this->printer = $printer;
+        $this->billerName = Auth::user()->name;
     }
 
     public function print()
@@ -35,36 +45,40 @@ class BillPrinter
         $this->printer->setEmphasis(true);
         $this->printer->setTextSize(2, 2);
         $this->printer->text($this->restaurentName . "\n");
+        $this->printer->feed();
         $this->printer->setTextSize(1, 1);
         $this->printer->setEmphasis(false);
         $this->printer->text($this->restaurentAddress . "\n");
-        $this->printer->text($this->restaurentPhone . "\n");
-        $this->printer->feed();
-
-
-        // -----------------------------------
-        $seperator = $this->getSeperator();
-
-        // Order details
-
-        if ($this->billDetails->customer_name) {
-            $this->printer->text($seperator);
-            $this->printer->text("Name: {$this->billDetails->customer_name} \n");
+        if ($this->GST != null) {
+            $this->printer->text("GSTIN : {$this->GST}\n");
+        }
+        $this->printer->text("PH : {$this->restaurentPhone}\n");
+        if ($this->email != null) {
+            $this->printer->text("{$this->email}\n");
+        }
+        if ($this->website != null) {
+            $this->printer->text("{$this->website}\n");
         }
 
-        // -----------------------------------
-        $this->printer->text($seperator);
+        $this->printDash();
+
+        $this->printer->setEmphasis(true);
+
+        $this->printer->text("Date: {$this->billDetails->created_at->format('Y-m-d h:i A')}");
 
         if ($this->billDetails->table_id == null) {
-            $this->printer->text("Date: {$this->billDetails->created_at->format('Y-m-d h:i A')}       Take Away\n");
+            $this->printer->text("          Take Away\n");
         } else {
-            $this->printer->text("Date: {$this->billDetails->created_at->format('Y-m-d h:i A')}       Dine In: {$this->billDetails->table->name}\n");
+            $this->printer->text("       Dine In: {$this->billDetails->table->name}\n");
         }
         $this->printer->text("\n");
-        $this->printer->text("Bill ID: {$this->billDetails->bill_id}\n");
 
-        // -----------------------------------
-        $this->printer->text($seperator);
+        $this->printer->text("Cashier : {$this->billerName}");
+        $this->printer->text("          Bill No: {$this->billDetails->bill_id}\n");
+
+        $this->printer->setEmphasis(false);
+
+        $this->printDash();
 
         // Items
         $this->printer->setJustification(Printer::JUSTIFY_LEFT);
@@ -82,26 +96,41 @@ class BillPrinter
 
         $this->printer->text($heading_col . "\n");
 
-        // -----------------------------------
-        $this->printer->text($seperator);
+        $this->printDash();
 
+
+        $itemsCount = count($this->orderDetails);
+        $currentIndex = 0;
 
         foreach ($this->orderDetails as $name => $details) {
             $item = new OrderItem($name, $details['quantity'], $details['price'], $details['total']);
             $this->printer->text($item);
-            $this->printer->text("\n");
+
+            $currentIndex++;
+            if ($currentIndex < $itemsCount) {
+                $this->printer->feed();
+            }
         }
 
+
+        $this->printDash();
+
+        $this->printer->text("Total Qty :{$this->orderDetails->count()}");
+        $this->printer->text("               Sub Total {$this->billDetails->bill_amount}\n");
+
+        $this->printDash();
+        $this->printer->setJustification(Printer::JUSTIFY_RIGHT);
+
+        $this->printer->setEmphasis(true);
+
+        $this->printer->text("Grand Total  Rs {$this->billDetails->grand_total}    \n");
+
+        $this->printer->setEmphasis(false);
         // -----------------------------------
-        $this->printer->text($seperator);
-        $this->printer->text("Total Qty :{$this->orderDetails->count()}            Sub Total {$this->billDetails->bill_amount}\n");
-        // -----------------------------------
-        $this->printer->text($seperator);
+        $this->printDash();
+
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
 
-        $this->printer->text("Grand Total  Rs {$this->billDetails->grand_total}\n");
-        // -----------------------------------
-        $this->printer->text($seperator);
         $this->printer->text("**  {$this->tagLine}  **\n");
         $this->printer->text("**  Thank You For Dining With Us  **\n");
 
@@ -118,9 +147,15 @@ class BillPrinter
         $this->print();
     }
 
-    public function getSeperator(): string
+    public function printDash()
     {
         //45
-        return "---------------------------------------------\n";
+        $seperator =  "---------------------------------------------\n";
+
+        $this->printer->setJustification(Printer::JUSTIFY_LEFT);
+
+        $this->printer->text($seperator);
+
+        $this->printer->setJustification();
     }
 }

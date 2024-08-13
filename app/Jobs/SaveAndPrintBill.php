@@ -46,7 +46,6 @@ class SaveAndPrintBill implements ShouldQueue
                 Log::info("Bill Printed Duplicate " . $this->billId);
                 $printer->printDuplicateBill($this->billId);
             } else {
-
                 Log::info("Bill Printed " . $this->billId);
                 $printer->printBill($this->billId);
             }
