@@ -123,6 +123,7 @@ class BillHelper
             ->with('table')
             ->first();
 
+
         $orderDetails = collect([]);
 
         foreach ($billDetails->orders as $order) {
@@ -132,14 +133,26 @@ class BillHelper
                 $price = $orderDetail->menu->price;
 
                 if ($orderDetails->has($itemName)) {
-                    $orderDetails[$itemName]['quantity'] += $quantity;
-                    $orderDetails[$itemName]['price'] += $price;
-                    $orderDetails[$itemName]['total'] = $orderDetails[$itemName]['quantity'] * $orderDetails[$itemName]['price'];
+                    // Retrieve current values
+                    $currentDetails = $orderDetails->get($itemName);
+
+                    // Update values
+                    $currentDetails['quantity'] += $quantity;
+                    $currentDetails['price'] = $price;
+                    $currentDetails['total'] = $currentDetails['quantity'] * $currentDetails['price'];
+
+                    // Put updated values back
+                    $orderDetails->put($itemName, $currentDetails);
                 } else {
-                    $orderDetails->put($itemName, ['quantity' => $quantity, 'price' => $price, 'total' => $quantity * $price]);
+                    $orderDetails->put($itemName, [
+                        'quantity' => $quantity,
+                        'price' => $price,
+                        'total' => $quantity * $price
+                    ]);
                 }
             }
         }
+
         return $orderDetails;
     }
 
