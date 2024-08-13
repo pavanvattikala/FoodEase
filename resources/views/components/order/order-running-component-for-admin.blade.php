@@ -14,7 +14,7 @@
             </div>
         @endif
     @else
-        @if ($order->status == App\Enums\OrderStatus::ReadyForPickup)
+        @if ($order->status == App\Enums\OrderStatus::ReadyForPickup || $order->status == App\Enums\OrderStatus::Served)
             <div class="flex justify-center options">
                 <button class="bg-green-600 w-full m-2 p-2 rounded " id="markAsServed"
                     onclick="markAsClosed({{ $order->id }})">Mark As Closed</button>

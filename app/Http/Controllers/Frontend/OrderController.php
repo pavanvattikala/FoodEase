@@ -154,6 +154,11 @@ class OrderController extends Controller
             $orderData = $this->processPosOrder($request, $commonData);
         }
 
+        // add the status of the order
+        // if kitchen module is enabled then set the status to new
+        // else set the status to served
+        $orderData->put('status', ModuleHelper::isKitchenModuleEnabled() ? OrderStatus::New : OrderStatus::Served);
+
         $kot =  $this->insertOrder($orderData);
 
         if ($kot == "failed") {
@@ -260,7 +265,6 @@ class OrderController extends Controller
             'orderItems' => $cart,
             'total' => $total,
             'orderType' => OrderType::DineIn->value,
-            "status" => OrderStatus::New->value,
         ]);
         return $commonData->merge($waiterSpecificData);
     }
@@ -270,14 +274,12 @@ class OrderController extends Controller
 
         $orderType = $commonData['isPickUpOrder'] ? OrderType::Takeaway->value : OrderType::DineIn->value;
 
-        $status = OrderStatus::New->value;
         $posSpecificData = collect([
             'customer' => $order["customer"],
             'waiterId' => auth()->user()->id,
             'orderItems' => $order["orderItems"],
             'total' => $order["total"],
             'orderType' => $orderType,
-            'status' => $status
 
         ]);
 
