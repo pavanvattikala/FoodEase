@@ -19,16 +19,42 @@ class OrderItem
 
     public function __toString()
     {
-        $nameCol = 20;
+        $nameCol = 15;
         $qtyCol = 5;
-        $priceCol = 10;
+        $priceCol = 5;
         $amountCol = 10;
 
-        $nameStr = str_pad($this->name, $nameCol);
-        $qtyStr = str_pad($this->quantity, $qtyCol, ' ', STR_PAD_LEFT);
-        $priceStr = str_pad($this->price, $priceCol, ' ', STR_PAD_LEFT);
-        $amountStr = str_pad($this->amount, $amountCol, ' ', STR_PAD_LEFT);
+        $nameLines = $this->wrapText($this->name, $nameCol);
+        $output = '';
 
-        return "$nameStr $qtyStr $priceStr $amountStr\n";
+        // Handle the first line with quantity, price, and amount
+        if (!empty($nameLines)) {
+            $firstLine = array_shift($nameLines);
+            $nameStr = str_pad($firstLine, $nameCol);
+            $qtyStr = str_pad($this->quantity, $qtyCol, ' ', STR_PAD_LEFT);
+            $priceStr = str_pad($this->price, $priceCol, ' ', STR_PAD_LEFT);
+            $amountStr = str_pad($this->amount, $amountCol, ' ', STR_PAD_LEFT);
+            $output .= "$nameStr $qtyStr $priceStr $amountStr";
+        }
+
+        // Add the remaining name lines
+        foreach ($nameLines as $line) {
+            $nameStr = str_pad($line, $nameCol);
+            $output .= "\n$nameStr";
+        }
+
+        $output =  $output . "\n";
+        dd($output);
+        return $output;
+    }
+
+    private function wrapText($text, $maxLength)
+    {
+        $lines = [];
+        $textLength = strlen($text);
+        for ($i = 0; $i < $textLength; $i += $maxLength) {
+            $lines[] = substr($text, $i, $maxLength);
+        }
+        return $lines;
     }
 }

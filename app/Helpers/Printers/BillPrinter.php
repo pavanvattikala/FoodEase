@@ -32,7 +32,9 @@ class BillPrinter
     {
         // Header
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+        $this->printer->setTextSize(2, 2);
         $this->printer->text($this->restaurentName . "\n");
+        $this->printer->setTextSize(1, 1);
         $this->printer->text($this->restaurentAddress . "\n");
         $this->printer->text($this->restaurentPhone . "\n");
         $this->printer->feed();
@@ -46,7 +48,7 @@ class BillPrinter
         $this->printer->text("----------------------------------\n");
 
         if ($this->billDetails->table_id == null) {
-            $this->printer->text("Date: {$this->billDetails->created_at}  Take Away}\n");
+            $this->printer->text("Date: {$this->billDetails->created_at}  Take Away\n");
         } else {
             $this->printer->text("Date: {$this->billDetails->created_at} Dine In: {$this->billDetails->table->name}\n");
         }
@@ -67,7 +69,7 @@ class BillPrinter
         $this->printer->text("------------------------------------\n");
         $this->printer->text("Total Qty :{$this->orderDetails->count()}      Sub Total {$this->billDetails->bill_amount}\n");
         $this->printer->text("------------------------------------\n");
-        $this->printer->text("               Grand Total  $ {$this->billDetails->grand_total}\n");
+        $this->printer->text("               Grand Total  Rs {$this->billDetails->grand_total}\n");
         $this->printer->text("------------------------------------\n");
         $this->printer->text("       **{$this->tagLine}**\n");
         $this->printer->text("    **Thank You For Dining With Us**\n");
