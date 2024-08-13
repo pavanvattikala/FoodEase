@@ -264,7 +264,8 @@ th {
 }
 .menu-items button {
     width: 150px;
-    height: 69px;
+    min-height: 69px;
+    max-height: fit-content;
     margin: 2px;
     padding: 2px;
     border: 1px solid #ccc;
