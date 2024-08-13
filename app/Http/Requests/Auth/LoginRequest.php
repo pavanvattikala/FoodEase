@@ -65,6 +65,12 @@ class LoginRequest extends FormRequest
         // Retrieve the user by the provided pin
         $user = User::where('pin', $this->input('pin'))->first();
 
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => trans('No User Exists with this pin'),
+            ]);
+        }
+
         if ($user->hasPermission(UserRole::Admin)) {
             $this->ensureIsNotRateLimited();
             throw ValidationException::withMessages([
