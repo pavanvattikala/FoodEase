@@ -94,7 +94,7 @@ class BillPrinter
 
         // -----------------------------------
         $this->printer->text($seperator);
-        $this->printer->text("Total Qty :{$this->orderDetails->count()}      Sub Total {$this->billDetails->bill_amount}\n");
+        $this->printer->text("Total Qty :{$this->orderDetails->count()}            Sub Total {$this->billDetails->bill_amount}\n");
         // -----------------------------------
         $this->printer->text($seperator);
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
