@@ -185,8 +185,11 @@ class OrderController extends Controller
             }
         }
 
-        // print KOT on every Order
-        SaveAndPrintKOT::dispatch($kot);
+        // if printKOT is enabled then print KOT
+        if (env('KOT_PRINT_ENABLED')) {
+            SaveAndPrintKOT::dispatch($kot);
+        }
+
 
         if ($printBillEnabled) {
             //create bill
@@ -200,7 +203,9 @@ class OrderController extends Controller
                 $billId = BillHelper::createTableBill($tableId,  null, $paymentMethod, $discount);
             }
 
-            SaveAndPrintBill::dispatch($billId);
+            if (env('BILL_PRINT_ENABLED')) {
+                SaveAndPrintBill::dispatch($billId);
+            }
         }
 
         $this->clearCart();
