@@ -29,22 +29,32 @@ class KOTPrinter
         // Header
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
         $this->printer->setEmphasis(true);
-        $this->printer->setTextSize(2, 2);
+        $this->printer->setTextSize(1, 2);
 
         // If the KOT is for take away then print Take Away else print Dine In
         if ($this->isTakeAwayKOT) {
-            $this->printer->text("{$this->bill_complete_id}\n");
-        }
-        $this->printer->setTextSize(1, 1);
-        $this->printer->setEmphasis(false);
-        $this->printer->feed();
-        $this->printer->text("{$this->KOTDetails->KOT}\n");
-        if ($this->KOTDetails->table_id == null) {
-            $this->printer->text("Date: {$this->KOTDetails->created_at->format('Y-m-d h:i A')}          Take Away\n");
+            $this->printer->text("TOKEN NUM : {$this->bill_complete_id}\n");
         } else {
-            $this->printer->text("Date: {$this->KOTDetails->created_at->format('Y-m-d h:i A')}          Dine In: {$this->KOTDetails->table->name}\n");
+            $this->printer->text("{$this->KOTDetails->KOT}\n");
         }
-        $this->printer->text("Waiter: {$this->KOTDetails->waiter->name}\n");
+
+        $this->printer->feed();
+
+
+        $this->printer->setTextSize(1, 1);
+
+        $this->printer->text("Date: {$this->KOTDetails->created_at->format('Y-m-d h:i A')}         Waiter: {$this->KOTDetails->waiter->name}\n");
+
+        $this->printer->setTextSize(1, 2);
+        if ($this->KOTDetails->table_id == null) {
+            $this->printer->text("Take Away\n");
+        } else {
+            $this->printer->text("Dine In: {$this->KOTDetails->table->name}\n");
+        }
+
+        $this->printer->setTextSize(1, 1);
+
+        $this->printer->setEmphasis(false);
 
         // -----------------------------------
         $seperator = $this->getSeperator();
@@ -75,14 +85,17 @@ class KOTPrinter
         }
 
 
-
         // -----------------------------------
         $this->printer->text($seperator);
 
         // Total
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
 
+        $this->printer->setEmphasis(true);
+
         $this->printer->text("Total Qty : {$this->orderDetails->count()}\n");
+
+        $this->printer->setEmphasis(false);
 
         // -----------------------------------
         $this->printer->text($seperator);
