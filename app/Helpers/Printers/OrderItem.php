@@ -19,34 +19,36 @@ class OrderItem
 
     public function __toString()
     {
-        $nameCol = 15;
+
+        $nameCol = 22;
+        $spaceAfterName = 3;
         $qtyCol = 5;
         $priceCol = 5;
         $amountCol = 10;
 
-        $nameLines = $this->wrapText($this->name, $nameCol);
-        $output = '';
 
-        // Handle the first line with quantity, price, and amount
-        if (!empty($nameLines)) {
-            $firstLine = array_shift($nameLines);
-            $nameStr = str_pad($firstLine, $nameCol);
-            $qtyStr = str_pad($this->quantity, $qtyCol, ' ', STR_PAD_LEFT);
-            $priceStr = str_pad($this->price, $priceCol, ' ', STR_PAD_LEFT);
-            $amountStr = str_pad($this->amount, $amountCol, ' ', STR_PAD_LEFT);
-            $output .= "$nameStr $qtyStr $priceStr $amountStr";
+        $splitted_names = $this->wrapText($this->name, $nameCol);
+
+        // build the row
+        $row = str_pad($splitted_names[0], $nameCol, ' ', STR_PAD_RIGHT);
+        // Add 5 spaces after the name column
+        $row .= str_repeat(' ', $spaceAfterName);
+        $row .= str_pad($this->quantity, $qtyCol, ' ', STR_PAD_RIGHT);
+        $row .= str_pad($this->price, $priceCol, ' ', STR_PAD_LEFT);
+        $row .= str_pad($this->amount, $amountCol, ' ', STR_PAD_LEFT);
+
+        $row .= "\n"; // Ensure there's a new line at the end
+
+        // Add the remaining lines
+        for ($i = 1; $i < count($splitted_names); $i++) {
+            $row .= str_pad($splitted_names[$i], $nameCol, ' ', STR_PAD_RIGHT);
+            $row .= "\n";
         }
 
-        // Add the remaining name lines
-        foreach ($nameLines as $line) {
-            $nameStr = str_pad($line, $nameCol);
-            $output .= "\n$nameStr";
-        }
-
-        $output =  $output . "\n";
-        dd($output);
-        return $output;
+        return $row;
     }
+
+
 
     private function wrapText($text, $maxLength)
     {
