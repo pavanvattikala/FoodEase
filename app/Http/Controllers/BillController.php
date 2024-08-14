@@ -49,11 +49,9 @@ class BillController extends Controller
 
         $html = '';
 
-        foreach ($bills as $bill) {
-
-            $data = view('components.bill-component', compact('bill'))->render();
-
-            $html = $html . $data;
+        foreach ($bills as $index => $bill) {
+            $data = view('components.bill-component', compact('bill', 'index'))->render();
+            $html .= $data;
         }
 
         return response()->json(["status" => "success", 'bills' => $html, 'totalSales' => $totalSales]);

@@ -138,7 +138,8 @@
 
             $("#searchByDate").trigger("click");
 
-
+            // add the page tittle
+            document.title = "FoodEase-Bills";
         });
 
         function getSelectPickrFormattedDate(date) {
@@ -175,7 +176,17 @@
 
                     $("#totalSales").text(totalSales);
 
-                    var filename = `Bills-${startDate}-${endDate}`;
+                    var filename = `Bills-${startDate} To ${endDate}`;
+
+                    // if include deleted is checked, change filename to include deleted
+                    if (includeDeleted) {
+                        filename += "-IncludeDeleted";
+                    }
+
+                    // if only deleted is checked, change filename to only deleted
+                    if (onlyDeleted) {
+                        filename += "-OnlyDeleted";
+                    }
 
                     $('#bills-table').DataTable({
                         "paging": true,

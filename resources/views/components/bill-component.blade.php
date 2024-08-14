@@ -1,6 +1,6 @@
 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
     <td class="bill-sno py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap  ">
-
+        {{ $index + 1 }}
     </td>
     <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap  ">
         {{ $bill->bill_id }}
