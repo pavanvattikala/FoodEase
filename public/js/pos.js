@@ -358,30 +358,52 @@ $("#showPrevKots").click(function () {
 // Save Order Functions Start
 
 // Bill Order function
-$("#bill-order").click(function () {
-    let printBill = true;
+$("#bill-order").click(function (e) {
+    e.preventDefault(); // Prevent default action
 
-    hasNewOrders = orderItems.length > 0;
+    // Get the button element
+    let button = this;
+
+    // Disable the button to prevent multiple clicks
+    disableButton(button);
+
+    let printBill = true;
+    let hasNewOrders = orderItems.length > 0;
     let isTableToBePaid = $("#settle-order").length > 0;
+
+    let operation;
+
     if (hasNewOrders) {
-        saveOrder(printBill, false);
+        operation = saveOrder(printBill, false);
     } else if (isTableToBePaid) {
-        printDuplicateBill();
+        operation = printDuplicateBill();
     } else {
-        billTable();
+        operation = billTable();
     }
+
+    // Re-enable the button after the operation completes
+    operation.finally(() => {
+        enableButton(button);
+    });
 });
 
-// KOt Order function
 $("#kot-order").click(function () {
     const printKOT = true;
+    let button = this;
+
+    disableButton(button);
 
     if (orderItems.length === 0) {
         alert("No Items Selected");
+
+        // Re-enable the button if no items are selected
+        enableButton(button);
         return;
     }
-
-    saveOrder(false, printKOT);
+    const operation = saveOrder(false, printKOT);
+    operation.finally(() => {
+        enableButton(button);
+    });
 });
 
 // Save order
@@ -545,3 +567,16 @@ function printDuplicateBill() {
     });
 }
 //------------------------------------------------------------------------------------------------------------------------------
+
+//  Button Helpers
+// Makes sure that users can't click the same button multiple times
+
+function disableButton(button) {
+    button.disabled = true;
+    button.classList.add("disabled");
+}
+
+function enableButton(button) {
+    button.disabled = false;
+    button.classList.remove("disabled");
+}

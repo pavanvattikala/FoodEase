@@ -81,6 +81,8 @@
 
             const url = "{{ url()->route('waiter.table.add.toSession', [], false) }}";
 
+            const button = document.getElementById(tableId);
+            disableButton(button);
 
             var csrf_token = "{{ csrf_token() }}";
 
@@ -112,39 +114,13 @@
 
         //for unavaliable tables
 
-        const openModalButton = document.getElementById('openModalButton');
-        const modalContainer = document.getElementById('modal-window');
-        const closeModalButton = document.getElementById('close-btn');
-        const selectItems = document.getElementById('select-tables');
-
-
-
-        function openModel(tableId) {
-            selectItems.classList.add('hidden');
-            modalContainer.classList.remove('hidden');
-            $('#reOrder').attr('onclick', 'reOrder(' + tableId + ')');
-            $('#subitForBilling').attr('onclick', 'subitForBilling(' + tableId + ')');
-
-
-        }
-
-        closeModalButton.addEventListener('click', () => {
-            modalContainer.classList.add('hidden');
-            selectItems.classList.remove('hidden');
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // getAllTables();
-
-            document.getElementById('modal-window').classList.add('hidden');
-        });
-
 
         function reOrder(tableId) {
-
             const url = "{{ route('waiter.table.add.toSession', [], false) }}";
+            const csrf_token = "{{ csrf_token() }}";
 
-            var csrf_token = "{{ csrf_token() }}";
+            const button = document.getElementById(tableId);
+            disableButton(button);
 
             $.ajax({
                 type: "POST",
@@ -161,24 +137,25 @@
                     console.log('table is selected:', response.message);
 
                     if (response.message == "true") {
-                        // alert("Table " + tableId + " is selected");
-                        window.location.replace(" {{ route('order.step.one') }}");
+                        window.location.replace("{{ route('order.step.one') }}");
                     } else {
                         alert("You cannot select it");
+                        enableButton(button);
                     }
                 },
                 error: function(error) {
                     console.error('Error:', error);
+                    enableButton(button);
                 }
             });
         }
 
         function subitForBilling(tableId) {
-
             const url = "{{ route('waiter.table.submit.for.billing', [], false) }}";
+            const csrf_token = "{{ csrf_token() }}";
 
-
-            var csrf_token = "{{ csrf_token() }}";
+            const button = document.getElementById(`submitForBillingButton_${tableId}`);
+            disableButton(button);
 
             $.ajax({
                 type: "POST",
@@ -191,21 +168,19 @@
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 success: function(response) {
-
                     if (response.status == "success") {
-                        //alert("Table " + tableId + " is submitted for billing");
-                        window.location.replace(" {{ route('order.step.one') }}");
+                        window.location.replace("{{ route('order.step.one') }}");
                     } else {
                         alert("You cannot submit it");
+                        enableButton(button);
                     }
-
                 },
                 error: function(error) {
                     console.error('Error:', error);
+                    enableButton(button);
                 }
             });
         }
-
 
         // JavaScript to update the timer
         function updateTimer(element, updatedAt) {
@@ -222,17 +197,25 @@
         }
 
         function getAllTables() {
-
             // Call updateTimer function for each table
-
-            const tables = {!! json_encode($takenTables) !!}
-
+            const tables = {!! json_encode($takenTables) !!};
             console.log(tables);
 
             tables.forEach(table => {
                 const timerElement = document.getElementById(`timer${table.id}`);
                 updateTimer(timerElement, table.taken_at);
             });
+        }
+
+        // Enable / disable buttons
+        function disableButton(button) {
+            button.disabled = true;
+            button.classList.add("disabled");
+        }
+
+        function enableButton(button) {
+            button.disabled = false;
+            button.classList.remove("disabled");
         }
     </script>
 </x-waiter-layout>
