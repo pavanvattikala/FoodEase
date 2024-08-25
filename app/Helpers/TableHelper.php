@@ -97,6 +97,16 @@ class TableHelper
     {
         $table = Table::where('id', $tableId)->first();
 
+        // check if table is already running
+        if ($table->status == TableStatus::Running) {
+            return;
+        }
+
+        // if first order , then add taken_at time
+        if ($table->status == TableStatus::Available) {
+            $table->taken_at = now();
+        }
+
         $table->status = TableStatus::Running;
 
         $table->save();
