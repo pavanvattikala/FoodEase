@@ -1,19 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\POS;
 
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\TableStatus;
 use App\Helpers\BillHelper;
+use App\Helpers\RestaurantHelper;
 use App\Helpers\TableHelper;
+use App\Http\Controllers\Controller;
 use App\Jobs\SaveAndPrintBill;
 use App\Models\Bill;
 use App\Models\Category;
-use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Table;
+use App\Models\TableLocation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PosController extends Controller
 {
@@ -37,7 +40,10 @@ class PosController extends Controller
             $isTableToBePaid = Table::where('id', $tableId)->where('status', TableStatus::Printed)->exists();
         }
 
-        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes', 'prevOrders', 'isTableToBePaid'));
+        $paymentTypes = json_decode(RestaurantHelper::getCachedRestaurantDetails()->payment_options);
+
+
+        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes', 'prevOrders', 'isTableToBePaid', 'paymentTypes'));
     }
 
     public function tables()
@@ -53,7 +59,11 @@ class PosController extends Controller
 
         $table_colors =  config('predefined_options.table_colors');
 
-        return view('pos.tables', compact('tables', 'takenTables', 'table_colors'));
+        $tableLocations = TableLocation::getCachedTableLocations();
+
+        $paymentTypes = json_decode(RestaurantHelper::getCachedRestaurantDetails()->payment_options);
+
+        return view('pos.tables', compact('tables', 'takenTables', 'table_colors', 'tableLocations', 'paymentTypes'));
     }
     public function addTableToSesstion(Request $request)
     {
