@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Menu;
 
 class Category extends Model
 {
@@ -39,6 +40,7 @@ class Category extends Model
     {
         $saved = parent::save($options);
         self::refreshAndCacheCategoriesWithMenus();
+        Menu::refreshAndCacheMenus();
         return $saved;
     }
 
@@ -46,6 +48,7 @@ class Category extends Model
     {
         $deleted = parent::delete();
         self::refreshAndCacheCategoriesWithMenus();
+        Menu::refreshAndCacheMenus();
         return $deleted;
     }
 }
