@@ -10,7 +10,7 @@
 
             <div id="order-type-options" class="mw-40 flex flex-row align-middle text-center">
                 @php
-                    $orderType = session()->get('orderType');
+                    $orderType = $orderType->value;
                 @endphp
                 <div id="dine_in" class="h-full mw-40 @if ($orderType == 'dine_in') active @endif">
                     <p>Dine In</p>
@@ -56,59 +56,15 @@
                     <i class="fa fa-sticky-note"></i>
                 </button>
 
-                @if (session()->has('tableData'))
-                    @php
-                        $tableData = session()->get('tableData');
-                    @endphp
-                    <button data-tableid={{ $tableData['tableId'] }} class="btn order-options" id="table"
+                @if ($table)
+                    <button data-tableid={{ $table->id }} class="btn order-options" id="table"
                         title="Assign to Table">
                         <i class="fa fa-table"></i>
                         <br>
-                        {{ session()->get('tableData')['tableName'] }}
+                        {{ $table->name }}
                     </button>
                 @endif
             </div>
-            {{-- Display Previous KOTs --}}
-            @if ($prevOrders != null && $prevOrders->count() > 0)
-                <div id="prev-kots">
-                    <table class="table-auto flex flex-col">
-                        <thead id="showPrevKots">
-                            <tr>
-                                <th colspan="3" class="underline">Previous KOTs..</th>
-                            </tr>
-                        </thead>
-                        <tbody class="hidden">
-                            @foreach ($prevOrders as $order)
-                                <tr>
-                                    <td colspan="3">{{ $order->KOT }} &ThickSpace; Time
-                                        - {{ $order->created_at->format('h:i:a') }}
-                                    </td>
-                                </tr>
-                                @foreach ($order->orderDetails as $item)
-                                    <tr>
-                                        <td>
-                                            <button class="del-item" onclick="delItem({{ $item->menu_id }})">X</button>
-                                            <span>{{ $item->menu->name }}</span>
-                                        </td>
-                                        <td>
-                                            <button class="qty-options remQty"
-                                                onclick="remQty({{ $item->menu_id }})">-</button>
-                                            <span id="qty">{{ $item->quantity }}</span>
-                                            <button class="qty-options addQty"
-                                                onclick="addQty({{ $item->menu_id }})">+</button>
-                                        </td>
-                                        <td>{{ $item->quantity * $item->menu->price }}</td>
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                            <tr>
-                                <td colspan="3"> Bill Total {{ $prevOrders->sum('total') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-            @endif
             <div id="order-items-table" class="items ">
                 <table class="table-auto flex flex-col">
                     <thead>
@@ -149,12 +105,6 @@
                 @endforeach
 
             </div>
-
-            @if ($isTableToBePaid == true)
-                <div>
-                    <button class="btn" id="settle-order">Settle And Save</button>
-                </div>
-            @endif
             <div id="save-and-bill-options" class="flex flex-row">
                 <div id="save-options" class="flex flex-row">
                     <button class="btn" id="bill-order">Bill & Print</button>

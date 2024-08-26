@@ -200,6 +200,10 @@
 
                             <div class="flex table-options justify-center align-middle">
                                 @if ($isTableToBeBilled == true)
+                                    <div onclick="showorders({{ $table->id }})">
+                                        <button style="background-color: white; color: black" class="btn"
+                                            id="settle-order"><i class="fas fa-eye"></i></button>
+                                    </div>
                                     <div onclick="printTable({{ $table->id }})">
                                         <button style="background-color: white; color: black" class="btn"
                                             id="print-table"><i class="fas fa-print"></i></button>
@@ -273,6 +277,7 @@
         var billTableUrl = "{{ route('pos.table.bill', [], false) }}";
         var indexUrl = "{{ route('pos.tables', [], false) }}";
         var settleTableUrl = "{{ route('pos.table.settle', [], false) }}";
+        const selectTableURL = "{{ route('pos.main', [], false) }}";
 
         // DOM loaded
         $(document).ready(function() {
@@ -293,35 +298,12 @@
 
 
         $("#Takeaway").on("click", function() {
-            selectTable(-1);
+            selectTable("takeaway");
         });
 
         function selectTable(tableId) {
-            const url = "{{ route('pos.table.add.toSession', [], false) }}";
-            var csrf_token = "{{ csrf_token() }}";
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {
-                    tableId: tableId,
-                },
-                headers: {
-                    'X-CSRF-TOKEN': csrf_token
-                },
-                contentType: 'application/x-www-form-urlencoded',
-                success: function(response) {
-                    console.log('table is selected:', response.message);
-
-                    if (response.message == "true") {
-                        window.location.replace(" {{ route('pos.main') }}");
-                    } else {
-                        alert("You cannot select it");
-                    }
-                },
-                error: function(error) {
-                    console.error('Error:', error);
-                }
-            });
+            const url = selectTableURL + "?tableId=" + tableId;
+            window.location.href = url;
         }
 
         setInterval(() => {
@@ -449,6 +431,13 @@
                     alert("Table Billing Failed");
                 },
             });
+        }
+
+        function showorders(tableId) {
+            event.stopPropagation();
+
+            const url = "{{ route('pos.table.orders', ['tableId' => ':id'], false) }}".replace(':id', tableId);
+            window.open(url, '_blank');
         }
     </script>
 

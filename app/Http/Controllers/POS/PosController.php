@@ -33,31 +33,38 @@ class PosController extends Controller
         $this->tableService = new TableService();
         $this->restaurantService = new RestaurantService();
     }
-
-    public function index()
+    public function index(Request $request)
     {
+        $tableId = $request->tableId;
+
+        $orderType = $tableId === 'takeaway' ? OrderType::Takeaway : OrderType::DineIn;
+
+        // Get categories with menus, predefined notes, and payment types
         $categoriesWithMenus = $this->menuService->getCatergoriesWithMenus();
-
         $predefinedNotes = config('predefined_options.notes');
-
-        $prevOrders = null;
-        $isTableToBePaid = false;
-
-        if (session()->has('tableData')) {
-            $tableId = session()->get('tableData')['tableId'];
-            $prevOrders = Order::with('orderDetails')->with('orderDetails.menu')
-                ->where('table_id', $tableId)
-                ->where('status', '!=', OrderStatus::Closed)
-                ->get();
-
-            $isTableToBePaid = Table::where('id', $tableId)->where('status', TableStatus::Printed)->exists();
-        }
-
         $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
 
+        // Initialize variables
+        $table = null;
 
-        return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes', 'prevOrders', 'isTableToBePaid', 'paymentTypes'));
+        if ($orderType === OrderType::DineIn) {
+            $table = Table::find($tableId);
+
+            // Redirect if the table is not found
+            if (!$table) {
+                return redirect()->route('pos.tables');
+            }
+        }
+
+        return view('pos.pos-index', compact(
+            'categoriesWithMenus',
+            'predefinedNotes',
+            'paymentTypes',
+            'table',
+            'orderType'
+        ));
     }
+
 
     public function tables()
     {
@@ -78,21 +85,6 @@ class PosController extends Controller
         $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
 
         return view('pos.tables', compact('tables', 'takenTables', 'table_colors', 'tableLocations', 'paymentTypes'));
-    }
-    public function addTableToSesstion(Request $request)
-    {
-        $tableId = $request->tableId;
-        session()->forget('orderType');
-        session()->forget('tableData');
-
-        if ($tableId == -1) {
-            session()->put("orderType", OrderType::Takeaway->value);
-        } else {
-            TableHelper::addTableToSession($request->tableId);
-            session()->put("orderType", OrderType::DineIn->value);
-        }
-
-        return response()->json(['message' => 'true']);
     }
 
     public function billTable(Request $request)
@@ -139,5 +131,22 @@ class PosController extends Controller
 
 
         return response()->json(['status' => 'success']);
+    }
+
+    //tableOrders
+
+    public function tableOrders($tableId)
+    {
+
+        $orders = Order::with('orderDetails')->with('orderDetails.menu')
+            ->where('table_id', $tableId)
+            ->where('status', '!=', OrderStatus::Closed)
+            ->get();
+
+        $table = Table::find($tableId);
+
+        $billedOrders = Bill::where('table_id', $tableId)->where('created_at', '>=', $table->taken_at)->with('orders')->get();
+
+        return view('pos.table-orders', compact('orders', 'table', 'billedOrders'));
     }
 }

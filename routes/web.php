@@ -114,16 +114,15 @@ Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')-
 
 
 Route::middleware(['auth', 'biller'])->name('pos.')->prefix('pos')->group(function () {
-    Route::redirect('/', '/pos/tables')->name('index');
-    Route::get('/index', [PosController::class, 'index'])->name('main');
-    Route::get('/tables', [PosController::class, 'tables'])->name('tables');
-    Route::post('addtabletosession', [PosController::class, 'addTableToSesstion'])->name('table.add.toSession');
+    Route::get('/select-table', [PosController::class, 'tables'])->name('tables');
+    Route::get('/order', [PosController::class, 'index'])->name('main');
     Route::post('/table/submit-for-billing', [PosController::class, 'billTable'])->name('table.bill');
     Route::post('/table/settle', [PosController::class, 'settleTable'])->name('table.settle');
+    Route::get('/table/orders/{tableId}', [PosController::class, 'tableOrders'])->name('table.orders');
 });
 
 /**
- * -----------------------------------------------------------------------------------------------------------------------------
+ * -------------------------------------------------s----------------------------------------------------------------------------
  * Routes for Order
  * -----------------------------------------------------------------------------------------------------------------------------
  */
