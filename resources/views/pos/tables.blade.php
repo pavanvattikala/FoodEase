@@ -123,7 +123,7 @@
     </style>
     <div class="flex flex-row mb-2 mt-2" id="table-main-nav">
         <div class="flex flex-row mw-60">
-            <h1>Table View</h1>
+            <h1 class="font-bold">Table View</h1>
         </div>
         <div id="order-type-options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
             <button class="btn h-full" id="reload" onclick="location.reload()"><i class="fa fa-refresh">Refresh</i>
@@ -134,14 +134,14 @@
     </div>
     <div class="flex flex-row mb-2 mt-2" id="table-second-nav">
         <div class="flex flex-row mw-60 new_options" style="justify-content: flex-start">
-            <div>
+            {{-- <div>
                 <a href="{{ route('reservations.step.one') }}">
                     <button class="btn">Table Reservation</button>
                 </a>
             </div>
             <div>
                 <button class="btn">contatless</button>
-            </div>
+            </div> --}}
 
         </div>
         <div id="table_type_options" class="mw-40 flex flex-row align-middle" style="justify-content: space-evenly">
@@ -159,7 +159,7 @@
 
     </div>
     <div class="container" id="select-tables">
-        @foreach (App\Enums\TableLocation::cases() as $location)
+        @foreach ($tableLocations as $location)
             <div class="mb-4">
                 <h2 class="category-header">{{ $location->name }} Tables</h2>
                 <div class="tables-container">
@@ -233,7 +233,15 @@
             </div>
             <div class="modal-body mt-4 flex flex-wrap justify-between">
                 <input type="number" value="0" id="paymentTableId" hidden>
-                <div>
+
+                @foreach ($paymentTypes as $payment)
+                    <div>
+                        <input type="radio" name="payment-type" value="{{ $payment }}"
+                            id="{{ $payment }}">
+                        <label>{{ $payment }}</label>
+                    </div>
+                @endforeach
+                {{-- <div>
                     <input id="cash" type="radio" name="payment-type" value="cash" selected="true">
                     <label>Cash</label>
                 </div>
@@ -248,7 +256,7 @@
                 <div>
                     <input type="radio" name="payment-type" value="radio" id="due">
                     <label>Due</label>
-                </div>
+                </div> --}}
             </div>
             <div class="modal-footer mt-4 flex justify-end">
                 <button type="button" class="btn  mr-2" data-close="paymentModal">Close</button>

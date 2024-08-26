@@ -304,41 +304,6 @@ document.getElementById("saveNotesBtn").addEventListener("click", function () {
 
 // Notes Modal End
 
-// Customer Modal Start
-
-// Add Customer Modal Open
-document
-    .getElementById("add-customer-btn")
-    .addEventListener("click", function () {
-        document.getElementById("customerDataModal").style.display = "block";
-        $("#customerName").focus();
-    });
-
-// Add Customer Modal Close
-document
-    .querySelectorAll('[data-close="customerDataModal"]')
-    .forEach(function (element) {
-        element.addEventListener("click", function () {
-            document.getElementById("customerDataModal").style.display = "none";
-        });
-    });
-
-// Customer Modal Save Button
-document
-    .getElementById("saveCustomerDataBtn")
-    .addEventListener("click", function () {
-        const customerName = $("#customerName").val();
-        const mobileNumber = $("#mobileNumber").val();
-
-        customerData = {
-            customerName,
-            mobileNumber,
-        };
-        document.getElementById("customerDataModal").style.display = "none";
-    });
-
-// Customer Modal End
-
 // Modal Functions End
 
 //------------------------------------------------------------------------------------------------------------------------------
@@ -367,6 +332,14 @@ $("#bill-order").click(function (e) {
     // Disable the button to prevent multiple clicks
     disableButton(button);
 
+    if (orderItems.length === 0) {
+        alert("No Items Selected");
+
+        // Re-enable the button if no items are selected
+        enableButton(button);
+        return;
+    }
+
     let printBill = true;
     let hasNewOrders = orderItems.length > 0;
     let isTableToBePaid = $("#settle-order").length > 0;
@@ -388,7 +361,6 @@ $("#bill-order").click(function (e) {
 });
 
 $("#kot-order").click(function () {
-    const printKOT = true;
     let button = this;
 
     disableButton(button);
@@ -400,38 +372,34 @@ $("#kot-order").click(function () {
         enableButton(button);
         return;
     }
-    const operation = saveOrder(false, printKOT);
+    const operation = saveOrder();
     operation.finally(() => {
         enableButton(button);
     });
 });
 
 // Save order
-function saveOrder(printBill = false, printKOT = false) {
+function saveOrder(printBill = false) {
     //validate order
     if (!hasPrevOrders && orderItems.length === 0) {
         alert("No Items Selected");
         return;
     }
     var tableId = null;
-    var reOrder = false;
+    var isPickUpOrder = false;
+    const billTable = printBill;
 
     if ($("#takeaway").hasClass("active")) {
         tableId = null;
+        isPickUpOrder = true;
     } else {
         tableId = $("#table").data("tableid");
     }
 
-    if (hasPrevOrders) {
-        reOrder = true;
-    }
+    const paymentMethod = $("input[name='payment-type']:checked").next().text();
 
     const order = {
         orderItems: orderItems,
-        paymentType: $("input[name='payment-type']:checked").next().text(),
-        specialInstructions: selectedNotes,
-        customer: customerData,
-        tableId: tableId,
         total: $("#total").text(),
         discount: $("#discount").text(),
         grandtotal: $("#grandtotal").text(),
@@ -444,11 +412,13 @@ function saveOrder(printBill = false, printKOT = false) {
         url: orderSubmitUrl,
         type: "POST",
         data: {
+            source: SOURCE,
+            tableId: tableId,
+            specialInstructions: selectedNotes,
+            isPickUpOrder: isPickUpOrder,
+            paymentMethod: paymentMethod,
+            billTable: billTable,
             order: order,
-            source: "pos",
-            printKOT: printKOT,
-            printBill: printBill,
-            reOrder: reOrder,
         },
         headers: {
             "X-CSRF-TOKEN": csrf_token,

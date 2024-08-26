@@ -55,9 +55,6 @@
                 <button class="btn order-options" id="add-notes-btn" title="Add Notes">
                     <i class="fa fa-sticky-note"></i>
                 </button>
-                <button class="btn order-options" id="add-customer-btn" title="Assign to Customer">
-                    <i class="fa fa-user"></i>
-                </button>
 
                 @if (session()->has('tableData'))
                     @php
@@ -141,24 +138,18 @@
                         </tr> --}}
                 </table>
             </div>
+
             <div id="payment-types" class="flex flex-row">
-                <div>
-                    <input id="cash" type="radio" name="payment-type" selected="true">
-                    <label>Cash</label>
-                </div>
-                <div>
-                    <input id="card" type="radio" name="payment-type">
-                    <label>Card</label>
-                </div>
-                <div>
-                    <input id="upi" type="radio" name="payment-type">
-                    <label>UPI</label>
-                </div>
-                <div>
-                    <input type="radio" name="payment-type" id="due">
-                    <label>Due</label>
-                </div>
+
+                @foreach ($paymentTypes as $paymentType)
+                    <div>
+                        <input id="{{ $paymentType }}" type="radio" name="payment-type" selected="true">
+                        <label>{{ Str::ucfirst($paymentType) }}</label>
+                    </div>
+                @endforeach
+
             </div>
+
             @if ($isTableToBePaid == true)
                 <div>
                     <button class="btn" id="settle-order">Settle And Save</button>
@@ -210,34 +201,6 @@
                 </div>
             </div>
         </div>
-        <div id="customerDataModal" class="modal">
-            <div class="modal-overlay" tabindex="-1" data-close="customerDataModal"></div>
-            <div class="modal-container bg-white mx-auto mt-10 p-6 rounded-lg shadow-lg w-1/2">
-                <div class="modal-header flex justify-between items-center border-b pb-4">
-                    <span class="text-2xl font-bold">Customer Data</span>
-                    <span class="modal-close cursor-pointer" data-close="customerDataModal">&times;</span>
-                </div>
-                <div class="modal-body mt-4">
-                    <div class="form-group mb-4">
-                        <label for="customerName" class="block text-sm font-medium text-gray-700 mb-2">Customer
-                            Name:</label>
-                        <input type="text" id="customerName" name="customerName"
-                            class="w-full p-2 border rounded-md">
-                    </div>
-                    <div class="form-group mb-4">
-                        <label for="mobileNumber" class="block text-sm font-medium text-gray-700 mb-2">Mobile
-                            Number:</label>
-                        <input type="text" id="mobileNumber" name="mobileNumber"
-                            class="w-full p-2 border rounded-md">
-                    </div>
-                </div>
-                <div class="modal-footer mt-4 flex justify-end">
-                    <button type="button" class="btn  mr-2" data-close="customerDataModal">Close</button>
-                    <button type="button" class="btn bg-green-500" id="saveCustomerDataBtn">Save Customer
-                        Data</button>
-                </div>
-            </div>
-        </div>
 
 
 
@@ -253,11 +216,13 @@
         //     total : int
         //
 
-        const orderItems = [];
+        var orderItems = [];
 
         const menuShortCuts = @json($menuShortCuts);
 
         const selectedNotes = [];
+
+        const SOURCE = 'pos';
 
         let customerData = null;
         let audioUrl = "{{ asset('audio/select.wav') }}";
