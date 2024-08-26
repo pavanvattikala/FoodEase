@@ -1,18 +1,6 @@
-@php
-    $adminLayout = 'admin-layout';
-    $billerLayout = 'biller-layout';
+<x-master-layout>
+    @section('title', 'View Bills')
 
-    $user = auth()->user();
-
-    if ($user->hasPermission(App\Enums\UserRole::Admin)) {
-        $currentLayout = $adminLayout;
-    } elseif ($user->hasPermission(App\Enums\UserRole::Biller)) {
-        $currentLayout = $billerLayout;
-    }
-
-@endphp
-{{-- choosing dynamic layouts based on user permissions --}}
-<x-dynamic-component :component="$currentLayout">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.1/css/buttons.dataTables.css">
     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
@@ -39,6 +27,11 @@
         </h2>
     </x-slot>
 
+
+    @php
+        $user = Auth::user();
+    @endphp
+
     <div class="py-6">
         <div class="max-w-7xl sm:px-6 lg:px-8">
             <div class="flex m-2 p-2 justify-between">
@@ -55,7 +48,7 @@
                         <input type="text" class="datepicker" id="endDatePicker" placeholder="Select End date">
                     </div>
                     <!-- only show if current layout is admin -->
-                    @if ($currentLayout == $adminLayout)
+                    @if ($user->isAdmin())
                         <div class="flex items-center">
                             <input type="checkbox" id="includeDeleted" name="includeDeleted">
                             <label for="includeDeleted" class="ml-2">Include <br> Deleted Bills</label>
@@ -138,8 +131,6 @@
 
             $("#searchByDate").trigger("click");
 
-            // add the page tittle
-            document.title = "FoodEase-Bills";
         });
 
         function getSelectPickrFormattedDate(date) {
@@ -241,4 +232,4 @@
             return formattedDate;
         }
     </script>
-</x-dynamic-component>
+</x-master-layout>

@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class WaiterLayout extends Component
+class MasterLayout extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class WaiterLayout extends Component
      */
     public function render()
     {
-        return view('layouts.waiter');
+        return view('layouts.master');
     }
 }

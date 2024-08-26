@@ -1,4 +1,4 @@
-<x-admin-layout>
+<x-master-layout>
     <style>
         main {
             margin: 0 !important;
@@ -93,4 +93,4 @@
             </div>
         @endforeach
     </div>
-</x-admin-layout>
+</x-master-layout>
