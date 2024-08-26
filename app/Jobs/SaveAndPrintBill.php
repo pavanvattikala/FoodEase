@@ -28,6 +28,8 @@ class SaveAndPrintBill implements ShouldQueue
     {
         $this->billId = $billId;
         $this->printDuplicateBill = $printDuplicateBill;
+
+        Log::info("Bill Printing Started " . $billId);
     }
 
     /**
@@ -43,13 +45,11 @@ class SaveAndPrintBill implements ShouldQueue
             $printer = new ThermalPrinter($billerPrinter);
 
             if ($this->printDuplicateBill) {
-                Log::info("Bill Printed Duplicate " . $this->billId);
+                Log::info("Duplicate Bill Requested" . $this->billId);
                 $printer->printDuplicateBill($this->billId);
             } else {
-                Log::info("Bill Printed " . $this->billId);
                 $printer->printBill($this->billId);
             }
-
 
             Log::info("Bill Printed " . $this->billId);
         } catch (\Exception $e) {
