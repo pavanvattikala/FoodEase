@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Billing;
 
 use App\Enums\UserRole;
 use App\Helpers\PDFHelper;
+use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
