@@ -62,9 +62,9 @@ class BillController extends Controller
     function viewBill($id)
     {
 
-        $bill = Bill::where('id', $id)->with('orders')->with('orders.orderDetails')->with('orders.orderDetails.menu')->first();
+        $bill = Bill::where('id', $id)->with('orders')->with('orders.orderDetails')->with('orders.orderDetails.menu')->withTrashed()->first();
 
-        return view('admin.bills.edit', compact('bill'));
+        return view('admin.bills.view', compact('bill'));
     }
 
 

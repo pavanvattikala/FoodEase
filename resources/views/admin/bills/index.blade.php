@@ -35,9 +35,6 @@
     <div class="py-6">
         <div class="max-w-7xl sm:px-6 lg:px-8">
             <div class="flex m-2 p-2 justify-between">
-                <a href="{{ route('pos.index') }}"
-                    class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">New Bill</a>
-
                 <div class="date-pickers flex flex-row justify-between">
                     <div class="">
                         <label for="startDatePicker">Start Date</label>
