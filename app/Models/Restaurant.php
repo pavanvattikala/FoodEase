@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Restaurant extends Model
 {
@@ -17,6 +18,7 @@ class Restaurant extends Model
         'email',
         'website',
         'GST',
+        'currency_symbol',
         'pending_order_sync_time',
         'waiter_sync_time',
         'minimum_delivery_time',
@@ -24,4 +26,36 @@ class Restaurant extends Model
         'order_live_view',
         'kot_live_view',
     ];
+
+    protected static function refreshRestaurants()
+    {
+        return self::all();
+    }
+
+    public static function getCachedRestaurants()
+    {
+        return Cache::rememberForever('restaurants', function () {
+            return self::refreshRestaurants();
+        });
+    }
+
+    public static function refreshAndCacheRestaurants()
+    {
+        Cache::forget('restaurants');
+        self::getCachedRestaurants();
+    }
+
+    public function save(array $options = [])
+    {
+        $saved = parent::save($options);
+        self::refreshAndCacheRestaurants();
+        return $saved;
+    }
+
+    public function delete()
+    {
+        $deleted = parent::delete();
+        self::refreshAndCacheRestaurants();
+        return $deleted;
+    }
 }

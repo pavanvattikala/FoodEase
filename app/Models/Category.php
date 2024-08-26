@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Category extends Model
 {
@@ -14,5 +15,37 @@ class Category extends Model
     public function menus()
     {
         return $this->belongsToMany(Menu::class, 'category_menu');
+    }
+
+    protected static function refreshCategoriesWithMenus()
+    {
+        return self::with('menus')->get();
+    }
+
+    public static function getCachedCategoriesWithMenus()
+    {
+        return Cache::rememberForever('categoriesWithMenus', function () {
+            return self::refreshCategoriesWithMenus();
+        });
+    }
+
+    public static function refreshAndCacheCategoriesWithMenus()
+    {
+        Cache::forget('categoriesWithMenus');
+        self::getCachedCategoriesWithMenus();
+    }
+
+    public function save(array $options = [])
+    {
+        $saved = parent::save($options);
+        self::refreshAndCacheCategoriesWithMenus();
+        return $saved;
+    }
+
+    public function delete()
+    {
+        $deleted = parent::delete();
+        self::refreshAndCacheCategoriesWithMenus();
+        return $deleted;
     }
 }

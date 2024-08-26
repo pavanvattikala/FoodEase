@@ -9,6 +9,9 @@ use App\Helpers\BillHelper;
 use App\Helpers\RestaurantHelper;
 use App\Helpers\TableHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Service\MenuService;
+use App\Http\Service\RestaurantService;
+use App\Http\Service\TableService;
 use App\Jobs\SaveAndPrintBill;
 use App\Models\Bill;
 use App\Models\Category;
@@ -20,10 +23,20 @@ use Illuminate\Support\Facades\Cache;
 
 class PosController extends Controller
 {
-    //
+    private $menuService;
+    private $tableService;
+    private $restaurantService;
+
+    public function __construct()
+    {
+        $this->menuService = new MenuService();
+        $this->tableService = new TableService();
+        $this->restaurantService = new RestaurantService();
+    }
+
     public function index()
     {
-        $categoriesWithMenus = Category::with('menus')->get();
+        $categoriesWithMenus = $this->menuService->getCatergoriesWithMenus();
 
         $predefinedNotes = config('predefined_options.notes');
 
@@ -40,7 +53,7 @@ class PosController extends Controller
             $isTableToBePaid = Table::where('id', $tableId)->where('status', TableStatus::Printed)->exists();
         }
 
-        $paymentTypes = json_decode(RestaurantHelper::getCachedRestaurantDetails()->payment_options);
+        $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
 
 
         return view('pos.pos-index', compact('categoriesWithMenus', 'predefinedNotes', 'prevOrders', 'isTableToBePaid', 'paymentTypes'));
@@ -48,7 +61,8 @@ class PosController extends Controller
 
     public function tables()
     {
-        $tables = Table::all();
+        $tables = $this->tableService->getTables();
+
         $takenTables = $tables->where('status', TableStatus::Unavaliable)
             ->map(function ($table) {
                 return [
@@ -59,9 +73,9 @@ class PosController extends Controller
 
         $table_colors =  config('predefined_options.table_colors');
 
-        $tableLocations = TableLocation::getCachedTableLocations();
+        $tableLocations = $this->tableService->getTableLocations();
 
-        $paymentTypes = json_decode(RestaurantHelper::getCachedRestaurantDetails()->payment_options);
+        $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
 
         return view('pos.tables', compact('tables', 'takenTables', 'table_colors', 'tableLocations', 'paymentTypes'));
     }
