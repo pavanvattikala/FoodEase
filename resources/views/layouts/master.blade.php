@@ -43,7 +43,7 @@
 
 
                 @if ($user->isBiller() || $user->isAdmin())
-                    <x-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
+                    <x-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
                         {{ __('POS') }}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">

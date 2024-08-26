@@ -25,7 +25,7 @@
     <div class="flex-col">
         {{-- main nav --}}
         <div class="flex" id="pos-nav">
-            <a href="{{ route('pos.index') }}">
+            <a href="{{ route('dashboard') }}">
                 <img src="{{ asset('FoodEase.png') }}" alt="foodease logo" width="250px" height="100px"
                     class="dark:bg-gray-800">
             </a>
@@ -33,7 +33,7 @@
                 style="align-items: flex-end">
                 <nav class="align-middle justify-center flex-grow px-4 pb-4">
 
-                    <x-pos-nav-link :href="route('pos.index')" :active="request()->routeIs('pos.index')">
+                    <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
                         {{ __('New Order') }}
                     </x-pos-nav-link>
                 </nav>
