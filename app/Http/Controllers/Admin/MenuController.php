@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuStoreRequest;
 use App\Models\Category;
 use App\Models\Menu;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -56,7 +57,6 @@ class MenuController extends Controller
 
         $menuQuantity = $request->quantity ? $request->quantity : 0;
 
-
         $menu = Menu::create([
             'name' => $request->name,
             'shortcode' => $request->shortCode,
@@ -84,7 +84,7 @@ class MenuController extends Controller
     public function edit(Menu $menu)
     {
         $categories = Category::all();
-        return view('admin.menus.edit', compact('menu', 'categories'));
+        return view('admin.menus.edisdt', compact('menu', 'categories'));
     }
 
     /**
@@ -99,10 +99,13 @@ class MenuController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required',
-            'shortCode' => ['required', 'unique:menus,shortcode', 'regex:/^\S*$/'],
-            'category' => ['required']
+            'shortCode' => [
+                'required',
+                Rule::unique('menus', 'shortcode')->ignore($menu->id),
+                'regex:/^\S*$/'
+            ],
+            'category' => 'required'
         ]);
-
 
         $image = $menu->image;
         if ($request->hasFile('image')) {
