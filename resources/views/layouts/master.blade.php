@@ -9,9 +9,6 @@
     <title>FoodEase - @yield('title', config('app.name', 'FoodEase'))</title>
 
     @include('layouts.scripts')
-
-    <script src="{{ mix('js/datepicker.js') }}"></script>
-    <link rel="stylesheet" href="{{ mix('css/flatpickr.css') }}">
 </head>
 
 <body class="font-sans antialiased">
@@ -21,7 +18,7 @@
             x-data="{ open: false }">
             <div class="flex flex-row items-center justify-between flex-shrink-0 px-8 py-4">
                 <a href="#"
-                    class="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark:text-white focus:outline-none focus:shadow-outline">Admin</a>
+                    class="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark:text-white focus:outline-none focus:shadow-outline">{{ Auth::user()->name }}</a>
                 <button class="rounded-lg md:hidden focus:outline-none focus:shadow-outline" @click="open = !open">
                     <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">
                         <path x-show="!open" fill-rule="evenodd"
@@ -51,6 +48,9 @@
                     </x-nav-link>
                     <x-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
                         {{ __('KOT View') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('analytics.index')" :active="request()->routeIs('analytics.index')">
+                        {{ __('Analytics') }}
                     </x-nav-link>
 
                     @php

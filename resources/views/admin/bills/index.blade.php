@@ -1,16 +1,7 @@
 <x-master-layout>
     @section('title', 'View Bills')
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.1/css/buttons.dataTables.css">
-    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.1/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.dataTables.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.print.min.js"></script>
+    @include('components.analytics.datatable')
     <style>
         #table-bills {
             color: grey !important;
@@ -34,17 +25,8 @@
 
     <div class="py-6">
         <div class="max-w-7xl sm:px-6 lg:px-8">
-            <div class="flex m-2 p-2 justify-between">
-                <div class="date-pickers flex flex-row justify-between">
-                    <div class="">
-                        <label for="startDatePicker">Start Date</label>
-                        <input type="text" class="datepicker" id="startDatePicker" placeholder="Select Start date">
-                    </div>
-                    <div class="">
-                        <label for="endDatePicker">End Date</label>
-                        <input type="text" class="datepicker" id="endDatePicker" placeholder="Select End date">
-                    </div>
-                    <!-- only show if current layout is admin -->
+            <x-search-by-date>
+                <div class="flex m-2 p-2 justify-between">
                     @if ($user->isAdmin())
                         <div class="flex items-center">
                             <input type="checkbox" id="includeDeleted" name="includeDeleted">
@@ -55,20 +37,13 @@
                             <label for="onlyDeleted" class="ml-2">Show Only <br> Deleted Bills</label>
                         </div>
                     @endif
-                    <div class="">
-                        <button id="searchByDate"
-                            class="px-4 py-2 bg-indigo-500 hover:bg-indigo-700 rounded-lg text-white">Search</button>
-                    </div>
-
                 </div>
-            </div>
+            </x-search-by-date>
 
             <div class="flex m-2 p-2 justify-start">
                 <h1>Total Sales</h1>
                 <h1 id="totalSales" class="ml-2"></h1>
             </div>
-
-
 
             <div class="flex flex-col">
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -110,30 +85,6 @@
         </div>
     </div>
     <script>
-        let startDateObject;
-        let endDateObject;
-
-        document.addEventListener("DOMContentLoaded", function() {
-            startDateObject = flatpickr("#startDatePicker", {
-                dateFormat: "d-M-y",
-                defaultDate: "today",
-                maxDate: "today",
-            });
-
-            endDateObject = flatpickr("#endDatePicker", {
-                dateFormat: "d-M-y",
-                defaultDate: "today",
-                maxDate: "today",
-            });
-
-            $("#searchByDate").trigger("click");
-
-        });
-
-        function getSelectPickrFormattedDate(date) {
-            return date.selectedDates[0]; //.format('MM-D-YYYY');
-        }
-
         document.getElementById("searchByDate").addEventListener("click", function() {
             let startDate = new Date(getSelectPickrFormattedDate(startDateObject));
             let endDate = getSelectPickrFormattedDate(endDateObject);
