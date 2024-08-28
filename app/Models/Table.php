@@ -35,7 +35,7 @@ class Table extends Model
 
     protected static function refreshTables()
     {
-        return self::with(['reservations', 'orders', 'location'])->get();
+        return self::all();
     }
 
     public static function getCachedTables()

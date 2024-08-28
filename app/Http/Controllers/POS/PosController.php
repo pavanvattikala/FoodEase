@@ -70,21 +70,13 @@ class PosController extends Controller
     {
         $tables = $this->tableService->getTables();
 
-        $takenTables = $tables->where('status', TableStatus::Unavaliable)
-            ->map(function ($table) {
-                return [
-                    'id' => $table['id'],
-                    'taken_at' => $table['taken_at'],
-                ];
-            })->values();
-
         $table_colors =  config('predefined_options.table_colors');
 
         $tableLocations = $this->tableService->getTableLocations();
 
         $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
 
-        return view('pos.tables', compact('tables', 'takenTables', 'table_colors', 'tableLocations', 'paymentTypes'));
+        return view('pos.tables', compact('tables', 'table_colors', 'tableLocations', 'paymentTypes'));
     }
 
     public function billTable(Request $request)
