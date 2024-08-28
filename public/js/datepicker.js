@@ -10,16 +10,7 @@
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flatpickr__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flatpickr */ "./node_modules/flatpickr/dist/esm/index.js");
- // document.addEventListener("DOMContentLoaded", function () {
-//     flatpickr("#datepicker", {
-//         dateFormat: "d-m-Y",
-//         defaultDate: "today",
-//         maxDate: "today",
-//         onChange: function (selectedDates, dateStr) {
-//             console.log(selectedDates, dateStr);
-//         },
-//     });
-// });
+
 
 /***/ }),
 
