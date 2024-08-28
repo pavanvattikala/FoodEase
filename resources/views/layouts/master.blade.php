@@ -49,8 +49,8 @@
                     <x-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
                         {{ __('KOT View') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('analytics.index')" :active="request()->routeIs('analytics.index')">
-                        {{ __('Analytics') }}
+                    <x-nav-link :href="route('reporting.index')" :active="request()->routeIs('reporting.index')">
+                        {{ __('Reporting') }}
                     </x-nav-link>
 
                     @php
