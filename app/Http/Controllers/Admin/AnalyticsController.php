@@ -27,11 +27,22 @@ class AnalyticsController extends Controller
         if ($report == 'sales-by-item') {
             return view('admin.analytics.salesByItem');
         }
+
+        if ($report == 'sales-by-category') {
+            return view('admin.analytics.salesByCategory');
+        }
     }
 
     public function salesByItemData(Request $request)
     {
         $response = $this->reportingService->salesByItemReport($request->startDate, $request->endDate);
+
+        return response()->json($response);
+    }
+
+    public function salesByCategoryData(Request $request)
+    {
+        $response = $this->reportingService->salesByCategoryReport($request->startDate, $request->endDate);
 
         return response()->json($response);
     }
