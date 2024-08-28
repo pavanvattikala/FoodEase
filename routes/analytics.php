@@ -19,4 +19,7 @@ Route::middleware(['auth', 'biller'])->name('reporting.')->prefix('reporting')->
 
     //Sales By Item Data
     Route::get('/sales-by-item-data', [AnalyticsController::class, 'salesByItemData'])->name('salesByItemData');
+
+    //Sales By Category Data
+    Route::get('/sales-by-category-data', [AnalyticsController::class, 'salesByCategoryData'])->name('salesByCategoryData');
 });
