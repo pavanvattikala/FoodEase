@@ -34,7 +34,6 @@
         });
 
         $("#searchByDate").trigger("click");
-
     });
 
     function getSelectPickrFormattedDate(date) {
@@ -52,5 +51,22 @@
         let formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
 
         return formattedDate;
+    }
+
+    function getFormattedDates(startDateObject, endDateObject) {
+        let startDate = new Date(getSelectPickrFormattedDate(startDateObject));
+        let endDate = new Date(getSelectPickrFormattedDate(endDateObject));
+
+        if (startDate > endDate) {
+            alert("Start date should be less than end date");
+            // reset the dates
+            endDateObject.setDate("today");
+            return;
+        }
+
+        startDate = formatDateToYYYYMMDD(startDate);
+        endDate = formatDateToYYYYMMDD(endDate);
+
+        return [startDate, endDate];
     }
 </script>

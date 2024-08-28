@@ -31,16 +31,8 @@ class AnalyticsController extends Controller
 
     public function salesByItemData(Request $request)
     {
-        $data = $this->reportingService->salesByItemReport($request->start_date, $request->end_date)['data'];
+        $response = $this->reportingService->salesByItemReport($request->startDate, $request->endDate);
 
-        $html = '';
-
-        foreach ($data as $index => $item) {
-
-            $data = view('components.analytics.salesByItem', compact('item', 'index'))->render();
-            $html .= $data;
-        }
-
-        return response()->json(["status" => "success", 'data' => $html, 'message' => 'Sales by item report generated successfully']);
+        return response()->json($response);
     }
 }

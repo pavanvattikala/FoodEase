@@ -12,10 +12,11 @@ class ReportingService extends Service
     {
         [$startDate, $endDate] = DateHelper::formatDatesForReport($startDate, $endDate);
 
+
         $data = OrderDetail::select('menus.name as menu', 'menus.price as price')
             ->join('menus', 'order_details.menu_id', '=', 'menus.id')
             ->whereBetween('order_details.created_at', [$startDate, $endDate])
-            ->groupBy('menu_id', 'menus.name')
+            ->groupBy('order_details.menu_id')
             ->selectRaw('SUM(order_details.quantity) as no_of_sales')
             ->orderBy('no_of_sales', 'desc')
             ->get();

@@ -3,26 +3,13 @@
 
     @include('components.analytics.datatable')
     <style>
-        #table-sales-by-item {
-            color: grey !important;
-        }
 
-        main {
-            padding: 0px !important;
-            margin: 0px !important;
-        }
     </style>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
-
-
-    @php
-        $user = Auth::user();
-    @endphp
-
     <div class="py-6">
         <div class="max-w-7xl sm:px-6 lg:px-8">
             <!-- search by date -->
@@ -60,6 +47,15 @@
                                 <tbody id="sales-by-item-table-body">
 
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4"
+                                            class="py-3 px-6 text-xl font-medium text-gray-700 uppercase">
+                                            Total Sales Amount:</td>
+                                        <td id="total-sales-amount"
+                                            class="py-3 px-6 text-xl font-medium text-gray-900 "></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -68,18 +64,19 @@
         </div>
     </div>
     <script>
-        document.getElementById("searchByDate").addEventListener("click", function() {
-            let startDate = new Date(getSelectPickrFormattedDate(startDateObject));
-            let endDate = getSelectPickrFormattedDate(endDateObject);
+        var SalesByItemData = {};
+        const tableBody = document.getElementById("sales-by-item-table-body");
+        const tdClass = "py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap";
+        const trClass = "bg-white border-b dark:bg-gray-800 dark:border-gray-700";
 
 
-            if (startDate > endDate) {
-                alert("Start date should be less than end date");
-                return;
-            }
+        document.getElementById("searchByDate").addEventListener("click", function(e) {
 
-            startDate = formatDateToYYYYMMDD(startDate);
-            endDate = formatDateToYYYYMMDD(endDate);
+            // Disable the button to prevent multiple clicks
+            let button = e.target;
+            button.disabled = true;
+
+            [startDate, endDate] = getFormattedDates(startDateObject, endDateObject)
 
             let url =
                 `{{ route('reporting.salesByItemData', [], false) }}?startDate=${startDate}&endDate=${endDate}`;
@@ -88,10 +85,12 @@
                 url: url,
                 method: 'get',
                 success: function(response) {
+
                     $('#sales-by-item-table').DataTable().destroy();
-                    let salesByItem = response.data;
-                    let tableBody = document.getElementById("sales-by-item-table-body");
-                    tableBody.innerHTML = salesByItem;
+
+                    SalesByItemData = response.data;
+
+                    populateTable();
 
                     var filename = `sales-by-item-${startDate} To ${endDate}`;
 
@@ -104,26 +103,78 @@
                             },
                             {
                                 extend: 'excel',
-
                                 filename: filename
                             },
                             {
                                 extend: 'pdf',
-
                                 filename: filename
                             },
                             {
                                 extend: 'print',
-
                                 filename: filename
                             }
                         ]
                     });
+
+                    button.disabled = false;
                 },
                 error: function(error) {
                     console.error("Error:", error);
+                    button.disabled = false;
                 }
             });
         });
+
+        function populateTable() {
+            clearTable();
+            let totalSalesAmount = 0;
+
+            SalesByItemData.forEach((item, index) => {
+                var tr = document.createElement("tr");
+                tr.className = trClass;
+                var sno = document.createElement("td");
+                sno.className = tdClass;
+                sno.id = "menu-" + (index + 1);
+                sno.innerHTML = index + 1;
+                tr.appendChild(sno);
+
+                var menuItem = document.createElement("td");
+                menuItem.className = tdClass;
+                menuItem.innerHTML = item.menu;
+                tr.appendChild(menuItem);
+
+                var noOfSales = document.createElement("td");
+                noOfSales.className = tdClass;
+                noOfSales.innerHTML = item.no_of_sales;
+                tr.appendChild(noOfSales);
+
+                var price = document.createElement("td");
+                price.className = tdClass;
+                // format to 2 decimal places and comma separated
+                price.innerHTML = formatCurrency(item.price);
+                tr.appendChild(price);
+
+                var totalAmount = document.createElement("td");
+                totalAmount.className = tdClass;
+                let amount = item.no_of_sales * item.price;
+
+                totalAmount.innerHTML = formatCurrency(amount);
+                tr.appendChild(totalAmount);
+
+
+                // Add to the total sales amount
+                totalSalesAmount += amount;
+
+                tableBody.appendChild(tr);
+            });
+
+            document.getElementById('total-sales-amount').innerHTML = formatCurrency(totalSalesAmount);
+
+
+        }
+
+        function clearTable() {
+            tableBody.innerHTML = "";
+        }
     </script>
 </x-master-layout>
