@@ -66,7 +66,7 @@ class PosController extends Controller
     }
 
 
-    public function tables()
+    public function selectTable()
     {
         $tables = $this->tableService->getTables();
 
@@ -102,11 +102,15 @@ class PosController extends Controller
 
     public function settleTable(Request $request)
     {
-        TableHelper::markTableAsPaid($request->tableId);
-
         $tableId = $request->tableId;
 
         $table = Table::find($tableId);
+
+        if (!$table) {
+            return response()->json(['status' => 'error', 'message' => 'Table not found']);
+        }
+
+        TableHelper::markTableAsPaid($request->tableId);
 
         $orders = $table->orders()->where('status', '!=', OrderStatus::Closed)->get();
 
@@ -121,8 +125,7 @@ class PosController extends Controller
 
         $lastBill->save();
 
-
-        return response()->json(['status' => 'success']);
+        return response()->json(['status' => 'success', 'message' => 'Table settled']);
     }
 
     //tableOrders
