@@ -169,6 +169,9 @@ $(document).ready(function () {
         }
     });
 
+    // on load focus on shortcode input
+    $("#shortcode-input").focus();
+
     // Add event listener to Customer Data input
     $("#customerName, #mobileNumber").on("keyup", function (event) {
         // Check if Enter key is pressed (key code 13)
