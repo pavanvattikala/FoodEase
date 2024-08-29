@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\EmployeeCategory;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     public function run()
     {
 
-        $password = '$2y$10$umk7uNtWqDvGb4KQ/.b0PehTwj921a5J07EgDYTG1xrxwD2vcERUW'; // foodease
+        $password = Hash::make(env('DEFAULT_USER_PASSWORD'));
 
         EmployeeCategory::create([
             'name' => 'admin'
