@@ -40,11 +40,6 @@
                 </div>
             </x-search-by-date>
 
-            <div class="flex m-2 p-2 justify-start">
-                <h1>Total Sales</h1>
-                <h1 id="totalSales" class="ml-2"></h1>
-            </div>
-
             <div class="flex flex-col">
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block py-2 min-w-full sm:px-6 lg:px-8">
@@ -77,6 +72,16 @@
                                 <tbody id="bills-table-body">
 
                                 </tbody>
+
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3"
+                                            class="py-3 px-6 text-xl font-medium text-gray-700 uppercase">
+                                            Total Sales Amount:</td>
+                                        <td id="total-sales-amount"
+                                            class="py-3 px-6 text-xl font-medium text-gray-900 "> </td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -111,9 +116,9 @@
                     let tableBody = document.getElementById("bills-table-body");
                     tableBody.innerHTML = bills;
 
-                    let totalSales = data.totalSales;
+                    let totalSales = formatCurrency(data.totalSales);
 
-                    $("#totalSales").text(totalSales);
+                    $("#total-sales-amount").text(totalSales);
 
                     var filename = `Bills-${startDate} To ${endDate}`;
 
@@ -126,6 +131,9 @@
                     if (onlyDeleted) {
                         filename += "-OnlyDeleted";
                     }
+
+                    //set the page title
+                    document.title = filename;
 
                     $('#bills-table').DataTable({
                         "paging": true,
