@@ -117,7 +117,13 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        Storage::delete($category->image);
+        if ($category->menus->count() > 0) {
+            return to_route('admin.categories.index')->with('warning', 'Category cannot be deleted because it has menus.');
+        }
+        // delete image if exists
+        if ($category->image) {
+            Storage::delete($category->image);
+        }
         $category->menus()->detach();
         $category->delete();
 
