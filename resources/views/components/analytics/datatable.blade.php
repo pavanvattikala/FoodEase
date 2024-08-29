@@ -43,7 +43,8 @@
         let [integerPart, decimalPart] = amountString.split('.');
 
         // Add commas to the integer part according to Indian numbering system
-        integerPart = integerPart.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+
+        integerPart = integerPart.replace(/(\d)(?=(\d\d)+\d$)/g, "$1,") // 1,23,45,678
 
         // Combine the integer part, decimal part, and add the Rupee symbol
         return `₹ ${integerPart}.${decimalPart}`;
