@@ -101,12 +101,30 @@
         <main class="m-2 p-8 w-full">
             @foreach (['danger', 'success', 'warning'] as $msg)
                 @if (session()->has($msg))
-                    <div class="p-4 mb-4 text-sm text-{{ $msg }}-700 bg-{{ $msg }}-100 rounded-lg dark:bg-{{ $msg }}-200 dark:text-{{ $msg }}-800"
-                        role="alert">
-                        <span class="font-medium">{{ session()->get($msg) }}!</span>
+                    @php
+                        $bgColor = match ($msg) {
+                            'success' => 'bg-green-100 dark:bg-green-200',
+                            'danger' => 'bg-red-100 dark:bg-red-200',
+                            'warning' => 'bg-yellow-100 dark:bg-yellow-200',
+                            default => 'bg-gray-100 dark:bg-gray-200',
+                        };
+
+                        $textColor = match ($msg) {
+                            'success' => 'text-green-700 dark:text-green-800',
+                            'danger' => 'text-red-700 dark:text-red-800',
+                            'warning' => 'text-yellow-700 dark:text-yellow-800',
+                            default => 'text-gray-700 dark:text-gray-800',
+                        };
+                    @endphp
+
+                    <div class="p-4 mb-4 text-sm {{ $bgColor }} {{ $textColor }} rounded-lg" role="alert">
+                        <span class="font-medium">{{ session($msg) }}</span>
                     </div>
                 @endif
             @endforeach
+
+
+
 
             {{ $slot }}
         </main>
