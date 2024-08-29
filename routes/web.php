@@ -17,7 +17,6 @@ use App\Http\Controllers\Frontend\WelcomeController;
 use App\Http\Controllers\Kitchen\KOTController;
 use App\Http\Controllers\Order\OrderSyncController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RequestController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\POS\PosController;
 use App\Http\Controllers\RedirectController;
@@ -61,9 +60,6 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::resource('/table-location', TableLocationController::class);
     Route::resource('/reservations', ReservationController::class);
     Route::resource('/users', UserController::class);
-
-
-    // Route::get('/bills', [BillController::class, 'getBills'])->name('bills');
 
     Route::get("/bills", function () {
         return view('admin.bills.index');
@@ -114,7 +110,7 @@ Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')-
 
 
 Route::middleware(['auth', 'biller'])->name('pos.')->prefix('pos')->group(function () {
-    Route::get('/select-table', [PosController::class, 'tables'])->name('tables');
+    Route::get('/select-table', [PosController::class, 'selectTable'])->name('tables');
     Route::get('/order', [PosController::class, 'index'])->name('main');
     Route::post('/table/submit-for-billing', [PosController::class, 'billTable'])->name('table.bill');
     Route::post('/table/settle', [PosController::class, 'settleTable'])->name('table.settle');
@@ -128,22 +124,7 @@ Route::middleware(['auth', 'biller'])->name('pos.')->prefix('pos')->group(functi
  */
 
 Route::middleware(['auth'])->name('order.')->prefix('order')->group(function () {
-    // //order step one
-    // Route::get('/step-one', [OrderController::class, 'stepone'])->name('step.one');
 
-    // //current item to session
-    // Route::post('/addtocart', [OrderController::class, 'addToCart'])->name('add.tocart');
-
-    // //remove current item to session
-    // Route::post('/removefromcart', [OrderController::class, 'removefromcart'])->name('remove.fromcart');
-
-    // //show cart
-    // Route::get('/cart', [OrderController::class, 'cart'])->name('cart');
-
-    // //clear cart
-    // Route::post('/clearcart', [OrderController::class, 'clearcart'])->name('clear.cart');
-
-    //order submit to kitchen
     Route::post('/submit', [OrderController::class, 'submit'])->name('submit');
 
     Route::get('/KOT-view', [OrderController::class, 'KOTView'])->name('KOT.view');
