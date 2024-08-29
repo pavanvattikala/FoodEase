@@ -1,4 +1,5 @@
 <x-master-layout>
+    @section('title', 'Menus')
     <style>
         main {
             margin: 0 !important;

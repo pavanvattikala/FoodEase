@@ -84,7 +84,7 @@ class MenuController extends Controller
     public function edit(Menu $menu)
     {
         $categories = Category::all();
-        return view('admin.menus.edisdt', compact('menu', 'categories'));
+        return view('admin.menus.edit', compact('menu', 'categories'));
     }
 
     /**
@@ -113,7 +113,7 @@ class MenuController extends Controller
             $image = $request->file('image')->store('public/menus');
         }
 
-        $menu->update([
+        $operation = $menu->update([
             'name' => $request->name,
             'shortcode' => $request->shortCode,
             'description' => $request->description,
@@ -124,7 +124,11 @@ class MenuController extends Controller
         if ($request->has('category')) {
             $menu->category()->sync($request->category);
         }
-        return to_route('admin.menus.index')->with('success', 'Menu updated successfully.');
+
+        if ($operation) {
+            return to_route('admin.menus.index')->with('success', 'Menu updated successfully.');
+        }
+        return to_route('admin.menus.index')->with('danger', 'Menu not updated.');
     }
 
     /**
