@@ -15,6 +15,8 @@
             cursor: pointer;
             border: 1px solid #ddd;
             border-radius: 5px;
+            min-height: 130px !important;
+            min-width: 110px !important;
             padding: 10px;
             margin: 0 10px 10px 0;
             background-color: #fff;
@@ -97,6 +99,15 @@
 
         .form-group {
             margin-bottom: 10px;
+        }
+
+        .table-options {
+            display: flex;
+            justify-content: center;
+        }
+
+        .table-options>div:first-child {
+            margin-right: 10px;
         }
     </style>
 
@@ -193,7 +204,7 @@
                     <div>
                         <input type="radio" name="payment-type" value="{{ $payment }}"
                             id="{{ $payment }}">
-                        <label for="{{ $payment }}">{{ $payment }}</label>
+                        <label for="{{ $payment }}">{{ strtoupper($payment) }}</label>
                     </div>
                 @endforeach
             </div>

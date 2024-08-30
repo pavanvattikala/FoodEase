@@ -133,12 +133,13 @@ class PosController extends Controller
     public function tableOrders($tableId)
     {
 
+        $table = Table::find($tableId);
+
         $orders = Order::with('orderDetails')->with('orderDetails.menu')
             ->where('table_id', $tableId)
             ->where('status', '!=', OrderStatus::Closed)
             ->get();
 
-        $table = Table::find($tableId);
 
         $billedOrders = Bill::where('table_id', $tableId)->where('created_at', '>=', $table->taken_at)->with('orders')->get();
 
