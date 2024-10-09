@@ -160,6 +160,9 @@ $(document).ready(function () {
     // Show the first category by default
     $(".category button:first-child").click();
 
+    // Filter all menu names
+    filterAllMenuNames();
+
     // Add event listener to Shortcode input
     $("#shortcode-input").keypress(function (event) {
         console.log(event);
@@ -552,4 +555,14 @@ function disableButton(button) {
 function enableButton(button) {
     button.disabled = false;
     button.classList.remove("disabled");
+}
+
+// function to add <br> to menu names where there is a space after every two words
+// This is done to make sure that the menu names are displayed correctly in the POS
+function filterAllMenuNames() {
+    $(".menu-items button").each(function () {
+        var menuName = $(this).text();
+        var filteredMenuName = menuName.replace(/(\w+)\s(\w+)\s/g, "$1 $2<br>");
+        $(this).html(filteredMenuName);
+    });
 }
