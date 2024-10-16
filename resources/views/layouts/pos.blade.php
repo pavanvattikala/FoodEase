@@ -78,9 +78,13 @@
                     </div>
                 @endif
             </div>
+
+            <x-loader />
+
             {{ $slot }}
         </main>
     </div>
+
 </body>
 
 </html>

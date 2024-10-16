@@ -144,7 +144,7 @@
         const url = "addtocart";
 
         var csrf_token = "{{ csrf_token() }}";
-
+        showLoader();
         $.ajax({
             type: "POST",
             url: url,
@@ -162,6 +162,15 @@
             },
             error: function(error) {
                 console.error('Error adding item to cart:', error);
+            },
+            success: function(response) {
+                window.location.replace(redirectUrl);
+            },
+            error: function(error) {
+                console.error('Error ', error);
+            },
+            complete: function() {
+                hideLoader();
             }
         });
     }
@@ -170,7 +179,7 @@
     function removeFromCart(menuId, amount) {
         const url = "removefromcart";
         var csrf_token = "{{ csrf_token() }}";
-
+        showLoader();
         $.ajax({
             type: "POST",
             url: url,
@@ -189,6 +198,9 @@
             error: function(error) {
                 console.error('Error removing item from cart:', error);
                 // Handle the error if needed
+            },
+            complete: function() {
+                hideLoader();
             }
         });
     }
@@ -199,7 +211,7 @@
         const url = "clearcart";
 
         var csrf_token = "{{ csrf_token() }}";
-
+        showLoader();
         $.ajax({
             type: "POST",
             url: url,
@@ -213,6 +225,9 @@
             },
             error: function(error) {
                 console.error('Error ', error);
+            },
+            complete: function() {
+                hideLoader();
             }
         });
     }

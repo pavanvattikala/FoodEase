@@ -302,6 +302,7 @@
                 return;
             }
             event.stopPropagation();
+            showLoader();
             var csrf_token = $('meta[name="csrf-token"]').attr("content");
             $.ajax({
 
@@ -320,6 +321,7 @@
                     if (response.status === "success") {
                         $("#cancel-order").click();
                         updateTableStatus(tableId, "available");
+
                     } else {
                         alert("Table Settlement Failed");
                     }
@@ -328,13 +330,17 @@
                     console.log(error);
                     alert("Table Settlement Failed");
                 },
+                complete: function() {
+                    hideLoader();
+                },
             });
 
         }
 
         // print table bill
         function printTable(tableId) {
-            event.stopPropagation()
+            event.stopPropagation();
+            showLoader();
             let csrf_token = $('meta[name="csrf-token"]').attr("content");
 
             $.ajax({
@@ -358,6 +364,9 @@
                 error: function(error) {
                     console.log(error);
                     alert("Table Billing Failed");
+                },
+                complete: function() {
+                    hideLoader();
                 },
             });
         }

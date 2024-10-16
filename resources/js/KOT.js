@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function markAsServed(orderId) {
+    showLoader();
     $.ajax({
         type: "POST",
         url: markAsServedRoute,
@@ -20,9 +21,16 @@ function markAsServed(orderId) {
                 alert("Something went wrong");
             }
         },
+        error: function (error) {
+            console.error("Error marking order as served:", error);
+        },
+        complete: function () {
+            hideLoader();
+        },
     });
 }
 function markAsPrepared(orderId) {
+    showLoader();
     $.ajax({
         type: "POST",
         url: markAsPreparedRoute,
@@ -40,9 +48,16 @@ function markAsPrepared(orderId) {
                 alert("Something went wrong");
             }
         },
+        error: function (error) {
+            console.error("Error marking order as prepared:", error);
+        },
+        complete: function () {
+            hideLoader();
+        },
     });
 }
 function markAsClosed(orderId) {
+    showLoader();
     $.ajax({
         type: "POST",
         url: markAsClosedRoute,
@@ -59,6 +74,12 @@ function markAsClosed(orderId) {
             } else {
                 alert("Something went wrong");
             }
+        },
+        error: function (error) {
+            console.error("Error marking order as closed:", error);
+        },
+        complete: function () {
+            hideLoader();
         },
     });
 }

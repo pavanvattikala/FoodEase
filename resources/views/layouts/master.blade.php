@@ -124,7 +124,7 @@
             @endforeach
 
 
-
+            <x-loader />
 
             {{ $slot }}
         </main>

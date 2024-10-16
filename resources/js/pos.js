@@ -413,7 +413,7 @@ function saveOrder(printBill = false) {
 
     console.log(order);
     var csrf_token = $('meta[name="csrf-token"]').attr("content");
-
+    showLoader();
     $.ajax({
         url: orderSubmitUrl,
         type: "POST",
@@ -443,12 +443,17 @@ function saveOrder(printBill = false) {
             console.log(error);
             alert("Order Save Failed");
         },
+        complete: function () {
+            hideLoader();
+        },
     });
 }
 
 function billTable() {
     let tableId = $("#table").data("tableid");
     let csrf_token = $('meta[name="csrf-token"]').attr("content");
+
+    showLoader();
 
     $.ajax({
         url: billTableUrl,
@@ -474,6 +479,9 @@ function billTable() {
             console.log(error);
             alert("Table Billing Failed");
         },
+        complete: function () {
+            hideLoader();
+        },
     });
 }
 
@@ -481,7 +489,7 @@ function billTable() {
 $("#settle-order").click(function () {
     var tableId = $("#table").data("tableid");
     var csrf_token = $('meta[name="csrf-token"]').attr("content");
-
+    showLoader();
     $.ajax({
         url: settleTableUrl,
         type: "POST",
@@ -506,6 +514,9 @@ $("#settle-order").click(function () {
             console.log(error);
             alert("Table Settlement Failed");
         },
+        complete: function () {
+            hideLoader();
+        },
     });
 });
 
@@ -515,7 +526,7 @@ $("#settle-order").click(function () {
 function printDuplicateBill() {
     var tableId = $("#table").data("tableid");
     var csrf_token = $('meta[name="csrf-token"]').attr("content");
-
+    showLoader();
     $.ajax({
         url: billTableUrl,
         type: "POST",
@@ -539,6 +550,9 @@ function printDuplicateBill() {
         error: function (error) {
             console.log(error);
             alert("Bill Print Failed");
+        },
+        complete: function () {
+            hideLoader();
         },
     });
 }

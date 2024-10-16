@@ -96,6 +96,7 @@
             var csrf_token = "{{ csrf_token() }}";
 
             $.ajax({
+                showLoader();
                 type: "POST",
                 url: url,
                 headers: {
@@ -112,6 +113,9 @@
                 },
                 error: function(error) {
                     console.error('Error ', error);
+                },
+                complete: function() {
+                    hideLoader();
                 }
             });
         }

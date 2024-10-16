@@ -24,7 +24,7 @@ mix.js("resources/js/datepicker.js", "public/js")
     // copy all the required JS files to the public folder
     .copy("resources/js/jquery.min.js", "public/js")
     .copy("resources/js/pos.js", "public/js")
-    .copy("resources/js/order.js", "public/js")
+    .copy("resources/js/KOT.js", "public/js")
     .copy("resources/js/chart.js", "public/js")
     .copy("resources/js/datatable/buttons.dataTables.js", "public/js/datatable")
     .copy("resources/js/datatable/buttons.print.min.js", "public/js/datatable")
