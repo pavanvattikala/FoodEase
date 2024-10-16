@@ -144,44 +144,40 @@
                 <div class="tables-container">
                     @foreach ($tables->where('location', $location) as $table)
                         @php
-                            $tableColor = $table_colors[$table->status->value];
                             $tableTotal = $table->taken_at
                                 ? $table->orders->where('status', '!=', App\Enums\OrderStatus::Closed)->sum('total')
                                 : null;
-                            $isTableToBeBilled =
-                                $table->status != App\Enums\TableStatus::Printed &&
-                                $table->status != App\Enums\TableStatus::Available;
-                            $isTableToBePaid = $table->status == App\Enums\TableStatus::Printed;
                         @endphp
 
                         <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
-                            class="table-item text-white text-center" style="background-color: {{ $tableColor }}"
-                            data-table-status="{{ $table->status->value }}">
+                            class="table-item text-white text-center" data-table-status="{{ $table->status->value }}">
 
-                            <p class="elapsed-time" data-taken-at="{{ $table->taken_at }}"></p>
+                            <p class="elapsed-time" id="elapsedTime" data-taken-at="{{ $table->taken_at }}"></p>
 
                             <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
                             @if ($tableTotal)
-                                <p>{{ $tableTotal }}</p>
+                                <p id="tableTotal">Rs {{ $tableTotal }}</p>
                             @endif
 
                             <div class="flex table-options justify-center align-middle">
-                                @if ($isTableToBeBilled)
-                                    <div onclick="event.stopPropagation(); showOrders({{ $table->id }})">
-                                        <button class="btn" style="background-color: white; color: black"><i
-                                                class="fas fa-eye"></i></button>
-                                    </div>
-                                    <div onclick="event.stopPropagation(); printTable({{ $table->id }})">
-                                        <button class="btn" style="background-color: white; color: black"><i
-                                                class="fas fa-print"></i></button>
-                                    </div>
-                                @endif
-                                @if ($isTableToBePaid)
-                                    <div onclick="event.stopPropagation(); triggerPaymentModal({{ $table->id }})">
-                                        <button class="btn" style="background-color: white; color: black"><i
-                                                class="fas fa-save"></i></button>
-                                    </div>
-                                @endif
+
+                                <div id="showOrdersBtn"
+                                    onclick="event.stopPropagation(); showOrders({{ $table->id }})">
+                                    <button class="btn" style="background-color: white; color: black"><i
+                                            class="fas fa-eye"></i></button>
+                                </div>
+                                <div id="printTableBtn"
+                                    onclick="event.stopPropagation(); printTable({{ $table->id }})">
+                                    <button class="btn" style="background-color: white; color: black"><i
+                                            class="fas fa-print"></i></button>
+                                </div>
+
+                                <div id="settleTableBtn"
+                                    onclick="event.stopPropagation(); triggerPaymentModal({{ $table->id }})">
+                                    <button class="btn" style="background-color: white; color: black"><i
+                                            class="fas fa-save"></i></button>
+                                </div>
+
                             </div>
                         </div>
                     @endforeach
@@ -222,25 +218,37 @@
         const settleTableUrl = "{{ route('pos.table.settle', [], false) }}";
         const selectTableURL = "{{ route('pos.main', [], false) }}";
 
+        const tableColors = @json($table_colors);
+
 
         $(document).ready(function() {
+
+            // add styles to tables
+            updateTableStyles();
+
+            // get all running tables
             $(".table-item[data-table-status!='available']").each(function() {
                 runningTables.push({
                     tableId: $(this).attr("id"),
-                    takenAt: $(this).find(".elapsed-time").data("taken-at")
+                    takenAt: $(this).find(".elapsed-time").attr("data-taken-at")
                 });
             });
 
-            setInterval(updateElapsedTimes, 1000);
 
+            // update every minute
+            setInterval(updateElapsedTimes, 60000);
+
+            // add event listeners for take away
             $("#Takeaway").on("click", function() {
                 selectTable("takeaway");
             });
 
+            // add event listeners for payment modal close btn
             $('[data-close="paymentModal"]').on("click", function() {
                 $("#paymentModal").hide();
             });
 
+            // add event listeners for payment modal save btn
             $("#savePaymentDataBtn").on("click", function() {
                 const tableId = $("#paymentTableId").val();
                 const paymentType = $("input[name='payment-type']:checked").val();
@@ -249,10 +257,12 @@
             });
         });
 
+        // select table function to redirect to the pos page
         function selectTable(tableId) {
             window.location.href = `${selectTableURL}?tableId=${tableId}`;
         }
 
+        // update elapsed time for running tables
         function updateElapsedTimes() {
             runningTables.forEach(table => {
                 const elapsedString = getElapsedMinutes(table.takenAt);
@@ -260,6 +270,7 @@
             });
         }
 
+        // get elapsed time from the taken time
         function getElapsedMinutes(originalTime) {
             const takenTime = new Date(originalTime);
             const elapsedTime = Date.now() - takenTime.getTime();
@@ -268,17 +279,22 @@
             return `${elapsedHours}H:${elapsedMinutes}M`;
         }
 
+        // show orders for the table
         function showOrders(tableId) {
             const url = "{{ route('pos.table.orders', ['tableId' => ':id'], false) }}".replace(':id', tableId);
             window.open(url, '_blank');
         }
 
+        // trigger payment modal
         function triggerPaymentModal(tableId) {
             $("#paymentModal").show();
+            // set the default paymement type is cash
+            $("input[name='payment-type'][value='cash']").prop("checked", true);
             $("#paymentTableId").val(tableId);
         }
 
 
+        // settle table
         function settleTable(tableId, paymentType) {
 
             if (tableId == null || paymentType == null) {
@@ -303,7 +319,7 @@
                     console.log(response);
                     if (response.status === "success") {
                         $("#cancel-order").click();
-                        window.location.replace(indexUrl);
+                        updateTableStatus(tableId, "available");
                     } else {
                         alert("Table Settlement Failed");
                     }
@@ -316,6 +332,7 @@
 
         }
 
+        // print table bill
         function printTable(tableId) {
             event.stopPropagation()
             let csrf_token = $('meta[name="csrf-token"]').attr("content");
@@ -333,7 +350,7 @@
                 success: function(response) {
                     console.log(response);
                     if (response.status === "success") {
-                        window.location.replace(indexUrl);
+                        updateTableStatus(tableId, "printed");
                     } else {
                         alert("Table Billing Failed");
                     }
@@ -343,6 +360,49 @@
                     alert("Table Billing Failed");
                 },
             });
+        }
+
+        // update table styles
+        function updateTableStyles() {
+            $(".table-item").each(function() {
+                const tableStatus = $(this).attr("data-table-status");
+                $(this).css("background-color", tableColors[tableStatus]);
+                if (tableStatus === 'available') {
+                    $(this).find("#showOrdersBtn").hide();
+                    $(this).find("#printTableBtn").hide();
+                    $(this).find("#settleTableBtn").hide();
+                }
+
+                if (tableStatus === 'running') {
+                    $(this).find("#showOrdersBtn").show();
+                    $(this).find("#printTableBtn").show();
+                    $(this).find("#settleTableBtn").hide();
+                }
+
+                if (tableStatus === 'printed') {
+                    $(this).find("#showOrdersBtn").show();
+                    $(this).find("#printTableBtn").hide();
+                    $(this).find("#settleTableBtn").show();
+                }
+            });
+        }
+
+        // update table status
+        function updateTableStatus(tableId, status) {
+            $("#" + tableId).attr("data-table-status", status);
+            updateTableStyles();
+            updateElapsedTimes();
+
+            if (status === 'available') {
+                clearTableMeta(tableId);
+            }
+        }
+
+        // clear table meta data
+        function clearTableMeta(tableId) {
+            $("#" + tableId).find(".elapsed-time").attr("data-taken-at", "");
+            $("#" + tableId).find(".elapsed-time").text("");
+            $("#" + tableId).find("#tableTotal").text("");
         }
     </script>
 </x-pos-layout>
