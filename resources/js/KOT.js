@@ -1,13 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Check the last segment of the URL
-    var lastSegment = window.location.pathname.split("/").pop();
-
-    // Call the appropriate function based on the last segment
-    if (lastSegment === "running") {
-        //setInterval(checkOrderUpdates, 5000);
-    } else if (lastSegment === "ready-for-pickup") {
-        setInterval(checkPickUpOrderUpdates, waiterSyncTime);
-    }
+    setInterval(checkOrderUpdates, orderSyncTime);
 });
 
 function markAsServed(orderId) {
@@ -71,36 +63,26 @@ function markAsClosed(orderId) {
     });
 }
 
-// function checkOrderUpdates() {
-//     var lastOrderId = getLastOrderId();
-//     console.log('Last Order Id:', lastOrderId);
-//     $.ajax({
-//         url: checkOrderUpdatesRoute,
-//         method: 'GET',
-//         dataType: 'json',
-//         data:{
-//             lastOrderId: lastOrderId
-//         },
-//         success: function (data) {
-//             $("#orders-list").prepend(data.html);
-//         },
-//         error: function (error) {
-//             console.error('Error checking for updates:', error);
-//         }
-//     });
-// }
-
-function checkPickUpOrderUpdates() {
+function checkOrderUpdates() {
     var lastOrderId = getLastOrderId();
+    console.log("Last Order Id:", lastOrderId);
     $.ajax({
-        url: checkPickUpOrderUpdatesRoute,
+        url: checkOrderUpdatesRoute,
         method: "GET",
         dataType: "json",
         data: {
             lastOrderId: lastOrderId,
         },
-        success: function (data) {
-            $("#orders-list").prepend(data.html);
+        success: function (response) {
+            console.log(response);
+            if (
+                response.status === "success" &&
+                response.hasNewOrders === true
+            ) {
+                window.location.reload();
+            } else {
+                console.log("No new orders found");
+            }
         },
         error: function (error) {
             console.error("Error checking for updates:", error);
@@ -113,6 +95,12 @@ function getLastOrderId() {
         return -1;
     }
 
-    var id = $("#orders-list").children().first().attr("id");
-    return id.replace("order", "");
+    var ids = $(".order-item")
+        .map(function () {
+            return parseInt(this.id.replace("order", ""), 10);
+        })
+        .get();
+
+    var lastOrderId = Math.max(...ids);
+    return lastOrderId;
 }

@@ -98,7 +98,7 @@ Route::middleware(['auth', 'biller'])->name('biller.')->prefix('biller')->group(
 
 Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')->group(function () {
 
-    Route::get('/restaurant-config', [RestaurantController::class, 'showConfig'])->name('show.config');
+    Route::get('/config', [RestaurantController::class, 'showConfig'])->name('show.config');
 
     Route::post('/update-config', [RestaurantController::class, 'updateConfig'])->name('update.config');
 });
@@ -140,7 +140,7 @@ Route::middleware(['auth'])->name('order.')->prefix('order')->group(function () 
  * -----------------------------------------------------------------------------------------------------------------------------
  */
 
-Route::middleware(['auth', 'order'])->name('sync.')->prefix('sync')->group(function () {
+Route::middleware(['auth'])->name('sync.')->prefix('sync')->group(function () {
 
     Route::get('/check-pending-orders-updates', [OrderSyncController::class, 'syncPendingOrder'])->name('pending.orders');
     Route::get('/check-pickup-orders-updates', [OrderSyncController::class, 'syncPickUpOrder'])->name('pickup.orders');

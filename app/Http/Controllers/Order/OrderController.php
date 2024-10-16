@@ -238,8 +238,8 @@ class OrderController extends Controller
             $orders = $orders->where('waiter_id', $waiter->id)->get();
         }
 
-        $waiterSyncTime = RestaurantHelper::getCachedRestaurantDetails()->waiter_sync_time * 1000;
+        $orderSyncTime = RestaurantHelper::getCachedRestaurantDetails()->pending_order_sync_time * 1000;
 
-        return view('orders.kot-view', compact('tables', 'orders', 'waiterSyncTime'));
+        return view('orders.kot-view', compact('tables', 'orders', 'orderSyncTime'));
     }
 }

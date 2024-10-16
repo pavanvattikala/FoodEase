@@ -7,61 +7,39 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Service\OrderSyncService;
 
 class OrderSyncController extends Controller
 {
+    private $orderSyncService;
+
+    public function __construct(OrderSyncService $orderSyncService)
+    {
+        $this->orderSyncService = $orderSyncService;
+    }
+
 
     public function syncPendingOrder(Request $request)
     {
         $lastOrderId = $request->lastOrderId;
-        $waiterId = Auth::id();
 
-        $latestOrders = Order::where('id', '>', $lastOrderId)
-            ->where('status', '!=', OrderStatus::Closed)
-            ->where('waiter_id', $waiterId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        /** @var \App\User */
+        $user = Auth::user();
 
-        $noOrders = false;
+        $hasNewOrders = $this->orderSyncService->hasNewOrders($lastOrderId, $user->id);
 
-        $html = "";
-
-        foreach ($latestOrders as $order) {
-            $currentHtml = view('components.order-component-for-waiter', compact('order'))->render();
-
-            $html .= $currentHtml;
-            $noOrders = true;
+        if ($hasNewOrders) {
+            return response()->json([
+                "hasNewOrders" => $hasNewOrders,
+                "status" => "success",
+                "message" => "New Orders Found"
+            ], 200);
+        } else {
+            return response()->json([
+                "hasNewOrders" => $hasNewOrders,
+                "status" => "success",
+                "message" => "No New Orders Found"
+            ], 200);
         }
-
-
-        // Use response() for consistent JSON responses
-        return response()->json(["newOrders" => $noOrders, 'html' => $html]);
-    }
-
-    public function syncPickUpOrder(Request $request)
-    {
-        $lastOrderId = $request->lastOrderId;
-        $waiterId = Auth::id();
-
-        $latestOrders = Order::where('id', '>', $lastOrderId)
-            ->where('status', OrderStatus::ReadyForPickup)
-            ->where('waiter_id', $waiterId)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $noOrders = false;
-
-        $html = "";
-
-        foreach ($latestOrders as $order) {
-            $currentHtml = view('components.order-component-for-waiter', compact('order'))->render();
-
-            $html .= $currentHtml;
-            $noOrders = true;
-        }
-
-
-        // Use response() for consistent JSON responses
-        return response()->json(["newOrders" => $noOrders, 'html' => $html]);
     }
 }

@@ -1,5 +1,5 @@
 <!-- resources/views/restaurant/config.blade.php -->
-<x-admin-layout>
+<x-master-layout>
     <style>
         li {
             list-style: none;
@@ -67,39 +67,39 @@
                 <input type="text" id="website" name="website" value="{{ $restaurantConfig['website'] }}">
             </li>
             <li>
-                <label for="pending_order_sync_time">Pending Order Sync Time:</label>
+                <label for="pending_order_sync_time">Order Sync Time (seconds):</label>
                 <select name="pending_order_sync_time" id="pending_order_sync_time">
                     <option @if ($restaurantConfig['pending_order_sync_time'] == '5') selected @endif value="5">5 Seconds</option>
                     <option @if ($restaurantConfig['pending_order_sync_time'] == '15') selected @endif value="15">15 Seconds</option>
                     <option @if ($restaurantConfig['pending_order_sync_time'] == '30') selected @endif value="10">30 Seconds</option>
-                    <option @if ($restaurantConfig['pending_order_sync_time'] == '60') selected @endif value="60">1 Minitute</option>
+                    <option @if ($restaurantConfig['pending_order_sync_time'] == '60') selected @endif value="60">60 Seconds</option>
                 </select>
             </li>
             <li>
-                <label for="waiter_sync_time">waiter Sync Time:</label>
+                <label for="waiter_sync_time">waiter Sync Time (seconds):</label>
                 <select name="waiter_sync_time" id="waiter_sync_time">
                     <option @if ($restaurantConfig['waiter_sync_time'] == '5') selected @endif value="5">5 Seconds</option>
                     <option @if ($restaurantConfig['waiter_sync_time'] == '15') selected @endif value="15">15 Seconds</option>
                     <option @if ($restaurantConfig['waiter_sync_time'] == '30') selected @endif value="10">30 Seconds</option>
-                    <option @if ($restaurantConfig['waiter_sync_time'] == '60') selected @endif value="60">1 Minitute</option>
+                    <option @if ($restaurantConfig['waiter_sync_time'] == '60') selected @endif value="60">60 Seconds</option>
                 </select>
             </li>
             <li>
                 <label for="minimum_delivery_time">Minimum Delivery Time (minutes):</label>
                 <select name="minimum_delivery_time" id="minimum_delivery_time">
-                    <option @if ($restaurantConfig['minimum_delivery_time'] == '5') selected @endif value="5">5 Seconds</option>
-                    <option @if ($restaurantConfig['minimum_delivery_time'] == '15') selected @endif value="15">15 Seconds</option>
-                    <option @if ($restaurantConfig['minimum_delivery_time'] == '30') selected @endif value="10">30 Seconds</option>
-                    <option @if ($restaurantConfig['minimum_delivery_time'] == '60') selected @endif value="60">1 Minitute</option>
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '300') selected @endif value="300">5 Minutes</option>
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '600') selected @endif value="600">10 Minutes</option>
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '900') selected @endif value="900">15 Minutes</option>
+                    <option @if ($restaurantConfig['minimum_delivery_time'] == '1200') selected @endif value="1200">20 Minutes</option>
                 </select>
             </li>
             <li>
                 <label for="minimum_preparation_time">Minimum Preparation Time (minutes):</label>
                 <select name="minimum_preparation_time" id="minimum_preparation_time">
-                    <option @if ($restaurantConfig['minimum_preparation_time'] == '5') selected @endif value="5">5 Seconds</option>
-                    <option @if ($restaurantConfig['minimum_preparation_time'] == '15') selected @endif value="15">15 Seconds</option>
-                    <option @if ($restaurantConfig['minimum_preparation_time'] == '30') selected @endif value="10">30 Seconds</option>
-                    <option @if ($restaurantConfig['minimum_preparation_time'] == '60') selected @endif value="60">1 Minitute</option>
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '300') selected @endif value="300">5 Minutes</option>
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '600') selected @endif value="600">10 Minutes</option>
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '900') selected @endif value="900">15 Minutes</option>
+                    <option @if ($restaurantConfig['minimum_preparation_time'] == '1200') selected @endif value="1200">20 Minutes</option>
                 </select>
             </li>
             <li>
@@ -123,4 +123,4 @@
 
         <button type="submit">Save Changes</button>
     </form>
-</x-admin-layout>
+</x-master-layout>

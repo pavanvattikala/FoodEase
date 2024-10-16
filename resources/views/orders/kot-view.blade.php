@@ -44,8 +44,10 @@
         background-color: #5975ac;
         margin-bottom: 10px;
         min-height: 300px;
+        max-height: 450px;
         overflow-y: auto;
         border-radius: 10px;
+
     }
 </style>
 @php
@@ -65,7 +67,7 @@
     @section('title', 'KOT View')
     <div class="container min-w-full px-2 processing-orders">
         <h1 class="text-2xl font-semibold w-full align-top text-center">Orders
-            {{ ucfirst(basename(Request::url())) }}
+            KOT-VIEW
         </h1>
         <div id="headings">
             <h2 class="text-2xl font-semibold w-full align-top text-center sticky">Table Orders</h2>
@@ -111,14 +113,14 @@
         </div>
     </div>
     <script>
-        @isset($waiterSyncTime)
-            var waiterSyncTime = {{ $waiterSyncTime }};
-        @endisset
-        var markAsServedRoute = "{{ route('order.mark.as.served', [], false) }}";
-        var checkPickUpOrderUpdatesRoute = "{{ route('sync.pickup.orders', [], false) }}";
-        var checkOrderUpdatesRoute = "{{ route('sync.pending.orders', [], false) }}";
-        var markAsPreparedRoute = "{{ route('order.mark.as.prepared', [], false) }}";
-        var markAsClosedRoute = "{{ route('order.mark.as.closed', [], false) }}";
+        const orderSyncTime = {{ $orderSyncTime }};
+        const markAsServedRoute = "{{ route('order.mark.as.served', [], false) }}";
+        const markAsPreparedRoute = "{{ route('order.mark.as.prepared', [], false) }}";
+        const markAsClosedRoute = "{{ route('order.mark.as.closed', [], false) }}";
+
+
+        const checkPickUpOrderUpdatesRoute = "{{ route('sync.pickup.orders', [], false) }}";
+        const checkOrderUpdatesRoute = "{{ route('sync.pending.orders', [], false) }}";
     </script>
-    <script src="{{ asset('js/order.js') }}"></script>
+    <script src="{{ asset('js/KOT.js') }}"></script>
 </x-master-layout>
