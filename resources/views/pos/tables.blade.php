@@ -140,7 +140,7 @@
     <div class="container" id="select-tables">
         @foreach ($tableLocations as $location)
             <div class="mb-4">
-                <h2 class="category-header">{{ $location->name }} Tables</h2>
+                <h2 class="category-header">{{ ucfirst($location->name) }} Tables</h2>
                 <div class="tables-container">
                     @foreach ($tables->where('location', $location) as $table)
                         @php
@@ -187,29 +187,40 @@
     </div>
 
     {{-- Payment Modal --}}
-    <div id="paymentModal" class="modal">
-        <div class="modal-overlay" tabindex="-1" data-close="paymentModal"></div>
-        <div class="modal-container">
-            <div class="modal-header">
-                <span class="modal-title text-2xl font-bold">Payment Options</span>
-                <span class="modal-close cursor-pointer" data-close="paymentModal">&times;</span>
+    <div id="paymentModal" class="modal fixed inset-0 flex items-center justify-center">
+        <div class="modal-overlay fixed inset-0 bg-black opacity-50" tabindex="-1" data-close="paymentModal"></div>
+        <div class="modal-container bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+            <!-- Modal Header -->
+            <div class="modal-header flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-800">Payment Options</h2>
+                <button class="text-gray-500 hover:text-gray-700" data-close="paymentModal">&times;</button>
             </div>
-            <div class="modal-body">
+
+            <!-- Modal Body -->
+            <div class="space-y-4 modal-body">
                 <input type="hidden" id="paymentTableId" value="0">
                 @foreach ($paymentTypes as $payment)
-                    <div>
-                        <input type="radio" name="payment-type" value="{{ $payment }}"
-                            id="{{ $payment }}">
-                        <label for="{{ $payment }}">{{ strtoupper($payment) }}</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="radio" name="payment-type" value="{{ $payment }}" id="{{ $payment }}"
+                            class="h-4 w-4 text-green-600">
+                        <label for="{{ $payment }}"
+                            class="text-gray-700 font-medium">{{ strtoupper($payment) }}</label>
                     </div>
                 @endforeach
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn mr-2" data-close="paymentModal">Close</button>
-                <button type="button" class="btn bg-green-500" id="savePaymentDataBtn">Save And Settle Table</button>
+
+            <!-- Modal Footer -->
+            <div class="mt-6 flex justify-end space-x-3 modal-footer">
+                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                    data-close="paymentModal">Close</button>
+                <button type="button" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    id="savePaymentDataBtn">Save and Settle</button>
             </div>
         </div>
     </div>
+
+
+
 
     <script>
         const runningTables = [];
@@ -402,7 +413,7 @@
             updateTableStyles();
             updateElapsedTimes();
 
-            if (status === 'available') {
+            if (status === 'available' || status === 'printed') {
                 clearTableMeta(tableId);
             }
         }
