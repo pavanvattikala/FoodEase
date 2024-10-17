@@ -3,19 +3,20 @@
     <link rel="stylesheet" href="{{ asset('css/pos.css') }}">
     <div id="pos">
         <div class="flex flex-row" id="order-main-nav">
-            <div class="flex flex-row mw-60" id=items-search-options>
-                <input id="search-input" type="text" placeholder="Search by Name.." name="search">
-                <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
+            <div class="flex flex-row w-4/6" id=items-search-options>
+                <input id="search-input" class="w-2/6" type="text" placeholder="Search by Name.." name="search">
+                <input id="shortcode-input" class="w-2/6" type="text" placeholder="By ShortCode.."
+                    name="search-by-shortcode">
             </div>
 
-            <div id="order-type-options" class="mw-40 flex flex-row align-middle text-center">
+            <div id="order-type-options" class="w-2/6 flex flex-row align-middle text-center">
                 @php
                     $orderType = $orderType->value;
                 @endphp
-                <div id="dine_in" class="h-full mw-40 @if ($orderType == 'dine_in') active @endif">
+                <div id="dine_in" class="h-full w-6/12 @if ($orderType == 'dine_in') active @endif">
                     <p>Dine In</p>
                 </div>
-                <div id="takeaway" class="h-full mw-40 @if ($orderType == 'takeaway') active @endif">
+                <div id="takeaway" class="h-full w-6/12 @if ($orderType == 'takeaway') active @endif">
                     <p>Take Away</p>
                 </div>
 
@@ -24,8 +25,8 @@
         </div>
 
     </div>
-    <div class="flex flex-row">
-        <div class="mw-60 flex flex-row">
+    <div class="flex flex-row w-full">
+        <div class="w-4/6 flex flex-row">
             <div id="category" class="category flex flex-col">
                 @foreach ($categoriesWithMenus as $category)
                     <button class="btn p-4 m-4" id="c{{ $category->id }}-btn"
@@ -47,7 +48,7 @@
             @endforeach
         </div>
 
-        <div id="order-panel" class="items flex flex-col  mw-40">
+        <div id="order-panel" class="items flex flex-col w-2/6">
             <div id="order-options-parent" class="flex flex-row justify-evenly">
                 <button class="btn order-options" id="count" title="Number of Items">
                     <i class="fa fa-list"></i><br> <span id="item-count">0</span>
@@ -65,7 +66,7 @@
                     </button>
                 @endif
             </div>
-            <div id="order-items-table" class="items ">
+            <div id="order-items-table" class="items">
                 <table class="table-auto flex flex-col">
                     <thead>
                         <tr id="order-items-heading">
@@ -85,13 +86,6 @@
                             <td id="total">0</td>
                         </tr>
                         <tr>
-                            {{-- <td colspan="3">Discount</td>
-                            <td id="discount">0</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">Grand Total</td>
-                            <td id="grandtotal">0</td>
-                        </tr> --}}
                 </table>
             </div>
 
@@ -100,7 +94,7 @@
                 @foreach ($paymentTypes as $paymentType)
                     <div>
                         <input id="{{ $paymentType }}" type="radio" name="payment-type" selected="true">
-                        <label>{{ Str::ucfirst($paymentType) }}</label>
+                        <label>{{ Str::upper($paymentType) }}</label>
                     </div>
                 @endforeach
 
@@ -110,7 +104,6 @@
                     <button class="btn" id="bill-order">Bill & Print</button>
                     <button class="btn" id="kot-order">KOT & Print</button>
                     <button class="btn" id="cancel-order" style="background-color: #f44336">Cancel</button>
-                    <button class="btn" id="hold-order" style="background-color: rgb(42, 88, 161)">Hold</button>
                 </div>
             </div>
 

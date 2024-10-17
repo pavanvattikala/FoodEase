@@ -139,7 +139,8 @@ th {
 
 #payment-types {
     justify-content: space-evenly;
-    background-color: var(--primary-backgorund-color);
+    background-color: var(--primary-order-color);
+    font-weight: bold;
 }
 
 #payment-types div {
@@ -168,6 +169,7 @@ th {
 
 #save-options button {
     width: 80px;
+    height: 50px;
 }
 
 #items-search-options {
@@ -277,6 +279,8 @@ th {
     overflow-y: auto;
     background-color: var(--primary-backgorund-color);
     width: 20%;
+    margin: 0%;
+    padding: 0%;
 }
 
 #order-panel {

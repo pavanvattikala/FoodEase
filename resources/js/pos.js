@@ -1,5 +1,8 @@
 // Author: Pavan Vattikala
 
+const noitemsContainer =
+    '<tr id="noitems"><td colspan="3">No Items Selected <br> Select from Left Menu</td></tr>';
+
 // Menu Function Start
 function showMenu(categoryId) {
     $(".menu-items").addClass("hidden");
@@ -23,24 +26,30 @@ function renderOrderTable() {
     orderItemsBody.empty(); // Clear existing content
     var count = 0;
 
-    orderItems.forEach((item) => {
-        const tr = $(`
-                        <tr>
-                            <td>
-                                <button class="del-item" onclick="delItem(${item.id})">X</button>
-                                <span>${item.name}</span>
-                            </td>
-                            <td>
-                                <button class="qty-options remQty" onclick="remQty(${item.id})">-</button>
-                                <span id="qty">${item.quantity}</span>
-                                <button class="qty-options addQty" onclick="addQty(${item.id})">+</button>
-                            </td>
-                            <td>${item.total}</td>
-                        </tr>
-                    `);
-        orderItemsBody.append(tr);
-        count++;
-    });
+    // if no items are present in the order
+    if (orderItems.length === 0) {
+        orderItemsBody.append(noitemsContainer);
+    } else {
+        orderItems.forEach((item) => {
+            const tr = $(`
+                            <tr>
+                                <td>
+                                    <button class="del-item" onclick="delItem(${item.id})">X</button>
+                                    <span>${item.name}</span>
+                                </td>
+                                <td>
+                                    <button class="qty-options remQty" onclick="remQty(${item.id})">-</button>
+                                    <span id="qty">${item.quantity}</span>
+                                    <button class="qty-options addQty" onclick="addQty(${item.id})">+</button>
+                                </td>
+                                <td>${item.total}</td>
+                            </tr>
+                        `);
+            orderItemsBody.append(tr);
+            count++;
+        });
+    }
+
     $("#item-count").text(count);
 
     calculateTotal();
@@ -165,7 +174,6 @@ $(document).ready(function () {
 
     // Add event listener to Shortcode input
     $("#shortcode-input").keypress(function (event) {
-        console.log(event);
         if (event.which === 13) {
             event.preventDefault();
             searchByShortcode();
@@ -228,7 +236,6 @@ function searchByShortcode() {
 // Search by name
 function searchByName() {
     const searchInput = $("#search-input").val().toLowerCase().trim();
-    console.log("called");
     if (searchInput === "") {
         $(".menu-items button").show();
         return;
@@ -261,11 +268,6 @@ function searchByName() {
 $("#cancel-order").click(function () {
     orderItems.splice(0, orderItems.length);
     renderOrderTable();
-    $("#order-items-body").append(`
-            <tr id="noitems">
-                <td colspan="3">No Items Selected</td>
-            </tr>
-        `);
     $("input[type='radio']").prop("checked", false);
     $("textarea").val("");
     $("input[type='checkbox']").prop("checked", false);
@@ -411,7 +413,6 @@ function saveOrder(printBill = false) {
         grandtotal: $("#grandtotal").text(),
     };
 
-    console.log(order);
     var csrf_token = $('meta[name="csrf-token"]').attr("content");
     showLoader();
     $.ajax({
@@ -431,7 +432,6 @@ function saveOrder(printBill = false) {
         },
         contentType: "application/x-www-form-urlencoded",
         success: function (response) {
-            console.log(response);
             if (response.status === "success") {
                 $("#cancel-order").click();
                 window.location.replace(indexUrl);
@@ -467,7 +467,6 @@ function billTable() {
         },
         contentType: "application/x-www-form-urlencoded",
         success: function (response) {
-            console.log(response);
             if (response.status === "success") {
                 $("#cancel-order").click();
                 window.location.replace(indexUrl);
@@ -502,7 +501,6 @@ $("#settle-order").click(function () {
         },
         contentType: "application/x-www-form-urlencoded",
         success: function (response) {
-            console.log(response);
             if (response.status === "success") {
                 $("#cancel-order").click();
                 window.location.replace(indexUrl);
@@ -539,7 +537,6 @@ function printDuplicateBill() {
         },
         contentType: "application/x-www-form-urlencoded",
         success: function (response) {
-            console.log(response);
             if (response.status === "success") {
                 $("#cancel-order").click();
                 window.location.replace(indexUrl);
