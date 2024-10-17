@@ -47,4 +47,12 @@ mix.js("resources/js/datepicker.js", "public/js")
     // copy all the required Audio files to the public folder
     .copy("resources/audio/select.wav", "public/audio")
 
-    .version();
+    .version()
+
+    // Enable polling
+    .webpackConfig({
+        watchOptions: {
+            poll: 1000, // Check for changes every 1000 milliseconds
+            aggregateTimeout: 300, // Delay before rebuilding
+        },
+    });
