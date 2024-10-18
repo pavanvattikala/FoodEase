@@ -17,7 +17,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        // get all categories order by rank col
+        $categories = Category::orderBy('rank', 'asc')->get();
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -128,5 +129,20 @@ class CategoryController extends Controller
         $category->delete();
 
         return to_route('admin.categories.index')->with('danger', 'Category deleted successfully.');
+    }
+
+    public function updateRanks(Request $request)
+    {
+        $updatedRankings = $request->updatedRankings;
+
+
+        try {
+            foreach ($updatedRankings as $updatedRank) {
+                Category::where('id', $updatedRank['id'])->update(['rank' => $updatedRank['rank']]);
+            }
+            return response()->json(['message' => 'Category ranks updated successfully', 'status' => "success"]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong', 'status' => "error"]);
+        }
     }
 }

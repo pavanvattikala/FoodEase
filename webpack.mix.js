@@ -34,6 +34,7 @@ mix.js("resources/js/datepicker.js", "public/js")
     .copy("resources/js/datatable/jszip.min.js", "public/js/datatable")
     .copy("resources/js/datatable/pdfmake.min.js", "public/js/datatable")
     .copy("resources/js/datatable/vfs_fonts.js", "public/js/datatable")
+    .copy("node_modules/sortablejs/Sortable.min.js", "public/js")
 
     // copy all the required CSS files to the public folder
     .copy("node_modules/flatpickr/dist/flatpickr.css", "public/css")

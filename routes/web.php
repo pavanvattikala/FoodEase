@@ -55,6 +55,8 @@ Route::middleware(['auth'])->get('/dashboard', [RedirectController::class, 'dash
 Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::resource('/categories', CategoryController::class);
+    Route::post('categories/update-ranks', [CategoryController::class, 'updateRanks'])->name('categories.updateRanks');
+
     Route::resource('/menus', MenuController::class);
     Route::resource('/tables', TableController::class);
     Route::resource('/table-location', TableLocationController::class);

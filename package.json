@@ -24,6 +24,7 @@
         "chart.js": "^4.4.4",
         "flatpickr": "^4.6.13",
         "laravel-echo": "^1.16.0",
-        "pusher-js": "^8.4.0-rc2"
+        "pusher-js": "^8.4.0-rc2",
+        "sortablejs": "^1.15.3"
     }
 }

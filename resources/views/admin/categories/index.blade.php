@@ -5,6 +5,12 @@
         </h2>
     </x-slot>
 
+    <style>
+        .drag-handle {
+            cursor: move;
+        }
+    </style>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex justify-end m-2 p-2">
@@ -20,6 +26,10 @@
                                     <tr>
                                         <th scope="col"
                                             class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+
+                                        </th>
+                                        <th scope="col"
+                                            class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
                                             Name
                                         </th>
                                         <th scope="col"
@@ -30,14 +40,20 @@
                                             class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
                                             Description
                                         </th>
-                                        <th scope="col" class="relative py-3 px-6">
-                                            <span class="sr-only">Edit</span>
+                                        <th scope="col"
+                                            class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                                            Actions
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="sortable">
                                     @foreach ($categories as $category)
-                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <tr data-categoryId={{ $category->id }}
+                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <td
+                                                class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white sortable-handle">
+                                                <span class="drag-handle"><i class="fas fa-arrows-alt"></i></span>
+                                            </td>
                                             <td
                                                 class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{ $category->name }}
@@ -76,7 +92,54 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+    <script src="{{ asset('js/Sortable.js') }}"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            new Sortable(document.querySelector('.sortable'), {
+                handle: '.drag-handle',
+                animation: 150,
+                onUpdate: function(evt) {
+                    // Handle category reordering here
+                    var index = 1;
+                    const reorderedCategories = Array.from(evt.target.children).map(row => {
+                        return {
+                            id: row.dataset
+                                .categoryid,
+                            rank: index++
+                        };
+                    });
+
+                    //Send a POST request to your API to update the category order
+
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ route('admin.categories.updateRanks') }}',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: {
+                            updatedRankings: reorderedCategories
+                        },
+                        contentType: 'application/x-www-form-urlencoded',
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                console.log('Ranks updated successfully:', response
+                                    .message);
+                            } else {
+                                console.error('Error updating ranks:', response
+                                    .message);
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error updating ranks:', error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </x-master-layout>
