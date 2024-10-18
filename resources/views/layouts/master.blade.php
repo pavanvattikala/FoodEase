@@ -76,7 +76,7 @@
                     <x-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">
                         {{ __('Tables') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.users.index')" :openInNewTab="true" :active="request()->routeIs('admin.users.index')">
+                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                         {{ __('Manage Users') }}
                     </x-nav-link>
                     <x-nav-link :href="route('restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
