@@ -20,7 +20,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $categoriesWithMenu = Category::with('menus')->get();
+        $categoriesWithMenu = Category::with('menus')->orderBy('rank')->get();
         return view('admin.menus.index', compact('categoriesWithMenu'));
     }
 

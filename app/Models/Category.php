@@ -20,7 +20,7 @@ class Category extends Model
 
     protected static function refreshCategoriesWithMenus()
     {
-        return self::with('menus')->get();
+        return self::with('menus')->orderBy('rank')->get();
     }
 
     public static function getCachedCategoriesWithMenus()
