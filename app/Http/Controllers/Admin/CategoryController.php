@@ -135,14 +135,17 @@ class CategoryController extends Controller
     {
         $updatedRankings = $request->updatedRankings;
 
-
         try {
             foreach ($updatedRankings as $updatedRank) {
-                Category::where('id', $updatedRank['id'])->update(['rank' => $updatedRank['rank']]);
+                $category = Category::find($updatedRank['id']);
+                if ($category) {
+                    $category->rank = $updatedRank['rank'];
+                    $category->save();
+                }
             }
-            return response()->json(['message' => 'Category ranks updated successfully', 'status' => "success"]);
+            return response()->json(['message' => 'Category ranks updated successfully', 'status' => 'success']);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Something went wrong', 'status' => "error"]);
+            return response()->json(['message' => 'Something went wrong', 'status' => 'error']);
         }
     }
 }
