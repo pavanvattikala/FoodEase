@@ -285,6 +285,8 @@ th {
 
 #order-panel {
     background-color: var(--primary-backgorund-color);
+    display: flex;
+    justify-content: space-between;
 }
 
 #order-type-options {
