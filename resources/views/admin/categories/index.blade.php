@@ -1,5 +1,5 @@
 <x-master-layout>
-    @section('title', 'Catergories')
+    @section('title', 'View Catergories')
 
     <style>
         .drag-handle {

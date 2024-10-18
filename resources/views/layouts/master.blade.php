@@ -72,9 +72,7 @@
                     <x-nav-link :href="route('admin.menus.index')" :active="request()->routeIs('admin.menus.index')">
                         {{ __('Menus') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.table-location.index')" :active="request()->routeIs('admin.table-location.index')">
-                        {{ __('Table Locations') }}
-                    </x-nav-link>
+
                     <x-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">
                         {{ __('Tables') }}
                     </x-nav-link>

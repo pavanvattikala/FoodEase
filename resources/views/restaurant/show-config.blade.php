@@ -1,5 +1,5 @@
-<!-- resources/views/restaurant/config.blade.php -->
 <x-master-layout>
+    @section('title', 'Restaurant Configurations')
     <style>
         li {
             list-style: none;

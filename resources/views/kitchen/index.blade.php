@@ -1,4 +1,5 @@
 <x-kitchen-layout>
+    @section('title', 'Kitchen')
     <style>
         .pending-orders {
             min-width: 20%;

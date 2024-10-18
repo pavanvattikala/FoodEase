@@ -1,70 +1,70 @@
-<style>
-    #orders-list {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        height: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-
-    #table-orders-div {
-        width: 50%;
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        border-right: 1px solid #000;
-    }
-
-    #takeaway-orders-div {
-        width: 50%;
-        display: flex;
-        justify-content: space-between;
-        flex-direction: column;
-    }
-
-    .takeaway-orders {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        flex-wrap: wrap;
-
-    }
-
-    #headings {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 10px;
-        margin-bottom: 10px;
-        background-color: #5975ac;
-    }
-
-    .order-box {
-        background-color: #5975ac;
-        margin-bottom: 10px;
-        min-height: 300px;
-        max-height: 450px;
-        overflow-y: auto;
-        border-radius: 10px;
-
-    }
-</style>
-@php
-    $adminOrderComponent = 'order-running-component-for-admin';
-    $waiterOrderComponent = 'order-component-for-waiter';
-
-    $user = auth()->user();
-
-    if ($user->isAdmin() || $user->isBiller()) {
-        $currentOrderComponent = $adminOrderComponent;
-    } else {
-        $currentOrderComponent = $waiterOrderComponent;
-    }
-@endphp
-{{-- choosing dynamic layouts based on user permissions --}}
 <x-master-layout>
     @section('title', 'KOT View')
+    <style>
+        #orders-list {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            height: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #table-orders-div {
+            width: 50%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            border-right: 1px solid #000;
+        }
+
+        #takeaway-orders-div {
+            width: 50%;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+        }
+
+        .takeaway-orders {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: wrap;
+
+        }
+
+        #headings {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #5975ac;
+        }
+
+        .order-box {
+            background-color: #5975ac;
+            margin-bottom: 10px;
+            min-height: 300px;
+            max-height: 450px;
+            overflow-y: auto;
+            border-radius: 10px;
+
+        }
+    </style>
+    @php
+        $adminOrderComponent = 'order-running-component-for-admin';
+        $waiterOrderComponent = 'order-component-for-waiter';
+
+        $user = auth()->user();
+
+        if ($user->isAdmin() || $user->isBiller()) {
+            $currentOrderComponent = $adminOrderComponent;
+        } else {
+            $currentOrderComponent = $waiterOrderComponent;
+        }
+    @endphp
+
     <div class="container min-w-full px-2 processing-orders">
         <h1 class="text-2xl font-semibold w-full align-top text-center">Orders
             KOT-VIEW
