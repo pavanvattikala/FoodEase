@@ -32,7 +32,7 @@ class BillController extends Controller
         /** @var \App\User */
         $user = auth()->user();
 
-        $billsQuery = Bill::whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc');
+        $billsQuery = Bill::where('status', 'closed')->whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc');
 
         $totalSales = $billsQuery->get()->sum('grand_total');
 
