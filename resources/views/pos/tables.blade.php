@@ -223,65 +223,52 @@
 
 
     <script>
-        const runningTables = [];
         const billTableUrl = "{{ route('pos.table.bill', [], false) }}";
         const indexUrl = "{{ route('pos.tables', [], false) }}";
         const settleTableUrl = "{{ route('pos.table.settle', [], false) }}";
         const selectTableURL = "{{ route('pos.main', [], false) }}";
-
         const tableColors = @json($table_colors);
 
+        let runningTables = [];
 
         $(document).ready(function() {
-
-            // add styles to tables
-            updateTableStyles();
-
-            // get all running tables
-            $(".table-item[data-table-status!='available']").each(function() {
-                runningTables.push({
-                    tableId: $(this).attr("id"),
-                    takenAt: $(this).find(".elapsed-time").attr("data-taken-at")
-                });
-            });
-
-
-            // update every minute
-            setInterval(updateElapsedTimes, 60000);
-
-            // add event listeners for take away
-            $("#Takeaway").on("click", function() {
-                selectTable("takeaway");
-            });
-
-            // add event listeners for payment modal close btn
-            $('[data-close="paymentModal"]').on("click", function() {
-                $("#paymentModal").hide();
-            });
-
-            // add event listeners for payment modal save btn
-            $("#savePaymentDataBtn").on("click", function() {
-                const tableId = $("#paymentTableId").val();
-                const paymentType = $("input[name='payment-type']:checked").val();
-                settleTable(tableId, paymentType);
-                $("#paymentModal").hide();
-            });
+            // Initialize the table styles and event listeners
+            initTables();
         });
 
-        // select table function to redirect to the pos page
+        function initTables() {
+            updateTableStyles();
+            updateRunningTables();
+            updateElapsedTimes();
+
+            // Update elapsed times every minute
+            setInterval(updateElapsedTimes, 60000);
+
+            // Event listeners
+            $("#Takeaway").on("click", () => selectTable("takeaway"));
+            $('[data-close="paymentModal"]').on("click", () => $("#paymentModal").hide());
+            $("#savePaymentDataBtn").on("click", handlePayment);
+        }
+
+        function handlePayment() {
+            const tableId = $("#paymentTableId").val();
+            const paymentType = $("input[name='payment-type']:checked").val();
+            settleTable(tableId, paymentType);
+            $("#paymentModal").hide();
+        }
+
         function selectTable(tableId) {
             window.location.href = `${selectTableURL}?tableId=${tableId}`;
         }
 
-        // update elapsed time for running tables
+        // Update elapsed time for running tables
         function updateElapsedTimes() {
             runningTables.forEach(table => {
                 const elapsedString = getElapsedMinutes(table.takenAt);
-                $("#" + table.tableId).find(".elapsed-time").text(elapsedString);
+                $(`#${table.tableId}`).find(".elapsed-time").text(elapsedString);
             });
         }
 
-        // get elapsed time from the taken time
         function getElapsedMinutes(originalTime) {
             const takenTime = new Date(originalTime);
             const elapsedTime = Date.now() - takenTime.getTime();
@@ -290,139 +277,159 @@
             return `${elapsedHours}H:${elapsedMinutes}M`;
         }
 
-        // show orders for the table
+        // Show orders for a specific table
         function showOrders(tableId) {
             const url = "{{ route('pos.table.orders', ['tableId' => ':id'], false) }}".replace(':id', tableId);
             window.open(url, '_blank');
         }
 
-        // trigger payment modal
+        // Trigger payment modal
         function triggerPaymentModal(tableId) {
             $("#paymentModal").show();
-            // set the default paymement type is cash
             $("input[name='payment-type'][value='cash']").prop("checked", true);
             $("#paymentTableId").val(tableId);
         }
 
-
-        // settle table
+        // Settle the table
         function settleTable(tableId, paymentType) {
-
-            if (tableId == null || paymentType == null) {
-                alert("Table Settlement Failed, data is missing reload the page and try again");
+            if (!tableId || !paymentType) {
+                alert("Table Settlement Failed, missing data. Reload the page and try again.");
                 return;
             }
+
             event.stopPropagation();
             showLoader();
-            var csrf_token = $('meta[name="csrf-token"]').attr("content");
-            $.ajax({
+            const csrf_token = $('meta[name="csrf-token"]').attr("content");
 
+            $.ajax({
                 url: settleTableUrl,
                 type: "POST",
                 data: {
-                    tableId: tableId,
-                    paymentType: paymentType,
+                    tableId,
+                    paymentType
                 },
                 headers: {
-                    "X-CSRF-TOKEN": csrf_token,
+                    "X-CSRF-TOKEN": csrf_token
                 },
                 contentType: "application/x-www-form-urlencoded",
-                success: function(response) {
-                    console.log(response);
+                success: response => {
                     if (response.status === "success") {
-                        $("#cancel-order").click();
                         updateTableStatus(tableId, "available");
-
                     } else {
                         alert("Table Settlement Failed");
                     }
                 },
-                error: function(error) {
-                    console.log(error);
+                error: () => {
                     alert("Table Settlement Failed");
                 },
-                complete: function() {
-                    hideLoader();
-                },
+                complete: hideLoader
             });
-
         }
 
-        // print table bill
+        // Print table bill
         function printTable(tableId) {
             event.stopPropagation();
             showLoader();
-            let csrf_token = $('meta[name="csrf-token"]').attr("content");
+            const csrf_token = $('meta[name="csrf-token"]').attr("content");
 
             $.ajax({
                 url: billTableUrl,
                 type: "POST",
                 data: {
-                    tableId: tableId,
+                    tableId
                 },
                 headers: {
-                    "X-CSRF-TOKEN": csrf_token,
+                    "X-CSRF-TOKEN": csrf_token
                 },
                 contentType: "application/x-www-form-urlencoded",
-                success: function(response) {
-                    console.log(response);
+                success: response => {
                     if (response.status === "success") {
                         updateTableStatus(tableId, "printed");
                     } else {
                         alert("Table Billing Failed");
                     }
                 },
-                error: function(error) {
-                    console.log(error);
+                error: () => {
                     alert("Table Billing Failed");
                 },
-                complete: function() {
-                    hideLoader();
-                },
+                complete: hideLoader
             });
         }
 
-        // update table styles
+        // Update table styles and buttons visibility
         function updateTableStyles() {
             $(".table-item").each(function() {
-                const tableStatus = $(this).attr("data-table-status");
-                $(this).css("background-color", tableColors[tableStatus]);
-                if (tableStatus === 'available') {
-                    $(this).find("#showOrdersBtn").hide();
-                    $(this).find("#printTableBtn").hide();
-                    $(this).find("#settleTableBtn").hide();
-                }
+                const $table = $(this);
+                const tableStatus = $table.attr("data-table-status");
 
-                if (tableStatus === 'running') {
-                    $(this).find("#showOrdersBtn").show();
-                    $(this).find("#printTableBtn").show();
-                    $(this).find("#settleTableBtn").hide();
-                }
+                // Update table background color based on status
+                $table.css("background-color", tableColors[tableStatus]);
 
-                if (tableStatus === 'printed') {
-                    $(this).find("#showOrdersBtn").show();
-                    $(this).find("#printTableBtn").hide();
-                    $(this).find("#settleTableBtn").show();
+                // Show/Hide buttons based on table status
+                const showOrdersBtn = $table.find("#showOrdersBtn");
+                const printTableBtn = $table.find("#printTableBtn");
+                const settleTableBtn = $table.find("#settleTableBtn");
+
+                switch (tableStatus) {
+                    case 'available':
+                        showOrdersBtn.hide();
+                        printTableBtn.hide();
+                        settleTableBtn.hide();
+                        break;
+                    case 'running':
+                        showOrdersBtn.show();
+                        printTableBtn.show();
+                        settleTableBtn.hide();
+                        break;
+                    case 'printed':
+                        showOrdersBtn.show();
+                        printTableBtn.hide();
+                        settleTableBtn.show();
+                        break;
                 }
             });
         }
 
-        // update table status
+        // Update table status and related UI elements
         function updateTableStatus(tableId, status) {
-            $("#" + tableId).attr("data-table-status", status);
+            const $table = $(`#${tableId}`);
+            $table.attr("data-table-status", status);
+
+            if (status === 'available') {
+                clearElapsedTime(tableId);
+                clearTableTotal(tableId);
+            }
+
+            updateRunningTables();
             updateTableStyles();
             updateElapsedTimes();
-
-            if (status === 'available' || status === 'printed') {
-                clearTableMeta(tableId);
-            }
         }
 
-        // clear table meta data
-        function clearTableMeta(tableId) {
-            $("#" + tableId).find(".elapsed-time").attr("data-taken-at", "");
-            $("#" + tableId).find(".elapsed-time").text("");
-            $("#" + tableId).find("#tableTotal").text("");
+        // Clear elapsed time and total when table is available
+        function clearElapsedTime(tableId) {
+            $(`#${tableId}`).find(".elapsed-time").attr("data-taken-at", "").text("");
+        }
+
+        function clearTableTotal(tableId) {
+            $(`#${tableId}`).find("#tableTotal").text("");
+        }
+
+        // Update the list of running tables
+        function updateRunningTables() {
+            runningTables = [];
+
+            $(".table-item").each(function() {
+                const $table = $(this);
+                const tableStatus = $table.attr("data-table-status");
+
+                if (tableStatus !== 'available') {
+                    runningTables.push({
+                        tableId: $table.attr("id"),
+                        takenAt: $table.find(".elapsed-time").attr("data-taken-at")
+                    });
+                }
+            });
         }
     </script>
+
 </x-pos-layout>
