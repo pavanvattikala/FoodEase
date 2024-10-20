@@ -334,17 +334,8 @@ $("#showPrevKots").click(function () {
 $("#bill-order").click(function (e) {
     e.preventDefault(); // Prevent default action
 
-    // Get the button element
-    let button = this;
-
-    // Disable the button to prevent multiple clicks
-    disableButton(button);
-
     if (orderItems.length === 0) {
         alert("No Items Selected");
-
-        // Re-enable the button if no items are selected
-        enableButton(button);
         return;
     }
 
@@ -352,38 +343,21 @@ $("#bill-order").click(function (e) {
     let hasNewOrders = orderItems.length > 0;
     let isTableToBePaid = $("#settle-order").length > 0;
 
-    let operation;
-
     if (hasNewOrders) {
-        operation = saveOrder(printBill, false);
+        saveOrder(printBill, false);
     } else if (isTableToBePaid) {
-        operation = printDuplicateBill();
+        printDuplicateBill();
     } else {
-        operation = billTable();
+        billTable();
     }
-
-    // Re-enable the button after the operation completes
-    operation.finally(() => {
-        enableButton(button);
-    });
 });
 
 $("#kot-order").click(function () {
-    let button = this;
-
-    disableButton(button);
-
     if (orderItems.length === 0) {
         alert("No Items Selected");
-
-        // Re-enable the button if no items are selected
-        enableButton(button);
         return;
     }
-    const operation = saveOrder();
-    operation.finally(() => {
-        enableButton(button);
-    });
+    saveOrder();
 });
 
 // Save order
@@ -554,19 +528,6 @@ function printDuplicateBill() {
     });
 }
 //------------------------------------------------------------------------------------------------------------------------------
-
-//  Button Helpers
-// Makes sure that users can't click the same button multiple times
-
-function disableButton(button) {
-    button.disabled = true;
-    button.classList.add("disabled");
-}
-
-function enableButton(button) {
-    button.disabled = false;
-    button.classList.remove("disabled");
-}
 
 // function to add <br> to menu names where there is a space after every two words
 // This is done to make sure that the menu names are displayed correctly in the POS
