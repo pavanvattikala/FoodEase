@@ -52,10 +52,13 @@ class CategoryController extends Controller
             $description = $request->description;
         }
 
+        $rank = Category::count() + 1;
+
         Category::create([
             'name' => $request->name,
             'description' => $description,
-            'image' => $image
+            'image' => $image,
+            'rank' => $rank
         ]);
 
         return to_route('admin.categories.index')->with('success', 'Category created successfully.');
@@ -127,6 +130,14 @@ class CategoryController extends Controller
         }
         $category->menus()->detach();
         $category->delete();
+
+        // update ranks
+        $categories = Category::orderBy('rank', 'asc')->get();
+        foreach ($categories as $key => $category) {
+            $category->rank = $key + 1;
+            $category->save();
+        }
+
 
         return to_route('admin.categories.index')->with('danger', 'Category deleted successfully.');
     }
