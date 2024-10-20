@@ -102,6 +102,12 @@ class TableController extends Controller
     public function destroy(Table $table)
     {
         $table->reservations()->delete();
+
+        // check if table has orders
+        if ($table->orders()->count() > 0) {
+            return to_route('admin.tables.index')->with('danger', 'Table has orders, cannot delete.');
+        }
+
         $table->delete();
 
         return to_route('admin.tables.index')->with('danger', 'Table daleted successfully.');
