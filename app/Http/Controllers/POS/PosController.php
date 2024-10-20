@@ -100,6 +100,7 @@ class PosController extends Controller
         return response()->json(['status' => 'success', 'billId' => $billId]);
     }
 
+
     public function settleTable(Request $request)
     {
         $tableId = $request->tableId;
@@ -122,6 +123,7 @@ class PosController extends Controller
         $lastBill = Bill::where('table_id', $request->tableId)->latest()->first();
 
         $lastBill->payment_method = $request->paymentType;
+        $lastBill->status = 'closed';
 
         $lastBill->save();
 
@@ -129,7 +131,6 @@ class PosController extends Controller
     }
 
     //tableOrders
-
     public function tableOrders($tableId)
     {
 
