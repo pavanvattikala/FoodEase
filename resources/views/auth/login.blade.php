@@ -73,10 +73,23 @@
         document.getElementById('loing-via-pin').addEventListener('click', function() {
             document.getElementById('email-login').style.display = 'none';
             document.getElementById('pin-login').style.display = 'block';
+
+            // clear email and password fields
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+
+            // focus on pin field
+            document.getElementById('pin').focus();
         });
         document.getElementById('login-via-email').addEventListener('click', function() {
             document.getElementById('email-login').style.display = 'block';
             document.getElementById('pin-login').style.display = 'none';
+
+            // clear pin field
+            document.getElementById('pin').value = '';
+
+            // focus on email field
+            document.getElementById('email').focus();
         });
     </script>
 </x-guest-layout>
