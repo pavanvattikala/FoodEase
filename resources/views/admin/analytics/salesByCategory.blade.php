@@ -128,6 +128,9 @@
             let totalSalesAmount = 0;
 
             SalesByItemData.forEach((item, index) => {
+
+                // skip if no sales
+                if (item.no_of_sales == 0) return;
                 var tr = document.createElement("tr");
                 tr.className = trClass;
                 var sno = document.createElement("td");
