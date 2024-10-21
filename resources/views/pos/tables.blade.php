@@ -143,20 +143,14 @@
                 <h2 class="category-header">{{ ucfirst($location->name) }} Tables</h2>
                 <div class="tables-container">
                     @foreach ($tables->where('location', $location) as $table)
-                        @php
-                            $tableTotal = $table->taken_at
-                                ? $table->orders->where('status', '!=', App\Enums\OrderStatus::Closed)->sum('total')
-                                : null;
-                        @endphp
-
                         <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
                             class="table-item text-white text-center" data-table-status="{{ $table->status->value }}">
 
                             <p class="elapsed-time" id="elapsedTime" data-taken-at="{{ $table->taken_at }}"></p>
 
                             <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
-                            @if ($tableTotal)
-                                <p id="tableTotal">Rs {{ $tableTotal }}</p>
+                            @if ($table->order_sum)
+                                <p id="tableTotal">Rs {{ $table->order_sum }}</p>
                             @endif
 
                             <div class="flex table-options justify-center align-middle">

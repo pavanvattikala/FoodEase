@@ -15,6 +15,7 @@ use App\Http\Service\TableService;
 use App\Jobs\SaveAndPrintBill;
 use App\Models\Bill;
 use App\Models\Category;
+use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Table;
 use App\Models\TableLocation;
@@ -27,11 +28,11 @@ class PosController extends Controller
     private $tableService;
     private $restaurantService;
 
-    public function __construct()
+    public function __construct(MenuService $menuService, TableService $tableService, RestaurantService $restaurantService)
     {
-        $this->menuService = new MenuService();
-        $this->tableService = new TableService();
-        $this->restaurantService = new RestaurantService();
+        $this->menuService = $menuService;
+        $this->tableService = $tableService;
+        $this->restaurantService = $restaurantService;
     }
     public function index(Request $request)
     {
@@ -68,7 +69,7 @@ class PosController extends Controller
 
     public function selectTable()
     {
-        $tables = $this->tableService->getTables();
+        $tables = $this->tableService->getTablesWithOrderSums();
 
         $table_colors =  config('predefined_options.table_colors');
 
