@@ -4,12 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryStoreRequest;
+use App\Http\Service\CategoryService;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
+    private $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +26,7 @@ class CategoryController extends Controller
     public function index()
     {
         // get all categories order by rank col
-        $categories = Category::orderBy('rank', 'asc')->get();
+        $categories = $this->categoryService->getCatergories();
         return view('admin.categories.index', compact('categories'));
     }
 

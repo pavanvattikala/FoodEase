@@ -4,7 +4,7 @@ namespace App\Http\Service;
 
 use App\Models\Category;
 
-class MenuService extends Service
+class CategoryService extends Service
 {
     private $menuCategoryCacheService;
 
@@ -13,8 +13,8 @@ class MenuService extends Service
         $this->menuCategoryCacheService = $menuCategoryCacheService;
     }
 
-    public function getCatergoriesWithMenus()
+    public function getCatergories()
     {
-        return $this->menuCategoryCacheService->getCachedCategoriesWithMenus();
+        return $this->menuCategoryCacheService->getCachedCategories();
     }
 }

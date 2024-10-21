@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\MenuType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuStoreRequest;
+use App\Http\Service\MenuService;
 use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Validation\Rule;
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
+    private $menuService;
+
+    public function __construct(MenuService $menuService)
+    {
+        $this->menuService = $menuService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +28,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $categoriesWithMenu = Category::with('menus')->orderBy('rank')->get();
+        $categoriesWithMenu = $this->menuService->getCatergoriesWithMenus();
         return view('admin.menus.index', compact('categoriesWithMenu'));
     }
 
