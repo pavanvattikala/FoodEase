@@ -69,16 +69,13 @@ class PosController extends Controller
 
     public function selectTable()
     {
-        $tables = $this->tableService->getTablesWithOrderSums();
-
+        $tablesWithLocations = $this->tableService->getTablesWithOrderSums()->groupBy('location');
 
         $table_colors =  config('predefined_options.table_colors');
 
-        $tableLocations = $this->tableService->getTableLocations();
-
         $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
 
-        return view('pos.tables', compact('tables', 'table_colors', 'tableLocations', 'paymentTypes'));
+        return view('pos.tables', compact('tablesWithLocations', 'table_colors', 'paymentTypes'));
     }
 
     public function billTable(Request $request)

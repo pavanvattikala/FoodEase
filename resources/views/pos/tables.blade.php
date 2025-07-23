@@ -138,11 +138,16 @@
     </div>
 
     <div class="container" id="select-tables">
-        @foreach ($tableLocations as $location)
+        @foreach ($tablesWithLocations as $location => $tables)
+            {{-- Display tables for each location --}}
             <div class="mb-4">
-                <h2 class="category-header">{{ ucfirst($location->name) }} Tables</h2>
+                <h2 class="category-header">{{ ucfirst($location) }} Tables</h2>
                 <div class="tables-container">
-                    @foreach ($tables->where('location', $location) as $table)
+
+                    {{-- Check if there are tables for this location --}}
+
+                    @foreach ($tables as $table)
+                        {{-- Access tables grouped by location ID --}}
                         <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
                             class="table-item text-white text-center" data-table-status="{{ $table->status->value }}">
 
@@ -154,7 +159,6 @@
                             @endif
 
                             <div class="flex table-options justify-center align-middle">
-
                                 <div id="showOrdersBtn"
                                     onclick="event.stopPropagation(); showOrders({{ $table->id }})">
                                     <button class="btn" style="background-color: white; color: black"><i
@@ -171,13 +175,13 @@
                                     <button class="btn" style="background-color: white; color: black"><i
                                             class="fas fa-save"></i></button>
                                 </div>
-
                             </div>
                         </div>
                     @endforeach
                 </div>
             </div>
         @endforeach
+
     </div>
 
     {{-- Payment Modal --}}
