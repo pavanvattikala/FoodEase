@@ -71,6 +71,7 @@ class PosController extends Controller
     {
         $tables = $this->tableService->getTablesWithOrderSums();
 
+
         $table_colors =  config('predefined_options.table_colors');
 
         $tableLocations = $this->tableService->getTableLocations();
