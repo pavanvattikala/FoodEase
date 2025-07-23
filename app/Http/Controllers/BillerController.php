@@ -10,6 +10,6 @@ class BillerController extends Controller
     //
     public function index(): View
     {
-        return view('biller.index');
+        return view('dashboard');
     }
 }

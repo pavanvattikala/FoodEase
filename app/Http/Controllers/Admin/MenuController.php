@@ -5,13 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\MenuType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuStoreRequest;
+use App\Http\Service\MenuService;
 use App\Models\Category;
 use App\Models\Menu;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
+    private $menuService;
+
+    public function __construct(MenuService $menuService)
+    {
+        $this->menuService = $menuService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +28,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $categoriesWithMenu = Category::with('menus')->get();
+        $categoriesWithMenu = $this->menuService->getCatergoriesWithMenus();
         return view('admin.menus.index', compact('categoriesWithMenu'));
     }
 
@@ -55,7 +64,6 @@ class MenuController extends Controller
         $menuType = MenuType::from($request->type);
 
         $menuQuantity = $request->quantity ? $request->quantity : 0;
-
 
         $menu = Menu::create([
             'name' => $request->name,
@@ -99,10 +107,13 @@ class MenuController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required',
-            'shortCode' => ['required', 'unique:menus,shortcode', 'regex:/^\S*$/'],
-            'category' => ['required']
+            'shortCode' => [
+                'required',
+                Rule::unique('menus', 'shortcode')->ignore($menu->id),
+                'regex:/^\S*$/'
+            ],
+            'category' => 'required'
         ]);
-
 
         $image = $menu->image;
         if ($request->hasFile('image')) {
@@ -110,7 +121,7 @@ class MenuController extends Controller
             $image = $request->file('image')->store('public/menus');
         }
 
-        $menu->update([
+        $operation = $menu->update([
             'name' => $request->name,
             'shortcode' => $request->shortCode,
             'description' => $request->description,
@@ -121,7 +132,11 @@ class MenuController extends Controller
         if ($request->has('category')) {
             $menu->category()->sync($request->category);
         }
-        return to_route('admin.menus.index')->with('success', 'Menu updated successfully.');
+
+        if ($operation) {
+            return to_route('admin.menus.index')->with('success', 'Menu updated successfully.');
+        }
+        return to_route('admin.menus.index')->with('danger', 'Menu not updated.');
     }
 
     /**

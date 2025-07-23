@@ -25,82 +25,71 @@
         .content {
             flex: 1 0 auto;
         }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .docs-link {
+            font-size: 1.25rem;
+            color: #10b981;
+            font-weight: bold;
+            text-decoration: none;
+        }
     </style>
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-    <div class="bg-white shadow-md">
-        <nav class="container px-6 py-8 mx-auto md:flex md:justify-between md:items-center">
-            <div class="flex items-center justify-between">
-                <a class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 md:text-2xl hover:text-green-400"
-                    href="/">
+    <header class="shadow-md">
+        <nav class="container px-6 py-4 mx-auto flex justify-between items-center">
+            <div class="flex items-start flex-col">
+                <h1
+                    class="main-title font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 md:text-2xl hover:text-green-400"">
                     Food Ease
-                </a>
-                <!-- Mobile menu button -->
-                <div @click="isOpen = !isOpen" class="flex md:hidden">
-                    <button type="button"
-                        class="text-gray-800 hover:text-gray-400 focus:outline-none focus:text-gray-400"
-                        aria-label="toggle menu">
-                        <svg viewBox="0 0 24 24" class="w-6 h-6 fill-current">
-                            <path fill-rule="evenodd"
-                                d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z">
-                            </path>
-                        </svg>
-                    </button>
-                </div>
+                </h1>
+                <br>
+                <h2 class="font-bold pt-2">Open-source Restaurant Management App <br>
+                    Built with Laravel
+                </h2>
             </div>
-
-            <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
-            <div :class="isOpen ? 'flex' : 'hidden'"
-                class="flex-col mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-10 md:mt-0">
-                <a class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 hover:text-green-400"
-                    href="/">Home</a>
-                <a class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 hover:text-green-400"
-                    href="{{ route('categories.index') }}">Categories</a>
-                <a class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 hover:text-green-400"
-                    href="{{ route('menus.index') }}">Our Menu</a>
-                <a class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 hover:text-green-400"
-                    href="{{ route('reservations.step.one') }}">Make Reservation</a>
-
+            <div class="flex items-center">
+                <span class="logo-text text-lg mr-2">A product of</span>
+                <img src="{{ asset('images/edge_ease_logo.png') }}" alt="Edge Ease Logo" class="w-32 rounded-md">
             </div>
         </nav>
-    </div>
-    <div class="content bg-gray-100">
+    </header>
+    <div class="content bg-gray-100 p-2">
         {{ $slot }}
+        <div class="flex justify-center underline pt-4">
+            <a href="https://docs-foodease.vercel.app" target="_blank" class="docs-link">Learn More About Foodease</a>
+        </div>
     </div>
     <footer class="bg-gray-800 border-t border-gray-200">
         <div class="container flex flex-wrap items-center justify-center px-4 py-8 mx-auto lg:justify-between">
             <div class="flex flex-wrap justify-center">
                 <ul class="flex items-center space-x-4 text-white">
-                    <li>Home</li>
-                    <li>About</li>
-                    <li>Contact</li>
-                    <li>Terms</li>
+                    <a href="https://docs-foodease.vercel.app">Home</a>
+                    <a href="https://docs-foodease.vercel.app/about">About</a>
+                    <a href="https://docs-foodease.vercel.app/contact">Contact</a>
+                    <a href="https://docs-foodease.vercel.app/terms-and-conditons">Terms & Conditions</a>
                 </ul>
             </div>
+            <div class="flex flex-wrap justify-end text-white">
+                <div class="flex items-center">
+                    <span>Edge Ease Ltd.</span>
+                    <span class="ml-4">Contact: info@edgeease.com</span>
+                </div>
+            </div>
             <div class="flex justify-center mt-4 lg:mt-0">
-                <a>
-                    <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        class="w-6 h-6 text-blue-600" viewBox="0 0 24 24">
-                        <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                    </svg>
-                </a>
-                <a class="ml-3">
-                    <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        class="w-6 h-6 text-blue-300" viewBox="0 0 24 24">
-                        <path
-                            d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
-                        </path>
-                    </svg>
-                </a>
-                <a class="ml-3">
+                <a class="ml-3" href="https://www.instagram.com/edge_ease/">
                     <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                         stroke-width="2" class="w-6 h-6 text-pink-400" viewBox="0 0 24 24">
                         <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
                         <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
                     </svg>
                 </a>
-                <a class="ml-3">
+                <a class="ml-3" href="https://www.linkedin.com/company/edgeease/">
                     <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                         stroke-width="0" class="w-6 h-6 text-blue-500" viewBox="0 0 24 24">
                         <path stroke="none"

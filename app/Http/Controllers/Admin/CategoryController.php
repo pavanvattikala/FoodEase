@@ -4,12 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryStoreRequest;
+use App\Http\Service\CategoryService;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
+    private $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +25,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        // get all categories order by rank col
+        $categories = $this->categoryService->getCatergories();
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -51,10 +60,13 @@ class CategoryController extends Controller
             $description = $request->description;
         }
 
+        $rank = Category::count() + 1;
+
         Category::create([
             'name' => $request->name,
             'description' => $description,
-            'image' => $image
+            'image' => $image,
+            'rank' => $rank
         ]);
 
         return to_route('admin.categories.index')->with('success', 'Category created successfully.');
@@ -117,10 +129,42 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        Storage::delete($category->image);
+        if ($category->menus->count() > 0) {
+            return to_route('admin.categories.index')->with('warning', 'Category cannot be deleted because it has menus.');
+        }
+        // delete image if exists
+        if ($category->image) {
+            Storage::delete($category->image);
+        }
         $category->menus()->detach();
         $category->delete();
 
+        // update ranks
+        $categories = Category::orderBy('rank', 'asc')->get();
+        foreach ($categories as $key => $category) {
+            $category->rank = $key + 1;
+            $category->save();
+        }
+
+
         return to_route('admin.categories.index')->with('danger', 'Category deleted successfully.');
+    }
+
+    public function updateRanks(Request $request)
+    {
+        $updatedRankings = $request->updatedRankings;
+
+        try {
+            foreach ($updatedRankings as $updatedRank) {
+                $category = Category::find($updatedRank['id']);
+                if ($category) {
+                    $category->rank = $updatedRank['rank'];
+                    $category->save();
+                }
+            }
+            return response()->json(['message' => 'Category ranks updated successfully', 'status' => 'success']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong', 'status' => 'error']);
+        }
     }
 }

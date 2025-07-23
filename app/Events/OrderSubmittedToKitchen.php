@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class OrderSubmittedToKitchen implements ShouldBroadcast
 {
@@ -20,6 +21,7 @@ class OrderSubmittedToKitchen implements ShouldBroadcast
      */
     public function __construct($kot)
     {
+        Log::info("OrderSubmittedToKitchen event fired with KOT: " . $kot);
         $this->kot = $kot;
     }
 

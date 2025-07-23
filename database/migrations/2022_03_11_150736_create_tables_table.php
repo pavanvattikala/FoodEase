@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->integer('guest_number');
             $table->string('status')->default('avaliable');
-            $table->string('location');
+            $table->unsignedBigInteger('table_location');
+            $table->foreign('table_location')->references('id')->on('table_locations');
             $table->timestamp('taken_at')->nullable();
             $table->timestamps();
         });

@@ -1,11 +1,10 @@
-<div class="max-w-xs bg-slate-400 border border-gray-500 rounded pt-4 m-2 font-bold order-item"
-    id="order{{ $order->id }}">
+<div class="w-60 bg-slate-400 border border-gray-500 rounded pt-4 m-2 font-bold order-item" id="order{{ $order->id }}">
     <div class="flex">
-        <div class="w-1/4">
+        <div class="w-1/2">
             <p class="mb-2 px-4 order-time">{{ $order->created_at->format('g:i a') }}</p>
             <p class="mb-2 px-4">Table: {{ $order->table_id }}</p>
         </div>
-        <div class="w-3/4">
+        <div class="w-1/2">
             <p class="mb-2 px-4 waiter-name">{{ $order->waiter->name }}</p>
             <p class="mb-2 px-4 order-type">{{ \App\Enums\OrderType::getDescription($order->order_type) }}</p>
         </div>
@@ -23,6 +22,12 @@
             </div>
         @endforeach
     </div>
+
+    @if ($order->special_instructions)
+        <div class="mt-4 px-4">
+            <p class="mb-2">{{ $order->special_instructions }}</p>
+        </div>
+    @endif
 
     {{ $slot }}
 </div>

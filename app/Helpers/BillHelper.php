@@ -46,22 +46,62 @@ class BillHelper
 
     public static function createTableBill($tableId, $notes, $paymentMethod, $discount)
     {
+        // Check if there's an existing open bill for this table
+        $existingBill = Bill::where('table_id', $tableId)->where('status', 'open')->first();
+
         $orders = self::processTableBill($tableId);
 
-        $billData = collect([
-            'tableId' => $tableId,
-            'orders' => $orders,
-            'notes' => $notes,
-            'orderType' => OrderType::DineIn,
+        if ($existingBill) {
+            // Update the existing bill with new orders
+            self::updateExistingBill($existingBill, $orders, $notes, $discount);
+            return $existingBill->id;
+        } else {
+            // If no open bill, create a new one
+            $billData = collect([
+                'tableId' => $tableId,
+                'orders' => $orders,
+                'notes' => $notes,
+                'orderType' => OrderType::DineIn,
+                'discount' => $discount,
+                'paymentMethod' => $paymentMethod,
+            ]);
+
+            $billId =  self::insertBill($billData);
+
+            TableHelper::markTableAsPrinted($tableId);
+
+            return $billId;
+        }
+    }
+    public static function updateExistingBill($existingBill, $newOrders, $notes, $discount)
+    {
+        // Add new orders to the existing bill
+        foreach ($newOrders as $order) {
+            // Ensure that the new orders are not already associated with the bill
+            $alreadyBilled = BillOrder::where('bill_id', $existingBill->id)
+                ->where('order_id', $order->id)
+                ->exists();
+
+            if (!$alreadyBilled) {
+                BillOrder::create([
+                    'bill_id' => $existingBill->id,
+                    'order_id' => $order->id,
+                ]);
+            }
+        }
+
+        // Recalculate totals
+        $currentOrders = $existingBill->orders;
+        $newTotal = $currentOrders->sum('total');
+        $grandTotal = $newTotal - $discount;
+
+        // Update the bill with new totals and notes
+        $existingBill->update([
+            'bill_amount' => $newTotal,
+            'grand_total' => $grandTotal,
             'discount' => $discount,
-            'paymentMethod' => $paymentMethod,
+            'notes' => $notes,
         ]);
-
-        $billId =  self::insertBill($billData);
-
-        TableHelper::markTableAsPrinted($tableId);
-
-        return $billId;
     }
 
     public static function processPickUpBill($kot)
@@ -69,12 +109,29 @@ class BillHelper
         $orders = Order::where('kot', $kot)->get();
         return $orders;
     }
+
     public static function processTableBill($tableId)
     {
         $table = Table::find($tableId);
         $takenTime = $table->taken_at;
 
-        $orders = Order::where('table_id', $tableId)->where('created_at', '>=', $takenTime)->get();
+        // Get only orders that are not already included in any bill
+        $openBill = Bill::where('table_id', $tableId)->where('status', 'open')->first();
+        if ($openBill) {
+            // Exclude orders already associated with the open bill
+            $billedOrders = BillOrder::where('bill_id', $openBill->id)->pluck('order_id')->toArray();
+
+            $orders = Order::where('table_id', $tableId)
+                ->where('created_at', '>=', $takenTime)
+                ->whereNotIn('id', $billedOrders)
+                ->get();
+        } else {
+            // If no open bill, return all orders
+            $orders = Order::where('table_id', $tableId)
+                ->where('created_at', '>=', $takenTime)
+                ->get();
+        }
+
         return $orders;
     }
     private static function insertBill($billData)

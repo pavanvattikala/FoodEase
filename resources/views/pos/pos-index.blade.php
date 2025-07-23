@@ -3,19 +3,20 @@
     <link rel="stylesheet" href="{{ asset('css/pos.css') }}">
     <div id="pos">
         <div class="flex flex-row" id="order-main-nav">
-            <div class="flex flex-row mw-60" id=items-search-options>
-                <input id="search-input" type="text" placeholder="Search by Name.." name="search">
-                <input id="shortcode-input" type="text" placeholder="By ShortCode.." name="search-by-shortcode">
+            <div class="flex flex-row w-4/6" id=items-search-options>
+                <input id="search-input" class="w-2/6" type="text" placeholder="Search by Name.." name="search">
+                <input id="shortcode-input" class="w-2/6" type="text" placeholder="By ShortCode.."
+                    name="search-by-shortcode">
             </div>
 
-            <div id="order-type-options" class="mw-40 flex flex-row align-middle text-center">
+            <div id="order-type-options" class="w-2/6 flex flex-row align-middle text-center">
                 @php
-                    $orderType = session()->get('orderType');
+                    $orderType = $orderType->value;
                 @endphp
-                <div id="dine_in" class="h-full mw-40 @if ($orderType == 'dine_in') active @endif">
+                <div id="dine_in" class="h-full w-6/12 @if ($orderType == 'dine_in') active @endif">
                     <p>Dine In</p>
                 </div>
-                <div id="takeaway" class="h-full mw-40 @if ($orderType == 'takeaway') active @endif">
+                <div id="takeaway" class="h-full w-6/12 @if ($orderType == 'takeaway') active @endif">
                     <p>Take Away</p>
                 </div>
 
@@ -24,8 +25,8 @@
         </div>
 
     </div>
-    <div class="flex flex-row">
-        <div class="mw-60 flex flex-row">
+    <div class="flex flex-row w-full">
+        <div class="w-4/6 flex flex-row">
             <div id="category" class="category flex flex-col">
                 @foreach ($categoriesWithMenus as $category)
                     <button class="btn p-4 m-4" id="c{{ $category->id }}-btn"
@@ -47,7 +48,7 @@
             @endforeach
         </div>
 
-        <div id="order-panel" class="items flex flex-col  mw-40">
+        <div id="order-panel" class="items flex flex-col w-2/6">
             <div id="order-options-parent" class="flex flex-row justify-evenly">
                 <button class="btn order-options" id="count" title="Number of Items">
                     <i class="fa fa-list"></i><br> <span id="item-count">0</span>
@@ -55,64 +56,17 @@
                 <button class="btn order-options" id="add-notes-btn" title="Add Notes">
                     <i class="fa fa-sticky-note"></i>
                 </button>
-                <button class="btn order-options" id="add-customer-btn" title="Assign to Customer">
-                    <i class="fa fa-user"></i>
-                </button>
 
-                @if (session()->has('tableData'))
-                    @php
-                        $tableData = session()->get('tableData');
-                    @endphp
-                    <button data-tableid={{ $tableData['tableId'] }} class="btn order-options" id="table"
+                @if ($table)
+                    <button data-tableid={{ $table->id }} class="btn order-options" id="table"
                         title="Assign to Table">
                         <i class="fa fa-table"></i>
                         <br>
-                        {{ session()->get('tableData')['tableName'] }}
+                        {{ $table->name }}
                     </button>
                 @endif
             </div>
-            {{-- Display Previous KOTs --}}
-            @if ($prevOrders != null && $prevOrders->count() > 0)
-                <div id="prev-kots">
-                    <table class="table-auto flex flex-col">
-                        <thead id="showPrevKots">
-                            <tr>
-                                <th colspan="3" class="underline">Previous KOTs..</th>
-                            </tr>
-                        </thead>
-                        <tbody class="hidden">
-                            @foreach ($prevOrders as $order)
-                                <tr>
-                                    <td colspan="3">{{ $order->KOT }} &ThickSpace; Time
-                                        - {{ $order->created_at->format('h:i:a') }}
-                                    </td>
-                                </tr>
-                                @foreach ($order->orderDetails as $item)
-                                    <tr>
-                                        <td>
-                                            <button class="del-item" onclick="delItem({{ $item->menu_id }})">X</button>
-                                            <span>{{ $item->menu->name }}</span>
-                                        </td>
-                                        <td>
-                                            <button class="qty-options remQty"
-                                                onclick="remQty({{ $item->menu_id }})">-</button>
-                                            <span id="qty">{{ $item->quantity }}</span>
-                                            <button class="qty-options addQty"
-                                                onclick="addQty({{ $item->menu_id }})">+</button>
-                                        </td>
-                                        <td>{{ $item->quantity * $item->menu->price }}</td>
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                            <tr>
-                                <td colspan="3"> Bill Total {{ $prevOrders->sum('total') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-            @endif
-            <div id="order-items-table" class="items ">
+            <div id="order-items-table" class="items">
                 <table class="table-auto flex flex-col">
                     <thead>
                         <tr id="order-items-heading">
@@ -132,44 +86,24 @@
                             <td id="total">0</td>
                         </tr>
                         <tr>
-                            {{-- <td colspan="3">Discount</td>
-                            <td id="discount">0</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">Grand Total</td>
-                            <td id="grandtotal">0</td>
-                        </tr> --}}
                 </table>
             </div>
+
             <div id="payment-types" class="flex flex-row">
-                <div>
-                    <input id="cash" type="radio" name="payment-type" selected="true">
-                    <label>Cash</label>
-                </div>
-                <div>
-                    <input id="card" type="radio" name="payment-type">
-                    <label>Card</label>
-                </div>
-                <div>
-                    <input id="upi" type="radio" name="payment-type">
-                    <label>UPI</label>
-                </div>
-                <div>
-                    <input type="radio" name="payment-type" id="due">
-                    <label>Due</label>
-                </div>
+
+                @foreach ($paymentTypes as $paymentType)
+                    <div>
+                        <input id="{{ $paymentType }}" type="radio" name="payment-type" selected="true">
+                        <label>{{ Str::upper($paymentType) }}</label>
+                    </div>
+                @endforeach
+
             </div>
-            @if ($isTableToBePaid == true)
-                <div>
-                    <button class="btn" id="settle-order">Settle And Save</button>
-                </div>
-            @endif
             <div id="save-and-bill-options" class="flex flex-row">
                 <div id="save-options" class="flex flex-row">
                     <button class="btn" id="bill-order">Bill & Print</button>
                     <button class="btn" id="kot-order">KOT & Print</button>
                     <button class="btn" id="cancel-order" style="background-color: #f44336">Cancel</button>
-                    <button class="btn" id="hold-order" style="background-color: rgb(42, 88, 161)">Hold</button>
                 </div>
             </div>
 
@@ -210,34 +144,6 @@
                 </div>
             </div>
         </div>
-        <div id="customerDataModal" class="modal">
-            <div class="modal-overlay" tabindex="-1" data-close="customerDataModal"></div>
-            <div class="modal-container bg-white mx-auto mt-10 p-6 rounded-lg shadow-lg w-1/2">
-                <div class="modal-header flex justify-between items-center border-b pb-4">
-                    <span class="text-2xl font-bold">Customer Data</span>
-                    <span class="modal-close cursor-pointer" data-close="customerDataModal">&times;</span>
-                </div>
-                <div class="modal-body mt-4">
-                    <div class="form-group mb-4">
-                        <label for="customerName" class="block text-sm font-medium text-gray-700 mb-2">Customer
-                            Name:</label>
-                        <input type="text" id="customerName" name="customerName"
-                            class="w-full p-2 border rounded-md">
-                    </div>
-                    <div class="form-group mb-4">
-                        <label for="mobileNumber" class="block text-sm font-medium text-gray-700 mb-2">Mobile
-                            Number:</label>
-                        <input type="text" id="mobileNumber" name="mobileNumber"
-                            class="w-full p-2 border rounded-md">
-                    </div>
-                </div>
-                <div class="modal-footer mt-4 flex justify-end">
-                    <button type="button" class="btn  mr-2" data-close="customerDataModal">Close</button>
-                    <button type="button" class="btn bg-green-500" id="saveCustomerDataBtn">Save Customer
-                        Data</button>
-                </div>
-            </div>
-        </div>
 
 
 
@@ -253,11 +159,13 @@
         //     total : int
         //
 
-        const orderItems = [];
+        var orderItems = [];
 
         const menuShortCuts = @json($menuShortCuts);
 
         const selectedNotes = [];
+
+        const SOURCE = 'pos';
 
         let customerData = null;
         let audioUrl = "{{ asset('audio/select.wav') }}";

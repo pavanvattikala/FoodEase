@@ -1,4 +1,5 @@
 <x-kitchen-layout>
+    @section('title', 'Kitchen')
     <style>
         .pending-orders {
             min-width: 20%;
@@ -104,6 +105,7 @@
 
             const url = '{{ route('kitchen.accept.order', [], false) }}';
             var csrf_token = "{{ csrf_token() }}";
+            showLoader();
             $.ajax({
                 type: "POST",
                 url: url,
@@ -131,6 +133,9 @@
                 },
                 error: function(error) {
                     console.error('Error ', error);
+                },
+                complete: function() {
+                    hideLoader();
                 }
             });
         }
@@ -140,6 +145,7 @@
 
             const url = '{{ route('kitchen.discard.order', [], false) }}';
             var csrf_token = "{{ csrf_token() }}";
+            showLoader();
             $.ajax({
                 type: "POST",
                 url: url,
@@ -159,6 +165,9 @@
                 },
                 error: function(error) {
                     console.error('Error ', error);
+                },
+                complete: function() {
+                    hideLoader();
                 }
             });
         }
@@ -167,6 +176,7 @@
 
             const url = '{{ route('kitchen.complete.order', [], false) }}';
             var csrf_token = "{{ csrf_token() }}";
+            showLoader();
             $.ajax({
                 type: "POST",
                 url: url,
@@ -185,6 +195,9 @@
                 },
                 error: function(error) {
                     console.error('Error ', error);
+                },
+                complete: function() {
+                    hideLoader();
                 }
             });
         }

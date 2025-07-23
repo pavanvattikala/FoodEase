@@ -65,7 +65,7 @@ class User extends Authenticatable
         return $this->category_id == UserRole::Waiter;
     }
 
-    public function isBilller()
+    public function isBiller()
     {
         return $this->category_id == UserRole::Biller;
     }

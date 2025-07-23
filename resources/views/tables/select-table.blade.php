@@ -80,12 +80,8 @@
         function selectTable(tableId) {
 
             const url = "{{ url()->route('waiter.table.add.toSession', [], false) }}";
-
-            const button = document.getElementById(tableId);
-            disableButton(button);
-
             var csrf_token = "{{ csrf_token() }}";
-
+            showLoader();
             $.ajax({
                 type: "POST",
                 url: url,
@@ -109,6 +105,9 @@
                 error: function(error) {
                     console.error('Error:', error);
                 }
+                complete: function() {
+                    hideLoader();
+                }
             });
         }
 
@@ -118,10 +117,7 @@
         function reOrder(tableId) {
             const url = "{{ route('waiter.table.add.toSession', [], false) }}";
             const csrf_token = "{{ csrf_token() }}";
-
-            const button = document.getElementById(tableId);
-            disableButton(button);
-
+            showLoader();
             $.ajax({
                 type: "POST",
                 url: url,
@@ -146,6 +142,9 @@
                 error: function(error) {
                     console.error('Error:', error);
                     enableButton(button);
+                },
+                complete: function() {
+                    hideLoader();
                 }
             });
         }
@@ -154,9 +153,7 @@
             const url = "{{ route('waiter.table.submit.for.billing', [], false) }}";
             const csrf_token = "{{ csrf_token() }}";
 
-            const button = document.getElementById(`submitForBillingButton_${tableId}`);
-            disableButton(button);
-
+            showLoader();
             $.ajax({
                 type: "POST",
                 url: url,
@@ -178,6 +175,9 @@
                 error: function(error) {
                     console.error('Error:', error);
                     enableButton(button);
+                },
+                complete: function() {
+                    hideLoader();
                 }
             });
         }
