@@ -17,4 +17,10 @@ class CategoryService extends Service
     {
         return $this->menuCategoryCacheService->getCachedCategories();
     }
+
+    public function isCategoryConfigured()
+    {
+        // Return true if the collection of categories is not empty
+        return $this->menuCategoryCacheService->getCachedCategories()->isNotEmpty();
+    }
 }

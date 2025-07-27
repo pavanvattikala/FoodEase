@@ -10,4 +10,10 @@ class RestaurantService extends Service
     {
         return Restaurant::getCachedRestaurants()->first();
     }
+
+    public function isRestaurantConfigured()
+    {
+        $restaurant = $this->getRestaurantDetails();
+        return !is_null($restaurant) && !is_null($restaurant->name) && !is_null($restaurant->address);
+    }
 }

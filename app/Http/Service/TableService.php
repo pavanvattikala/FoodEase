@@ -40,4 +40,12 @@ class TableService extends Service
 
         return $tables;
     }
+
+    public function isTableConfigured()
+    {
+        $tables = $this->getTables();
+        return $tables->isNotEmpty() && $tables->contains(function ($table) {
+            return !is_null($table->name) && !is_null($table->guest_number);
+        });
+    }
 }

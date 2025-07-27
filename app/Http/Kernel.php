@@ -70,6 +70,7 @@ class Kernel extends HttpKernel
         'admin' => Admin::class,
         'waiter' => WaiterMiddleware::class,
         'kitchen' => KitchenMiddleware::class,
-        'biller' => BillerMiddleware::class
+        'biller' => BillerMiddleware::class,
+        'ensure.pos.configured' => \App\Http\Middleware\EnsurePosIsConfigured::class,
     ];
 }

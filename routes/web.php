@@ -111,7 +111,7 @@ Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')-
  */
 
 
-Route::middleware(['auth', 'biller'])->name('pos.')->prefix('pos')->group(function () {
+Route::middleware(['auth', 'biller', 'ensure.pos.configured'])->name('pos.')->prefix('pos')->group(function () {
     Route::get('/select-table', [PosController::class, 'selectTable'])->name('tables');
     Route::get('/order', [PosController::class, 'index'])->name('main');
     Route::post('/table/submit-for-billing', [PosController::class, 'billTable'])->name('table.bill');

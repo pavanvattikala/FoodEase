@@ -17,4 +17,10 @@ class MenuService extends Service
     {
         return $this->menuCategoryCacheService->getCachedCategoriesWithMenus();
     }
+
+    public function isMenuConfigured()
+    {
+        // Return true if the collection of menus is not empty
+        return $this->menuCategoryCacheService->getCachedMenus()->isNotEmpty();
+    }
 }
