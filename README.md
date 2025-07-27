@@ -1,177 +1,210 @@
-# Food Ease
+# FoodEase - Restaurant Management System
 
-Welcome to the Food Ease, a Laravel-based application for managing orders, tables, and more.
-
-## Features
-
--   **Table Management:** Easily manage restaurant tables, track their status, and assign orders.
--   **Order Management:** Efficiently handle customer orders, view order history, and process different order types.
--   **Waiter Dashboard:** Waiters can use a user-friendly interface to manage tables and orders.
--   **Kitchen Display:** Streamline kitchen operations with real-time order updates for chefs.
-
-## APP UI
-### Login
-Foodease supports two login mechanism
-1. Admin Login ( only via email and password ) ( email : admin@gmail.com , password : foodease )
-2. PIN login this login is for faster login ( view users table for pins )
-   
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/f2bb74f5-6b4a-436d-bd62-2cd8a2fd60ce)
-
-### Tables
-Tables Screen to place orders by selecting table
-1. Table Status displayed by colors
-2. Table options to print KOT, Save Bill
-3. Pickup option for pickup orders
-   
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/c1185c5f-776b-4b56-8b11-f3642ae14943)
-
-### POS Screen
-Simple UI for POS Screen to place orders
-1. Search By Shortcode ( see on menus )
-2. Searchle Menu from Categories
-3. Displays the categories on left side
-4. Can add customer naem, mobile to order
-5. Can add custom Notes to order
-6. Select Payment Options
-7. Send KOT or Print 
-
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/17bfca44-238e-4e7a-b8b0-89799bd502de)
-
-### Dashboard 
-1. Menu To create New Menu Items
-2. Categories To Create new Category
-3. Tables to Create new Tables
-4. Reservation to create new Reservation
-   
 ![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/622f9933-e968-417f-a70f-6d7ea0228534)
 
-#### KOT View
-1. adpatable KOT view
-2. displays self placed orders for waiter
-3. displays all orders for admin and biller
-4. categories order by order types
-5. easy quick button for modifying status
-   
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/7b0e1072-0944-4498-bf22-1833769fc0d7)
+**FoodEase** is a comprehensive, Laravel-based application designed to streamline all aspects of restaurant management. From table and order processing to a real-time kitchen display, FoodEase provides a complete solution for modern restaurants.
 
-#### Bills ( only admin )
-1. view placed bills
-2. CRUD Operation
-3. Print , export bills
-4. analytics will be added soon...
-   
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/3b57e8aa-ead9-4c2c-8539-66f9b9c7d715)
+---
 
-#### Restuarant Management
-1. these options will be used on printing KOT's and Bills
-2. Order Placing options
-3. ASC / Desc options
-4. new options will be added soon..
+## ✨ Key Features
 
+-   **POS System**: A simple and intuitive Point of Sale interface for placing orders, managing customer details, and processing payments.
+-   **Table Management**: Visually track table status (available, running, bill printed) and manage orders efficiently.
+-   **Real-time KOT**: A live Kitchen Order Ticket (KOT) view for chefs to track incoming orders and manage their workflow.
+-   **Waiter & Biller Roles**: Dedicated, permission-based dashboards for waiters and billers, including a mobile-friendly view for waiters to place orders remotely.
+-   **Admin Dashboard**: Centralized control panel to manage menus, categories, tables, users, and overall restaurant configuration.
+-   **Flexible Setup**: Supports both **MySQL** and **SQLite** databases and includes options for demo or production-ready data seeding.
+
+---
+
+## 🛠️ Technology Stack
+
+-   **Backend**: Laravel, PHP
+-   **Frontend**: Blade, Tailwind CSS, Alpine.js
+-   **Real-time**: Pusher
+
+---
+
+## 🍽️ Application Modules
+
+Here's a breakdown of the core modules and how they function.
+
+### Admin Dashboard
+
+The central hub for managing the entire restaurant. Admins can create and manage menus, categories, tables, and users. This is also where you configure restaurant details like name, address, and sync settings.
 ![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/5b078588-a01d-4c28-a008-b1a6b21830b6)
 
+### Point of Sale (POS)
 
-### Kitchen Module
-1. Kitchen layout has three areas
-2. To accept the order ( by default after 5 mins order is auto accepted )
-3. current order ( order which are in progress )
-4. Items count ( helps the managemnent to quickly process items based on count and type )
-   
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/2b10dd83-1c92-46c7-bc11-665b3b8aa900)
+The primary interface for billers and admins to place orders. It features a clean UI, menu search (including by shortcode), customer details, custom notes, and various payment options. The screen is split between categories and the current order for quick entry.
+![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/17bfca44-238e-4e7a-b8b0-89799bd502de)
 
+### Table Management
+
+A visual, color-coded screen to select tables for dine-in orders or to initiate a pickup order. It provides quick access to print bills or view orders for a specific table.
+![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/c1185c5f-776b-4b56-8b11-f3642ae14943)
+
+### Kitchen Order Ticket (KOT) Display
+
+A real-time display for the kitchen staff, powered by Pusher. New orders appear instantly, categorized by order type. Chefs can see item counts across all live orders and update an order's status as it's prepared.
+![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/7b0e1072-0944-4498-bf22-1833769fc0d7)
 
 ### Waiter Module
-Waiter module is designed for waiter so that they can login and place orders remotly from mobile phones
-1. Shortcut to web link can be placed on home screen to qucik access
-2. Mobile UI for easy order placement
-3. Table Selection ( same as POS table selection )
-4. ![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/e874dc80-248a-4d6c-a492-b2141d796193)
-5. Simple Order Placement UI
-6. ![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/486375e9-37d1-40ce-b11c-d9baae76e614)
-7. Submit to kitchen, also we can add custom notes
-8. ![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/20f8f931-1b04-4f38-9561-3899837cb466)
 
-### Biller Module
-Biller module is cut down version of admin module
-1. can only place orders, update
-2. Restricted to create or view bills
+A mobile-first interface designed for waiters to take orders directly at the table using any phone or tablet. This streamlines the ordering process and reduces errors.
+![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/e874dc80-248a-4d6c-a492-b2141d796193)
 
-## How to install for youself
-To get this application you can go two ways
-1. You can contact me Pavan Vattikala - [pavanvattikala54@gmail.com](mailto:pavanvattikala54@gmail.com) for Desktop App ( runs on your system easily and can be accesed across restaurent )
-2.  You can follow the below steps for local development and dev server
+### Biller Module & Bill Management
 
-## Getting Started for Local Installation
+Users with the "Biller" role have a restricted version of the dashboard. They can place and update orders but cannot perform sensitive admin actions. Admins have full access to view, print, and manage all historical bills.
+![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/3b57e8aa-ead9-4c2c-8539-66f9b9c7d715)
 
-### Prerequisites
+---
 
--   [Laravel](https://laravel.com/docs/8.x/installation)
--   [Composer](https://getcomposer.org/download/)
--   [Node.js and NPM](https://nodejs.org/)
+## 🚀 Getting Started
 
-### Installation
+Follow these instructions to get the project up and running on your local machine.
 
-1. Clone the repository:
+### 1. Clone the Repository
 
-    ```bash
-    git clone https://github.com/pavanvattikala/FoodEase.git
-
-    ```
-
-2. Navigate to the project directory:
-
-    ```bash
-    cd FoodEase
-
-    ```
-
-3. Install dependencies:
-
-    ```bash
-    composer install
-
-    npm install && npm run dev
-
-    ```
-
-4. Configure the environment:
-
-    ```bash
-    cp .env.example .env
-
-    php artisan key:generate
-
-    ```
-
-5. Update the .env file with your database configuration.
-
-6. Migrate the database:
-
-    ```bash
-    php artisan migrate
-
-    ```
-
-7. Start the development server:
-
-    ```bash
-    php artisan serve
-
-    ```
-
-8. Access the application in your browser: http://localhost:8000
-
-### Kitchen Module
-Foodease depends on PUSHER for transimitting the orders , copy and paste the keys from pusher dashboard in .env
-after copying run the command
 ```bash
-npm run dev
+git clone [https://github.com/pavanvattikala/FoodEase.git](https://github.com/pavanvattikala/FoodEase.git)
+cd FoodEase
 ```
 
-## Contributing
+### 2. Install Dependencies
 
-We welcome contributions! Feel free to submit issues, feature requests, or pull requests.
+```bash
+composer install
+npm install
+```
 
-## License
+### 3. Environment Setup
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```bash
+# Create your environment file
+cp .env.example .env
+
+# Generate an application key
+php artisan key:generate
+```
+
+### 4. Database Configuration
+
+Open the `.env` file and configure your database. You can use either **MySQL** or **SQLite**.
+
+**For MySQL:**
+Make sure you have a MySQL server running and update the following lines in your `.env` file:
+
+```ini
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=foodease
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+**For SQLite:**
+Change the `DB_CONNECTION` and create an empty database file.
+
+1.  Update your `.env` file:
+    ```ini
+    DB_CONNECTION=sqlite
+    ```
+2.  Create the database file:
+    ```bash
+    touch database/database.sqlite
+    ```
+
+### 5. Pusher Configuration (Required for KOT)
+
+For real-time order transmission to the kitchen, you need Pusher credentials.
+
+1.  Sign up for a free account at [pusher.com](https://pusher.com).
+2.  Create a new "Channels" app.
+3.  Copy your keys into the `.env` file:
+    ```ini
+    PUSHER_APP_ID=...
+    PUSHER_APP_KEY=...
+    PUSHER_APP_SECRET=...
+    PUSHER_HOST=...
+    PUSHER_PORT=...
+    PUSHER_SCHEME=...
+    PUSHER_APP_CLUSTER=...
+    ```
+
+### 6. Database Migration & Seeding
+
+You have two options for setting up the database.
+
+**Option A: For a Full Demo**
+This option will create all tables and fill them with example data (users, menus, categories) so you can use the app right away.
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+_`migrate:fresh` will drop all existing tables and re-run migrations. Use with caution if you have existing data._
+
+**Option B: For Production / Minimal Setup**
+This option creates the tables and seeds only the essential data (default admin user and restaurant settings).
+
+1.  Run the migrations:
+    ```bash
+    php artisan migrate
+    ```
+2.  Run the basic seeder:
+    ```bash
+    php artisan db:seed --class=BasicSeeder
+    ```
+
+### 7. Build Assets & Start the Server
+
+```bash
+# Build frontend assets
+npm run dev
+
+# Start the local development server
+php artisan serve
+```
+
+Your application is now running at **http://localhost:8000**.
+
+---
+
+## 🔑 Usage & Default Credentials
+
+FoodEase supports two login methods:
+
+-   **Admin Login (Email & Password):**
+
+    -   **Email:** `admin@gmail.com`
+    -   **Password:** The default password is set in your `.env` file with the `DEFAULT_PASSWORD` key (it defaults to `foodease2024`). You can change it there.
+
+-   **Staff Login (PIN):**
+    -   Other roles (Biller, Waiter) can log in using a 4-digit PIN.
+    -   You can find or set the PINs for each user in the `users` table after seeding the database.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you have a suggestion or find a bug, please feel free to open an issue or submit a pull request.
+
+## 📄 License
+
+This project is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)**.
+
+This means you are free to:
+
+-   **Share** — copy and redistribute the material in any medium or format.
+-   **Adapt** — remix, transform, and build upon the material.
+
+Under the following terms:
+
+-   **Attribution** — You must give appropriate credit.
+-   **NonCommercial** — You may not use the material for commercial purposes.
+-   **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+See the [LICENSE](LICENSE) file for the full legal text.
