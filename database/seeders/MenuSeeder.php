@@ -21,10 +21,10 @@ class MenuSeeder extends Seeder
         {
             // Create Categories
             $categories = [
-                ['name' => 'specials'],
-                ['name' => 'veg'],
-                ['name' => 'non-veg'],
-                ['name' => 'beverages']
+                ['name' => 'specials', 'rank' => 1],
+                ['name' => 'veg', 'rank' => 2],
+                ['name' => 'non-veg', 'rank' => 3],
+                ['name' => 'beverages', 'rank' => 4]
             ];
 
             foreach ($categories as $category) {
