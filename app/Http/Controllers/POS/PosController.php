@@ -69,7 +69,7 @@ class PosController extends Controller
 
     public function selectTable()
     {
-        $tablesWithLocations = $this->tableService->getTablesWithOrderSums()->groupBy('location');
+        $tablesWithLocations = $this->tableService->getTablesWithOrderSums()->groupBy('location.name');
 
         $table_colors =  config('predefined_options.table_colors');
 
