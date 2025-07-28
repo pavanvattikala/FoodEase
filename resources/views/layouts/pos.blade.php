@@ -1,90 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-gray-100">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'FoodEase') }}-@yield('title')</title>
+    <title>{{ config('app.name', 'FoodEase') }} - @yield('title')</title>
+
     @include('layouts.scripts')
-
-    <style>
-        #pos-nav {
-            max-height: 60px !important;
-        }
-
-        #pos-nav img {
-            max-height: 60px !important;
-        }
-    </style>
-
+    @stack('styles')
 </head>
 
-<body class="font-sans antialiased">
-    <div class="flex-col">
-        {{-- main nav --}}
-        <div class="flex" id="pos-nav">
-            <a href="{{ route('dashboard') }}">
-                <img src="{{ asset('FoodEase.png') }}" alt="foodease logo" width="250px" height="100px"
-                    class="dark:bg-gray-800">
-            </a>
-            <div class="flex flex-row justify-around  w-full pt-5 text-gray-700 bg-slate-100 dark:text-gray-200 dark:bg-gray-800"
-                style="align-items: flex-end">
-                <nav class="align-middle justify-center flex-grow px-4 pb-4">
+<body class="h-full font-sans antialiased">
+    <div class="flex flex-col min-h-screen">
 
-                    <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
-                        {{ __('New Order') }}
-                    </x-pos-nav-link>
-                </nav>
-                <nav class="align-middle justify-center flex-grow px-4 pb-4 ">
-                    @if (auth()->user()->hasPermission(App\Enums\UserRole::Admin))
-                        <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
-                            {{ __('Tables') }}
+        <header class="sticky top-0 z-50 w-full bg-[#1f2937] backdrop-blur-sm shadow-md">
+            <div class="container mx-auto px-4">
+                <div class="flex h-20 items-center justify-between">
+
+                    <div class="flex items-center gap-x-6">
+                        <a href="{{ route('dashboard') }}">
+                            <img src="{{ asset('FoodEase.png') }}" alt="FoodEase Logo"
+                                class="h-16 w-16 rounded-full object-cover border-2 border-gray-200 ">
+                        </a>
+
+                        <nav>
+
+                            <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
+                                {{ __('New Order') }}
+                            </x-pos-nav-link>
+                        </nav>
+                    </div>
+
+                    <nav class="flex items-center gap-x-6">
+                        @if (auth()->user()->hasPermission(App\Enums\UserRole::Admin))
+                            <x-pos-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
+                                {{ __('Tables') }}
+                            </x-pos-nav-link>
+                            <x-pos-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">
+                                {{ __('Bills') }}
+                            </x-pos-nav-link>
+                        @endif
+
+                        <x-pos-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
+                            {{ __('KOT View') }}
                         </x-pos-nav-link>
-                        <x-pos-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">
-                            {{ __('Bills') }}
+
+                        <x-pos-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
                         </x-pos-nav-link>
-                    @endif
+                    </nav>
 
-                    <x-pos-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
-                        {{ __('KOT View') }}
-                    </x-pos-nav-link>
-                    <x-pos-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('DashBoard') }}
-                    </x-pos-nav-link>
-                </nav>
+                </div>
+            </div>
+        </header>
 
-            </div>
-        </div>
-        <main class="m-2 p-8 w-full">
-            <div>
-                @if (session()->has('danger'))
-                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
-                        role="alert">
-                        <span class="font-medium">{{ session()->get('danger') }}!</span>
-                    </div>
-                @endif
-                @if (session()->has('success'))
-                    <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
-                        role="alert">
-                        <span class="font-medium">{{ session()->get('success') }}!</span>
-                    </div>
-                @endif
-                @if (session()->has('warning'))
-                    <div class="p-4 mb-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
-                        role="alert">
-                        <span class="font-medium">{{ session()->get('warning') }}!</span>
-                    </div>
-                @endif
-            </div>
+        <main class="mx-auto flex-grow p-4 sm:p-6 lg:p-8 w-full">
+
+
 
             <x-loader />
-
             {{ $slot }}
         </main>
     </div>
 
+    @stack('scripts')
 </body>
 
 </html>
