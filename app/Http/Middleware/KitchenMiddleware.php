@@ -6,9 +6,16 @@ use App\Enums\UserRole;
 use App\Models\EmployeeCategory;
 use Closure;
 use Illuminate\Http\Request;
+use App\Http\Service\RestaurantService;
 
 class KitchenMiddleware
 {
+    protected $restaurantService;
+
+    public function __construct(RestaurantService $restaurantService)
+    {
+        $this->restaurantService = $restaurantService;
+    }
     /**
      * Handle an incoming request.
      *
@@ -18,15 +25,24 @@ class KitchenMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check if the authenticated user is a waiter
-
-        if (env('KITCHEN_MODULE_ENABLED') == false) {
-            abort(402, 'Only Paid access.'); // You can customize the response as needed
-        }
 
         $user = $request->user();
 
-        if ($user->hasPermission(UserRole::Kitchen) || $user->hasPermission(UserRole::Biller)) {
+
+        // Check if the authenticated user is a waiter
+        $isKitchenConfigured = $this->restaurantService->isKitchenEnabled();
+
+        if (!$isKitchenConfigured) {
+            abort(501, 'Kitchen module is not enabled.');
+        }
+
+        $userHasKitchenPermission = $user->hasPermission(UserRole::Kitchen) || $user->hasPermission(UserRole::Biller);
+
+        if (!$userHasKitchenPermission) {
+            abort(403, 'Unauthorized access to kitchen module.');
+        }
+
+        if ($userHasKitchenPermission) {
             return $next($request);
         }
 
