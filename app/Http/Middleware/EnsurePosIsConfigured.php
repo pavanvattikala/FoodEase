@@ -28,7 +28,6 @@ class EnsurePosIsConfigured
     public function handle(Request $request, Closure $next): Response
     {
         // Each service method now uses its own internal caching logic.
-        Log::info('Checking POS configurations...');
 
         if ($this->shouldSkip($request)) {
             return $next($request);
@@ -49,7 +48,6 @@ class EnsurePosIsConfigured
             Log::warning('Menu is not configured properly.');
             return redirect()->route('admin.menus.index')->with('danger', 'Please configure the menu first.');
         }
-        Log::info('POS configurations are set up correctly.');
 
         // If all configurations are set, continue with the request.
         return $next($request);
