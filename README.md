@@ -133,6 +133,10 @@ For real-time order transmission to the kitchen, you need Pusher credentials.
     PUSHER_SCHEME=...
     PUSHER_APP_CLUSTER=...
     ```
+4.  rebuild the frontend assests
+    ```bash
+    npm run dev
+    ```
 
 ### 6. Database Migration & Seeding
 
