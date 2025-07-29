@@ -17,6 +17,8 @@ class Restaurant extends Model
         'phone',
         'email',
         'website',
+        'waiter_module_enabled',
+        'kitchen_module_enabled',
         'GST',
         'currency_symbol',
         'pending_order_sync_time',

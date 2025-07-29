@@ -39,6 +39,8 @@ class RestaurantSeeder extends Seeder
             'reservation_advance_notice' => 120, // minutes
             'created_at' => now(),
             'updated_at' => now(),
+            'waiter_module_enabled' => false,
+            'kitchen_module_enabled' => false,
         ]);
     }
 }
