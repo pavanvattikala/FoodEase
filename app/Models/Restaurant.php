@@ -27,6 +27,8 @@ class Restaurant extends Model
         'minimum_preparation_time',
         'order_live_view',
         'kot_live_view',
+        'biller_printer',
+        'kitchen_printer',
     ];
 
     protected static function refreshRestaurants()

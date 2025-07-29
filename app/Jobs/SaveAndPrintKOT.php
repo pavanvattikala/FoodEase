@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Helpers\PDFHelper;
 use App\Helpers\Printers\ThermalPrinter;
+use App\Http\Service\RestaurantService;
+use App\Models\Restaurant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,11 +16,14 @@ use Illuminate\Support\Facades\Log;
 
 class SaveAndPrintKOT implements ShouldQueue
 {
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $KOT;
     private $kOTPath;
     private $billId;
+    protected $restaurantService;
+
 
     /**
      * Create a new job instance.
@@ -29,6 +34,8 @@ class SaveAndPrintKOT implements ShouldQueue
     {
         $this->KOT = $KOT;
         $this->billId = $billId;
+
+        $this->restaurantService = new RestaurantService();
     }
 
     /**
@@ -39,7 +46,7 @@ class SaveAndPrintKOT implements ShouldQueue
     public function handle()
     {
 
-        $kitchenPrinter = config("predefined_options.printer.kitchen");
+        $kitchenPrinter = $this->restaurantService->getKitchenPrinter();
 
         try {
             $printer = new ThermalPrinter($kitchenPrinter);

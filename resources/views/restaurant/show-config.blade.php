@@ -69,6 +69,22 @@
             </div>
 
             <div class="mb-6">
+                <label for="biller_printer" class="block text-gray-700 text-sm font-bold mb-2">Biller Printer:</label>
+                <p class="text-xs text-red-400 font-semibold">Leave blank for no printer</p>
+                <input type="text" id="biller_printer" name="biller_printer"
+                    value="{{ $restaurantConfig['biller_printer'] }}"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+
+            <div class="mb-6">
+                <label for="kitchen_printer" class="block text-gray-700 text-sm font-bold mb-2">Kitchen Printer:</label>
+                <p class="text-xs text-red-400 font-semibold">Leave blank for no printer</p>
+                <input type="text" id="kitchen_printer" name="kitchen_printer"
+                    value="{{ $restaurantConfig['kitchen_printer'] }}"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+
+            <div class="mb-6">
                 <label for="pending_order_sync_time" class="block text-gray-700 text-sm font-bold mb-2">Order Sync Time
                     (seconds):</label>
                 <select name="pending_order_sync_time" id="pending_order_sync_time"

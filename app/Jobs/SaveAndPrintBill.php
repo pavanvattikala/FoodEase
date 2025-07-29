@@ -4,12 +4,14 @@ namespace App\Jobs;
 
 use App\Helpers\PDFHelper;
 use App\Helpers\Printers\ThermalPrinter;
+use App\Models\Restaurant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Http\Service\RestaurantService;
 use Illuminate\Support\Facades\Log;
 
 class SaveAndPrintBill implements ShouldQueue
@@ -18,6 +20,7 @@ class SaveAndPrintBill implements ShouldQueue
 
     private $billId;
     private $printDuplicateBill;
+    protected $restaurantService;
 
     /**
      * Create a new job instance.
@@ -30,6 +33,8 @@ class SaveAndPrintBill implements ShouldQueue
         $this->printDuplicateBill = $printDuplicateBill;
 
         Log::info("Bill Printing Started " . $billId);
+
+        $this->restaurantService = new RestaurantService();
     }
 
     /**
@@ -39,7 +44,7 @@ class SaveAndPrintBill implements ShouldQueue
      */
     public function handle()
     {
-        $billerPrinter = config("predefined_options.printer.pos");
+        $billerPrinter = $this->restaurantService->getBillerPrinter();
 
         try {
             $printer = new ThermalPrinter($billerPrinter);

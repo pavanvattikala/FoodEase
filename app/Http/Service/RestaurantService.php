@@ -29,12 +29,22 @@ class RestaurantService extends Service
 
     public function isPrintBillEnabled()
     {
-        //return (bool)$this->getRestaurantDetails()->bill_print_enabled ?? false;
-        return true;
+        // returns true if biller printer is set
+        return !is_null($this->getRestaurantDetails()->biller_printer);
     }
     public function isKOTPrintEnabled()
     {
-        //return (bool)$this->getRestaurantDetails()->kot_print_enabled ?? false;
-        return true;
+        // returns true if kitchen printer is set
+        return !is_null($this->getRestaurantDetails()->kitchen_printer);
+    }
+
+    public function getKitchenPrinter()
+    {
+        return $this->getRestaurantDetails()->kitchen_printer ?? config('predefined_options.printer.kitchen');
+    }
+
+    public function getBillerPrinter()
+    {
+        return $this->getRestaurantDetails()->biller_printer ?? config('predefined_options.printer.biller');
     }
 }

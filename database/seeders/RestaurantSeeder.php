@@ -41,6 +41,8 @@ class RestaurantSeeder extends Seeder
             'updated_at' => now(),
             'waiter_module_enabled' => false,
             'kitchen_module_enabled' => false,
+            'biller_printer' => null,
+            'kitchen_printer' => null,
         ]);
     }
 }

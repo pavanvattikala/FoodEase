@@ -60,6 +60,8 @@ class RestaurantController extends Controller
             'minimum_preparation_time' => 'required|numeric|min:300|max:1200', // In seconds (5-20 minutes)
             'order_live_view' => 'required|in:asc,desc',
             'kot_live_view' => 'required|in:asc,desc',
+            'biller_printer' => 'nullable|string',
+            'kitchen_printer' => 'nullable|string',
         ]);
 
         $restaurantConfig = Restaurant::firstOrCreate([]); // Ensure a record exists
