@@ -16,12 +16,7 @@ Route::middleware(['auth', 'waiter'])->name('waiter.')->prefix('waiter')->group(
 
     Route::get('/order/{table}', [WaiterController::class, 'orderScreen'])->name('order');
 
-
     Route::get('/choosetable', [WaiterController::class, 'chooseTable'])->name('tables.index');
-
-    Route::post('addtabletosession', [WaiterController::class, 'addTableToSesstion'])->name('table.add.toSession');
-
-    Route::post('submitForBilling', [WaiterController::class, 'submitForBilling'])->name('table.submit.for.billing');
 });
 
 
