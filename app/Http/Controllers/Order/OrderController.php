@@ -246,12 +246,7 @@ class OrderController extends Controller
             ->where('status', '!=', OrderStatus::Closed)
             ->orderBy('created_at', 'desc');
 
-        if ($waiter->hasPermission(UserRole::Biller)) {
-            //admin
-            $orders = $orders->get();
-        } else {
-            $orders = $orders->where('waiter_id', $waiter->id)->get();
-        }
+        $orders = $orders->get();
 
         $orderSyncTime = RestaurantHelper::getCachedRestaurantDetails()->pending_order_sync_time * 1000;
 

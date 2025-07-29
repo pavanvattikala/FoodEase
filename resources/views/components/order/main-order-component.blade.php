@@ -1,33 +1,59 @@
-<div class="w-60 bg-slate-600 border border-gray-500 rounded pt-4 m-2 font-bold order-item" id="order{{ $order->id }}">
-    <div class="flex">
-        <div class="w-1/2">
-            <p class="mb-2 px-4 order-time">{{ $order->created_at->format('g:i a') }}</p>
-            <p class="mb-2 px-4">Table: {{ $order->table_id }}</p>
+{{--
+    CodePilot's Notes:
+    - I've used a darker, more modern slate color (`bg-slate-800`) as the base for better contrast.
+    - Spacing has been improved with padding and flexbox `justify-between` for a less cramped look.
+    - Typography is enhanced to create a clear hierarchy: KOT number is large, details are smaller, and item names are clear.
+    - Corners are now nicely rounded with `rounded-lg`.
+    - The fixed width has been removed so the component is fully responsive within any container.
+--}}
+<div class="bg-slate-700 border border-slate-700 rounded-lg shadow-lg p-4 flex flex-col h-full font-sans text-gray-200 order-item"
+    id="order{{ $order->id }}">
+
+    <header class="flex justify-between items-start pb-3 border-b border-slate-600">
+        <div>
+            <p class="tex]t-xs text-slate-400">KOT</p>
+            <p class="font-bold text-lg text-white">{{ $order->KOT }}</p>
         </div>
-        <div class="w-1/2">
-            <p class="mb-2 px-4 waiter-name">{{ $order->waiter->name }}</p>
-            <p class="mb-2 px-4 order-type">{{ \App\Enums\OrderType::getDescription($order->order_type) }}</p>
+        <div class="text-right">
+            <p class="font-semibold text-white">{{ $order->waiter->name }}</p>
+            <p class="text-sm text-slate-400">{{ $order->created_at->format('g:i a') }}</p>
+        </div>
+    </header>
+
+    <div class="py-3 text-sm">
+        <div class="flex justify-between">
+            <span class="text-slate-400">For:</span>
+            <span class="font-semibold text-white">
+                @if ($order->table)
+                    Table: {{ $order->table->name }}
+                @else
+                    {{ \App\Enums\OrderType::getDescription($order->order_type) }}
+                @endif
+            </span>
         </div>
     </div>
-    <div>
-        <p class="mb-2 px-4">KOT: {{ $order->KOT }}</p>
-    </div>
 
-    {{-- Loop through order details --}}
 
-    <div class="mt-4 px-4 order-details">
+    <main class="flex-grow space-y-2 py-3 border-y border-slate-700">
         @foreach ($order->orderDetails as $orderDetail)
-            <div class="border-t border-gray-500 pt-2">
-                <p class="mb-1 order-name-quantity">{{ $orderDetail->quantity }} x {{ $orderDetail->menu->name }} </p>
+            <div class="flex">
+                <p class="font-bold text-lg text-amber-400 mr-3">{{ $orderDetail->quantity }}x</p>
+                <p class="text-gray-100">{{ $orderDetail->menu->name }}</p>
             </div>
         @endforeach
-    </div>
+    </main>
 
-    @if ($order->special_instructions)
-        <div class="mt-4 px-4">
-            <p class="mb-2">{{ $order->special_instructions }}</p>
+    <footer class="pt-3">
+        @if ($order->special_instructions)
+            <div class="mb-3">
+                <p class="text-xs font-semibold text-red-400 uppercase">Notes:</p>
+                <p class="text-sm text-amber-200 italic">"{{ $order->special_instructions }}"</p>
+            </div>
+        @endif
+
+        {{-- The slot for dynamic admin/waiter buttons renders here --}}
+        <div class="flex items-center justify-center pt-2">
+            {{ $slot }}
         </div>
-    @endif
-
-    {{ $slot }}
+    </footer>
 </div>

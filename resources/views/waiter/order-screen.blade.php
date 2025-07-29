@@ -1,7 +1,7 @@
 <x-waiter-layout>
     @section('title', 'Create Order')
 
-    <div class="bg-gray-100 min-h-screen font-sans" x-data="waiterOrderScreen({
+    <div class="bg-gray-100 min-h-screen font-sans text-gray-700 " x-data="waiterOrderScreen({
         table: {{ Js::from($table) }},
         menus: {{ Js::from($categoriesWithMenus) }},
         notes: {{ Js::from($predefinedNotes) }},
@@ -25,7 +25,7 @@
                         <div @click="toggleCategory(category.id)"
                             class="p-4 flex justify-between items-center cursor-pointer">
                             <h2 class="text-lg font-semibold text-gray-700" x-text="category.name"></h2>
-                            <i class="fas"
+                            <i class="fas text-gray-500"
                                 :class="activeCategory === category.id ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                         </div>
                         <div x-show="activeCategory === category.id" x-collapse>
@@ -36,7 +36,7 @@
                                         <div class="flex items-center space-x-3">
                                             <button @click="updateQuantity(menu.id, -1)"
                                                 class="w-8 h-8 bg-red-500 text-white rounded-full font-bold text-lg leading-tight shadow-sm hover:bg-red-600">-</button>
-                                            <span class="w-8 text-center text-lg font-semibold"
+                                            <span class="w-8 text-gray-500 text-center text-lg font-semibold"
                                                 x-text="getCartItemQuantity(menu.id)"></span>
                                             <button @click="updateQuantity(menu.id, 1, menu.name, menu.price)"
                                                 class="w-8 h-8 bg-green-500 text-white rounded-full font-bold text-lg leading-tight shadow-sm hover:bg-green-600">+</button>
