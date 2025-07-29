@@ -170,15 +170,16 @@ class OrderController extends Controller
     // Process Waiter Order
     private function processWaiterOrder(Request $request, $commonData)
     {
-        $cart = session()->get('cart');
-        $total = $cart["total"];
-        unset($cart["total"]);
+        $order = $request->order;
+
         $waiterSpecificData = collect([
             'waiterId' => auth()->user()->id,
-            'orderItems' => $cart,
-            'total' => $total,
+            'orderItems' => $order["orderItems"],
+            'total' => $order["total"],
             'orderType' => OrderType::DineIn->value,
+
         ]);
+
         return $commonData->merge($waiterSpecificData);
     }
 

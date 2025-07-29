@@ -7,9 +7,16 @@ use Closure;
 use Illuminate\Http\Request;
 use App\Models\EmployeeCategory;
 use SebastianBergmann\Environment\Console;
+use App\Http\Service\RestaurantService;
 
 class WaiterMiddleware
 {
+    protected $restaurantService;
+
+    public function __construct(RestaurantService $restaurantService)
+    {
+        $this->restaurantService = $restaurantService;
+    }
     /**
      * Handle an incoming request.
      *
@@ -19,19 +26,29 @@ class WaiterMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (env('WAITER_MODULE_ENABLED') == false) {
-            abort(402, 'Only Paid access.'); // You can customize the response as needed
+
+        // Check if the restaurant has the waiter module enabled
+        $isWaiterConfigured = $this->restaurantService->isWaiterEnabled();
+
+        if (!$isWaiterConfigured) {
+            abort(501, 'Waiter module is not enabled.');
         }
 
         // Check if the authenticated user is a waiter
 
         $user = $request->user();
 
-        if ($user->hasPermission(UserRole::Waiter)) {
+        $userHasWaiterPermission = $user->hasPermission(UserRole::Waiter);
+
+        if (!$userHasWaiterPermission) {
+            abort(403, 'Unauthorized access to waiter module.');
+        }
+
+        if ($userHasWaiterPermission) {
             return $next($request);
         }
 
         // Redirect or respond as needed for non-waiter users
-        abort(403, 'Unauthorized access.'); // You can customize the response as needed
+        abort(403, 'Unauthorized access.');
     }
 }

@@ -5,14 +5,30 @@ namespace App\Http\Controllers;
 use App\Enums\TableStatus;
 use App\Helpers\BillHelper;
 use App\Helpers\TableHelper;
+use App\Http\Service\MenuService;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use App\Models\Bill;
 use App\Models\BillOrder;
 use App\Models\Order;
+use App\Models\TableLocation;
+use Illuminate\Support\Facades\Session;
+use App\Http\Service\TableService;
+use App\Http\Service\RestaurantService;
+use App\Enums\OrderType;
 
 class WaiterController extends Controller
 {
+    private $tableService;
+    private $restaurantService;
+    private $menuService;
+
+    public function __construct(TableService $tableService, RestaurantService $restaurantService, MenuService $menuService)
+    {
+        $this->tableService = $tableService;
+        $this->restaurantService = $restaurantService;
+        $this->menuService = $menuService;
+    }
 
     public function index(Request $request)
     {
@@ -21,88 +37,42 @@ class WaiterController extends Controller
 
     public function chooseTable()
     {
-        $tables = Table::all();
+        $tablesWithLocations = $this->tableService->getTablesWithOrderSums()->groupBy('location.name');
 
-        $takenTables = $tables->where('status', TableStatus::Unavaliable)
-            ->map(function ($table) {
-                return [
-                    'id' => $table['id'],
-                    'taken_at' => $table['taken_at'],
-                ];
-            })->values();
+        $table_colors =  config('predefined_options.table_colors');
 
-        return view('tables.select-table', compact('tables', 'takenTables'));
+        $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
+
+        return view('tables.select-table', compact('tablesWithLocations', 'table_colors', 'paymentTypes'));
     }
 
-    public function addTableToSesstion(Request $request)
+    public function orderScreen(Request $request)
     {
-        TableHelper::addTableToSession($request->tableId);
+        $tableId = $request->table;
 
-        $reOrder = boolval($request->reOrder);
 
-        if ($reOrder === true) {
-            Session()->put("reOrder", true);
-        }
+        $orderType = OrderType::DineIn;
 
-        return response()->json(['message' => 'true']);
-    }
+        // Get categories with menus, predefined notes, and payment types
+        $categoriesWithMenus = $this->menuService->getCatergoriesWithMenus();
+        $predefinedNotes = config('predefined_options.notes');
+        $paymentTypes = json_decode($this->restaurantService->getRestaurantDetails()->payment_options);
 
-    public function submitForBilling(Request $request)
-    {
-
-        $tableId = $request->tableId;
-
-        $notes = null;
-        $payment_method = null;
+        // Initialize variables
 
         $table = Table::find($tableId);
-        $takenTime = $table->taken_at;
 
-        // Get orders associated with the table since it was taken
-        $orders = Order::where('table_id', $tableId)
-            ->where('created_at', '>=', $takenTime)
-            ->get();
-
-
-        // Calculate total and grand total
-        $total = $orders->sum('total');
-        $discount = 0.0; // You can adjust this based on your logic
-        $grandTotal = $total - $discount;
-
-        $billId = BillHelper::generateBillID();
-
-
-        // Create a new bill
-        $bill = Bill::create([
-            'bill_id' => $billId,
-            'table_id' => $tableId,
-            'bill_amount' => $total,
-            'discount' => $discount,
-            'grand_total' => $grandTotal,
-            'payment_method' => $payment_method, // Adjust as needed
-            'notes' => $notes, // Adjust as needed
-        ]);
-
-        // Associate orders with the bill
-        foreach ($orders as $order) {
-            BillOrder::create([
-                'bill_id' => $bill->id,
-                'order_id' => $order->id,
-            ]);
-
-            // Update order status or any other fields if needed
-            $order->update([
-                'status' => 'closed', // Update with your desired order status
-            ]);
+        // Redirect if the table is not found
+        if (!$table) {
+            return redirect()->route('pos.tables');
         }
 
-        // Update the table status or any other fields if needed
-        $table->update([
-            'status' => 'available', // Update with your desired table status
-            'taken_at' => null,
-        ]);
-
-        // Optionally, you can return a response or redirect
-        return response()->json(['status' => 'success', 'message' => 'Billing completed successfully']);
+        return view('waiter.order-screen', compact(
+            'categoriesWithMenus',
+            'predefinedNotes',
+            'paymentTypes',
+            'table',
+            'orderType'
+        ));
     }
 }
