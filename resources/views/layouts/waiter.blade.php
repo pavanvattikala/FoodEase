@@ -13,7 +13,7 @@
 
 <body class="font-sans antialiased">
 
-    <div class="flex h-screen bg-slate-900 text-gray-200" x-data="{ sidebarOpen: false }">
+    <div class="flex h-screen bg-gray-100 text-gray-200" x-data="{ sidebarOpen: false }">
 
         <div x-show="sidebarOpen" class="fixed inset-0 z-40 bg-black bg-opacity-75" @click="sidebarOpen = false" x-cloak>
         </div>
