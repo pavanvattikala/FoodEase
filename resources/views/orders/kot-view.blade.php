@@ -1,59 +1,9 @@
 <x-master-layout>
     @section('title', 'KOT View')
-    <style>
-        #orders-list {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            height: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
 
-        #table-orders-div {
-            width: 50%;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            border-right: 1px solid #000;
-        }
-
-        #takeaway-orders-div {
-            width: 50%;
-            display: flex;
-            justify-content: space-between;
-            flex-direction: column;
-        }
-
-        .takeaway-orders {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            flex-wrap: wrap;
-
-        }
-
-        #headings {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #5975ac;
-        }
-
-        .order-box {
-            background-color: #5975ac;
-            margin-bottom: 10px;
-            min-height: 300px;
-            max-height: 450px;
-            overflow-y: auto;
-            border-radius: 10px;
-
-        }
-    </style>
     @php
         $adminOrderComponent = 'order-running-component-for-admin';
+
         $waiterOrderComponent = 'order-component-for-waiter';
 
         $user = auth()->user();
@@ -63,64 +13,76 @@
         } else {
             $currentOrderComponent = $waiterOrderComponent;
         }
+
     @endphp
 
-    <div class="container min-w-full px-2 processing-orders">
-        <h1 class="text-2xl font-semibold w-full align-top text-center">Orders
-            KOT-VIEW
-        </h1>
-        <div id="headings">
-            <h2 class="text-2xl font-semibold w-full align-top text-center sticky">Table Orders</h2>
-
-            <h2 class="text-2xl font-semibold w-full align-top text-center sticky">Takeaway</h2>
+    <div class="min-h-screen bg-gray-100 p-4">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Kitchen Order Tickets (KOT)</h1>
+            <p class="text-gray-500">Live Orders in Progress</p>
         </div>
-        <div id="orders-list">
-            @if ($orders->isEmpty())
-                <p id="noOrders" class="text-gray-500 w-full">No order history available.</p>
-            @else
-                {{-- KOT for tables --}}
-                <div id="table-orders-div">
-                    @foreach ($tables as $table)
-                        <div class="order-box">
-                            <h2 class="text-2xl font-semibold w-full align-top text-center sticky">Table
-                                {{ $table->name }}
-                            </h2>
-                            <div class="table-order">
-                                @foreach ($orders->where('table_id', $table->id) as $order)
-                                    {{-- choosing dynamic order components based on user permissions --}}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <div class="flex flex-col space-y-4">
+                <h2
+                    class="text-2xl font-semibold text-gray-700 text-center bg-white p-3 rounded-lg shadow-sm sticky top-0 z-10">
+                    <i class="fas fa-utensils mr-2"></i> Table Orders
+                </h2>
+                <div class="space-y-6">
+                    @php
+                        $tableOrders = $orders->where('table_id', '!=', null)->groupBy('table_id');
+                    @endphp
+
+                    @forelse ($tableOrders as $tableId => $ordersForTable)
+                        <div class="bg-white p-4 rounded-xl shadow-lg">
+                            <h3 class="text-xl font-bold text-blue-600 mb-3">Table
+                                {{ $tables->find($tableId)->name ?? 'N/A' }}</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                @foreach ($ordersForTable as $order)
                                     <x-dynamic-component :component="$currentOrderComponent" :order="$order" />
                                 @endforeach
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="text-center py-10 text-gray-500">
+                            <p>No active table orders.</p>
+                        </div>
+                    @endforelse
                 </div>
-                {{-- KOT for pickup --}}
+            </div>
 
-                <div id="takeaway-orders-div">
+            <div class="flex flex-col space-y-4">
+                <h2
+                    class="text-2xl font-semibold text-gray-700 text-center bg-white p-3 rounded-lg shadow-sm sticky top-0 z-10">
+                    <i class="fas fa-shopping-bag mr-2"></i> Takeaway Orders
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    @php
+                        $takeawayOrders = $orders->where('table_id', null);
+                    @endphp
 
-                    <div class="takeaway-orders">
-                        @foreach ($orders->where('table_id', null) as $order)
-                            {{-- choosing dynamic order components based on user permissions --}}
-                            <div class="order-box">
-                                <x-dynamic-component :component="$currentOrderComponent" :order="$order" />
-                            </div>
-                        @endforeach
-                    </div>
+                    @forelse ($takeawayOrders as $order)
+                        <x-dynamic-component :component="$currentOrderComponent" :order="$order" />
+                    @empty
+                        <div class="col-span-full text-center py-10 text-gray-500">
+                            <p>No active takeaway orders.</p>
+                        </div>
+                    @endforelse
                 </div>
-
-
-            @endif
+            </div>
         </div>
     </div>
+
+    {{-- Your existing scripts can remain here --}}
     <script>
-        const orderSyncTime = {{ $orderSyncTime }};
+        const orderSyncTime = {{ $orderSyncTime ?? 30 }};
         const markAsServedRoute = "{{ route('order.mark.as.served', [], false) }}";
         const markAsPreparedRoute = "{{ route('order.mark.as.prepared', [], false) }}";
         const markAsClosedRoute = "{{ route('order.mark.as.closed', [], false) }}";
-
-
         const checkPickUpOrderUpdatesRoute = "{{ route('sync.pickup.orders', [], false) }}";
         const checkOrderUpdatesRoute = "{{ route('sync.pending.orders', [], false) }}";
     </script>
     <script src="{{ asset('js/KOT.js') }}"></script>
+
 </x-master-layout>
