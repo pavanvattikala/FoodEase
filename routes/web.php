@@ -80,6 +80,26 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::get('/bills/fd', [BillController::class, 'getBills'])->name('bills.update');
 
     Route::get('/KOTs', [KOTController::class, 'displayKOTs'])->name('KOTs');
+
+    /**
+     * -----------------------------------------------------------------------------------------------------------------------------
+     * Routes for Restaurant
+     * -----------------------------------------------------------------------------------------------------------------------------
+     */
+
+    Route::prefix('restaurant')->name('restaurant.')->group(function () { // Nested prefix for cleaner routes
+        Route::get('/config', [RestaurantController::class, 'showConfig'])->name('show.config');
+        Route::post('/update-config', [RestaurantController::class, 'updateConfig'])->name('update.config');
+
+        // New route for fetching module status (GET request)
+        Route::get('/module-status', [RestaurantController::class, 'getModuleStatus'])->name('module.status');
+
+        // Routes for module enabling/disabling via AJAX
+        Route::post('/enable-waiter-module', [RestaurantController::class, 'enableWaiterModule'])->name('enable_waiter_module');
+        Route::post('/disable-waiter-module', [RestaurantController::class, 'disableWaiterModule'])->name('disable_waiter_module');
+        Route::post('/enable-kitchen-module', [RestaurantController::class, 'enableKitchenModule'])->name('enable_kitchen_module');
+        Route::post('/disable-kitchen-module', [RestaurantController::class, 'disableKitchenModule'])->name('disable_kitchen_module');
+    });
 });
 
 /**
@@ -92,18 +112,7 @@ Route::middleware(['auth', 'biller'])->name('biller.')->prefix('biller')->group(
     Route::get('/', [BillerController::class, 'index'])->name('index');
 });
 
-/**
- * -----------------------------------------------------------------------------------------------------------------------------
- * Routes for Restaurant
- * -----------------------------------------------------------------------------------------------------------------------------
- */
 
-Route::middleware(['auth', 'admin'])->name('restaurant.')->prefix('restaurant')->group(function () {
-
-    Route::get('/config', [RestaurantController::class, 'showConfig'])->name('show.config');
-
-    Route::post('/update-config', [RestaurantController::class, 'updateConfig'])->name('update.config');
-});
 /**
  * -----------------------------------------------------------------------------------------------------------------------------
  * Routes for POS

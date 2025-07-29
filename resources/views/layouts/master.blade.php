@@ -77,7 +77,7 @@
                     <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
                         {{ __('Manage Users') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
+                    <x-nav-link :href="route('admin.restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
                         {{ __('Manage Restaurant') }}
                     </x-nav-link>
                 @endif
