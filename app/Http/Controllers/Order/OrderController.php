@@ -10,7 +10,6 @@ use App\Enums\UserRole;
 use App\Events\OrderSubmittedToKitchen;
 use App\Helpers\BillHelper;
 use App\Helpers\KitchenHelper;
-use App\Helpers\ModuleHelper;
 use App\Helpers\OrderHelper;
 use App\Helpers\PDFHelper;
 use App\Helpers\RestaurantHelper;
@@ -18,6 +17,7 @@ use App\Helpers\TableHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderSubmitRequest;
 use App\Http\Service\OrderService;
+use App\Http\Service\RestaurantService;
 use App\Jobs\SaveAndPrintBill;
 use App\Jobs\SaveAndPrintKOT;
 use App\Models\Category;
@@ -34,10 +34,27 @@ use Illuminate\Support\Facades\Log;
 class OrderController extends Controller
 {
     private $orderService;
+    protected $restaurantService;
 
-    public function __construct()
+    // Module flags
+    protected $kitchenModuleEnabled;
+    protected $waiterModuleEnabled;
+
+    // Print flags
+    protected $printBillEnabled;
+    protected $printKOTEnabled;
+
+
+    public function __construct(RestaurantService $restaurantService, OrderService $orderService)
     {
-        $this->orderService = new OrderService();
+        $this->restaurantService = $restaurantService;
+
+        $this->orderService = $orderService;
+
+        $this->kitchenModuleEnabled = $this->restaurantService->isKitchenEnabled();
+        $this->waiterModuleEnabled = $this->restaurantService->isWaiterEnabled();
+        $this->printBillEnabled = $this->restaurantService->isPrintBillEnabled();
+        $this->printKOTEnabled = $this->restaurantService->isKOTPrintEnabled();
     }
 
     public function stepone()
@@ -89,7 +106,7 @@ class OrderController extends Controller
         }
 
         // New Order if Kitchen Module is enabled else by default order status marked as served
-        $orderStatus = ModuleHelper::isKitchenModuleEnabled() ? OrderStatus::New : OrderStatus::Served;
+        $orderStatus = $this->kitchenModuleEnabled ? OrderStatus::New : OrderStatus::Served;
         $orderData->put('status', $orderStatus);
 
 
@@ -108,13 +125,10 @@ class OrderController extends Controller
         if ($isTableOrder) {
             TableHelper::markTableAsRunning($tableId);
         }
-        $kitchenModuleEnabled = ModuleHelper::isKitchenModuleEnabled();
-        $printBillEnabled = env('BILL_PRINT_ENABLED');
-        $printKOTEnabled = env('KOT_PRINT_ENABLED');
 
 
         // Send event to kitchen module
-        if ($kitchenModuleEnabled) {
+        if ($this->kitchenModuleEnabled) {
             try {
                 event(new OrderSubmittedToKitchen($kot));
             } catch (Exception $e) {
@@ -140,13 +154,13 @@ class OrderController extends Controller
             $billId = BillHelper::createTableBill($tableId,  null, $paymentMethod, $discount);
 
             // if printBill is enabled then print bill
-            if ($printBillEnabled) {
+            if ($this->printBillEnabled) {
                 SaveAndPrintBill::dispatch($billId);
             }
         }
 
         // if printKOT is enabled then print KOT
-        if ($printKOTEnabled) {
+        if ($this->printKOTEnabled) {
             SaveAndPrintKOT::dispatch($kot, $billId);
         }
 
