@@ -12,118 +12,91 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="flex h-screen">
-        <!-- Left Sidebar -->
-        <div @click.away="open = false"
-            class="flex flex-col flex-shrink-0 w-full text-gray-700 bg-slate-100 md:w-64 dark:text-gray-200 dark:bg-gray-800"
-            x-data="{ open: false }">
-            <div class="flex flex-row items-center justify-between px-8 py-4">
-                <a href="#"
-                    class="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark:text-white focus:outline-none focus:shadow-outline">{{ Auth::user()->name }}</a>
-                <button class="rounded-lg md:hidden focus:outline-none focus:shadow-outline" @click="open = !open">
-                    <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">
-                        <path x-show="!open" fill-rule="evenodd"
-                            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM9 15a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z"
-                            clip-rule="evenodd"></path>
-                        <path x-show="open" fill-rule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clip-rule="evenodd"></path>
+    <div class="flex h-screen bg-gray-900 text-gray-200" x-data="{ sidebarOpen: false }">
+
+        <div x-show="sidebarOpen" class="fixed inset-0 z-40 bg-black bg-opacity-75" @click="sidebarOpen = false" x-cloak>
+        </div>
+
+        <aside
+            class="fixed inset-y-0 left-0 z-50 flex flex-col flex-shrink-0 w-64 bg-gray-800 border-r border-gray-700 transform transition-transform duration-300 md:relative md:translate-x-0"
+            :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen }">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+                <a href="#" class="text-lg font-semibold tracking-widest text-white uppercase">
+                    {{ Auth::user()->name }}
+                </a>
+                <button class="text-gray-400 md:hidden hover:text-white" @click="sidebarOpen = false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
 
-            <nav :class="{ 'block': open, 'hidden': !open }"
-                class="flex-grow px-4 pb-4 md:block md:pb-0 md:overflow-y-auto">
-                <!-- User-specific Navigation -->
-                @php
-                    $user = Auth::user();
-                @endphp
+            <nav class="flex-grow px-4 py-4 space-y-2 overflow-y-auto">
+                @php $user = Auth::user(); @endphp
 
                 @if ($user->isBiller() || $user->isAdmin())
-                    <x-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">
-                        {{ __('POS') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">
-                        {{ __('Bills') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
-                        {{ __('KOT View') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('reporting.index')" :active="request()->routeIs('reporting.index')">
-                        {{ __('Reporting') }}
-                    </x-nav-link>
-
-                    @php
-                        $isKitchenModuleEnabled = env('KITCHEN_MODULE_ENABLED', false);
-                    @endphp
-
-                    @if ($isKitchenModuleEnabled)
-                        <x-nav-link :href="route('kitchen.index')" :openInNewTab="true" :active="request()->routeIs('kitchen.index')">
-                            {{ __('Kitchen View') }}
-                        </x-nav-link>
+                    <x-nav-link :href="route('pos.tables')" :active="request()->routeIs('pos.tables')">POS</x-nav-link>
+                    <x-nav-link :href="route('admin.bills.index')" :active="request()->routeIs('admin.bills.index')">Bills</x-nav-link>
+                    <x-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">KOT View</x-nav-link>
+                    <x-nav-link :href="route('reporting.index')" :active="request()->routeIs('reporting.index')">Reporting</x-nav-link>
+                    @if (env('KITCHEN_MODULE_ENABLED', false))
+                        <x-nav-link :href="route('kitchen.index')" :openInNewTab="true" :active="request()->routeIs('kitchen.index')">Kitchen View</x-nav-link>
                     @endif
                 @endif
 
                 @if ($user->isAdmin())
-                    <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">
-                        {{ __('Categories') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.menus.index')" :active="request()->routeIs('admin.menus.index')">
-                        {{ __('Menus') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">
-                        {{ __('Tables') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
-                        {{ __('Manage Users') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">
-                        {{ __('Manage Restaurant') }}
-                    </x-nav-link>
+                    <hr class="my-2 border-t border-gray-700">
+                    <p class="px-4 py-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">Admin</p>
+                    <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">Categories</x-nav-link>
+                    <x-nav-link :href="route('admin.menus.index')" :active="request()->routeIs('admin.menus.index')">Menus</x-nav-link>
+                    <x-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">Tables</x-nav-link>
+                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">Manage Users</x-nav-link>
+                    <x-nav-link :href="route('admin.restaurant.show.config')" :active="request()->routeIs('restaurant.show.config')">Restaurant Settings</x-nav-link>
                 @endif
 
                 @if ($user->isWaiter())
-                    <x-waiter-nav-link :href="route('waiter.choose.table')" :active="request()->routeIs('waiter.choose.table')">
-                        {{ __('Create Order') }}
-                    </x-waiter-nav-link>
-                    <x-waiter-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
-                        {{ __('KOT View') }}
-                    </x-waiter-nav-link>
+                    <x-waiter-nav-link :href="route('waiter.tables.index')" :active="request()->routeIs('waiter.tables.index')">Create Order</x-waiter-nav-link>
+                    <x-waiter-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">KOT View</x-waiter-nav-link>
                 @endif
-                <x-user-dropdown />
+
+                <div class="pt-4 mt-auto border-t border-gray-700">
+                    <x-user-dropdown />
+                </div>
             </nav>
+        </aside>
+
+        <div class="flex flex-col flex-grow">
+            <header class="flex items-center justify-between p-4 bg-gray-800 shadow-md md:hidden">
+                <a href="#" class="text-lg font-semibold text-white">{{ config('app.name', 'FoodEase') }}</a>
+                <button @click.stop="sidebarOpen = !sidebarOpen" class="text-gray-400 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </header>
+
+            <main class="flex-grow p-4 md:p-8 overflow-y-auto">
+                @foreach (['danger', 'success', 'warning'] as $msg)
+                    @if (session()->has($msg))
+                        @php
+                            $styles = [
+                                'success' => 'bg-green-800 text-green-200',
+                                'danger' => 'bg-red-800 text-red-200',
+                                'warning' => 'bg-yellow-800 text-yellow-200',
+                            ];
+                        @endphp
+                        <div class="p-4 mb-4 text-sm rounded-lg {{ $styles[$msg] ?? '' }}" role="alert">
+                            <span class="font-medium">{{ session($msg) }}</span>
+                        </div>
+                    @endif
+                @endforeach
+
+                <x-loader />
+                {{ $slot }}
+            </main>
         </div>
-
-        <!-- Main Content Area -->
-        <main class="flex-grow overflow-y-auto m-2 p-8">
-            @foreach (['danger', 'success', 'warning'] as $msg)
-                @if (session()->has($msg))
-                    @php
-                        $bgColor = match ($msg) {
-                            'success' => 'bg-green-100 dark:bg-green-200',
-                            'danger' => 'bg-red-100 dark:bg-red-200',
-                            'warning' => 'bg-yellow-100 dark:bg-yellow-200',
-                            default => 'bg-gray-100 dark:bg-gray-200',
-                        };
-
-                        $textColor = match ($msg) {
-                            'success' => 'text-green-700 dark:text-green-800',
-                            'danger' => 'text-red-700 dark:text-red-800',
-                            'warning' => 'text-yellow-700 dark:text-yellow-800',
-                            default => 'text-gray-700 dark:text-gray-800',
-                        };
-                    @endphp
-
-                    <div class="p-4 mb-4 text-sm {{ $bgColor }} {{ $textColor }} rounded-lg" role="alert">
-                        <span class="font-medium">{{ session($msg) }}</span>
-                    </div>
-                @endif
-            @endforeach
-
-            <x-loader />
-
-            {{ $slot }}
-        </main>
     </div>
 </body>
 
