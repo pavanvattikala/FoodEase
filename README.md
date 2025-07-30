@@ -14,6 +14,7 @@
 -   **Waiter & Biller Roles**: Dedicated, permission-based dashboards for waiters and billers, including a mobile-friendly view for waiters to place orders remotely.
 -   **Admin Dashboard**: Centralized control panel to manage menus, categories, tables, users, and overall restaurant configuration.
 -   **Flexible Setup**: Supports both **MySQL** and **SQLite** databases and includes options for demo or production-ready data seeding.
+-   **One-Click Server Start**: Includes helper scripts for Windows users to create a desktop shortcut and launch the server with a single click, automatically detecting the correct network IP.
 
 ---
 
@@ -32,7 +33,7 @@ Here's a breakdown of the core modules and how they function.
 ### Admin Dashboard
 
 The central hub for managing the entire restaurant. Admins can create and manage menus, categories, tables, and users. This is also where you configure restaurant details like name, address, and sync settings.
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/5b078588-a01d-4c28-a008-b1a6b21830b6)
+![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/5b078588-a01d-4c28-a008-b1a621830b6)
 
 ### Point of Sale (POS)
 
@@ -65,21 +66,33 @@ Users with the "Biller" role have a restricted version of the dashboard. They ca
 
 Follow these instructions to get the project up and running on your local machine.
 
-### 1. Clone the Repository
+### Quick Start for Windows (Recommended)
+
+This is the easiest way to get the server running.
+
+1.  **Complete the Manual Installation first:** Follow all the steps in the "Manual Installation" section below to set up your project dependencies and `.env` file.
+2.  **Create Desktop Shortcut (One-time only):** Find the `create-shortcut.bat` file in the project folder and double-click it. This will create a "Start FoodEase" shortcut on your desktop with the app logo.
+3.  **Start the Server:** Double-click the new **"Start FoodEase"** shortcut on your desktop anytime you want to run the application. It will automatically find your IP address and start the server.
+
+### Manual Installation
+
+Follow these steps for a complete manual setup.
+
+#### 1. Clone the Repository
 
 ```bash
 git clone [https://github.com/pavanvattikala/FoodEase.git](https://github.com/pavanvattikala/FoodEase.git)
 cd FoodEase
 ```
 
-### 2. Install Dependencies
+#### 2. Install Dependencies
 
 ```bash
 composer install
 npm install
 ```
 
-### 3. Environment Setup
+#### 3. Environment Setup
 
 ```bash
 # Create your environment file
@@ -89,7 +102,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-### 4. Database Configuration
+#### 4. Database Configuration
 
 Open the `.env` file and configure your database. You can use either **MySQL** or **SQLite**.
 
@@ -117,7 +130,7 @@ Change the `DB_CONNECTION` and create an empty database file.
     touch database/database.sqlite
     ```
 
-### 5. Pusher Configuration (Required for KOT)
+#### 5. Pusher Configuration (Required for KOT)
 
 For real-time order transmission to the kitchen, you need Pusher credentials.
 
@@ -133,12 +146,12 @@ For real-time order transmission to the kitchen, you need Pusher credentials.
     PUSHER_SCHEME=...
     PUSHER_APP_CLUSTER=...
     ```
-4.  rebuild the frontend assests
+4.  Rebuild the frontend assets
     ```bash
     npm run dev
     ```
 
-### 6. Database Migration & Seeding
+#### 6. Database Migration & Seeding
 
 You have two options for setting up the database.
 
@@ -163,7 +176,7 @@ This option creates the tables and seeds only the essential data (default admin 
     php artisan db:seed --class=BasicSeeder
     ```
 
-### 7. Build Assets & Start the Server
+#### 7. Build Assets & Start the Server
 
 ```bash
 # Build frontend assets
