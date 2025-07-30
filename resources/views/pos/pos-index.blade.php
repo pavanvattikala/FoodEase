@@ -16,12 +16,14 @@
             </div>
             <div id="order-type-options" class="flex items-center justify-end w-1/3 ml-4">
                 @php $orderType = $orderType->value; @endphp
-                <div id="dine_in"
-                    class="h-full px-4 py-2 text-center cursor-pointer rounded-l-lg {{ $orderType == 'dine_in' ? 'bg-green-700 font-bold' : 'bg-gray-600 hover:bg-gray-700' }}">
-                    <p>Dine In</p>
-                </div>
+                @if ($table)
+                    <div id="dine_in"
+                        class="h-full px-4 py-2 text-center cursor-pointer rounded-l-lg {{ $orderType == 'dine_in' ? 'bg-green-700 font-bold active' : 'bg-gray-600 hover:bg-gray-700' }}">
+                        <p>Dine In</p>
+                    </div>
+                @endif
                 <div id="takeaway"
-                    class="h-full px-4 py-2 text-center cursor-pointer rounded-r-lg {{ $orderType == 'takeaway' ? 'bg-green-700 font-bold' : 'bg-gray-600 hover:bg-gray-700' }}">
+                    class="h-full px-4 py-2 text-center cursor-pointer rounded-r-lg {{ $orderType == 'takeaway' ? 'bg-green-700 font-bold active' : 'bg-gray-600 hover:bg-gray-700' }}">
                     <p>Take Away</p>
                 </div>
             </div>
@@ -77,6 +79,8 @@
                         id="add-notes-btn" title="Add Notes">
                         <i class="fa fa-sticky-note text-xl"></i>
                     </button>
+
+
                     @if ($table)
                         <button data-tableid="{{ $table->id }}"
                             class="btn order-options flex flex-col items-center justify-center w-16 h-16 rounded-full bg-purple-100 text-purple-800"

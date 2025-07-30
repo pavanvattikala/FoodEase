@@ -129,14 +129,32 @@ function delItem(menuId) {
         renderOrderTable();
     }
 }
-function toggleOrderType() {
-    $("#takeaway").toggleClass("active");
+function toggleOrderType(to) {
+    console.log("Toggling order type to: " + to);
 
-    $("#kot-order").toggle();
+    // Cache jQuery selectors to avoid repeated DOM queries
+    const $takeaway = $("#takeaway");
+    const $dineIn = $("#dine_in");
+    const $kotOrder = $("#kot-order");
+    const $table = $("#table");
 
-    $("#dine_in").toggleClass("active");
+    // Define the classes for active and inactive states
+    const activeClasses = "active bg-green-700 font-bold";
+    const inactiveClasses = "bg-gray-600 hover:bg-gray-700";
 
-    $("#table").toggleClass("hidden");
+    const isTakeaway = to === "takeaway";
+
+    // Set styles for the active and inactive buttons
+    $takeaway
+        .toggleClass(activeClasses, isTakeaway)
+        .toggleClass(inactiveClasses, !isTakeaway);
+    $dineIn
+        .toggleClass(activeClasses, !isTakeaway)
+        .toggleClass(inactiveClasses, isTakeaway);
+
+    // Toggle visibility of other elements based on the order type
+    $kotOrder.toggle(!isTakeaway); // Show for dine-in, hide for takeaway
+    $table.toggleClass("hidden", isTakeaway); // Add 'hidden' class for takeaway
 }
 // Order Table Functions End
 
@@ -205,14 +223,17 @@ $(document).ready(function () {
     // Hide KOT if Takeaway is selected
     if ($("#takeaway").hasClass("active")) {
         $("#kot-order").hide();
+        $("#table").addClass("hidden");
     }
 
     //check if any previous KOTs exist
     hasPrevOrders = $("#prev-kots").length > 0;
 
-    // Add event listener to Toggle Takeaway & Dine In button
-    $("#takeaway").click(toggleOrderType);
-    $("#dine_in").click(toggleOrderType);
+    // add click event listener to order type options
+    $("#order-type-options div").click(function () {
+        const orderType = $(this).attr("id");
+        toggleOrderType(orderType);
+    });
 });
 
 // DOM Ready Functions End
@@ -314,17 +335,7 @@ document.getElementById("saveNotesBtn").addEventListener("click", function () {
 
 // Modal Functions End
 
-//------------------------------------------------------------------------------------------------------------------------------
-
-// old KOT functions
-
-// Hide KOT by default
-$("#showPrevKots").click(function () {
-    $("#prev-kots table tbody").toggleClass("hidden");
-    $("#order-items-table").toggleClass("hidden");
-});
-
-// old KOT functions end
+//-----------------------------------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------------------------------------
 
