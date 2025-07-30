@@ -1,6 +1,7 @@
 # FoodEase - Restaurant Management System
 
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/622f9933-e968-417f-a70f-6d7ea0228534)
+<img width="1915" height="919" alt="image" src="https://github.com/user-attachments/assets/8510ca23-8497-441f-91f4-3a4d97b7fe51" />
+
 
 **FoodEase** is a comprehensive, Laravel-based application designed to streamline all aspects of restaurant management. From table and order processing to a real-time kitchen display, FoodEase provides a complete solution for modern restaurants.
 
@@ -33,32 +34,55 @@ Here's a breakdown of the core modules and how they function.
 ### Admin Dashboard
 
 The central hub for managing the entire restaurant. Admins can create and manage menus, categories, tables, and users. This is also where you configure restaurant details like name, address, and sync settings.
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/5b078588-a01d-4c28-a008-b1a621830b6)
+<img width="1890" height="903" alt="image" src="https://github.com/user-attachments/assets/61eab694-cea2-4718-bba0-47eca5ce50ca" />
+
+They can configure the printer of kitchen and billing sections.
+
+<img width="1902" height="351" alt="image" src="https://github.com/user-attachments/assets/bcd7dc53-313f-49aa-8ba6-763d837ccd93" />
+
+They can enable or disbles modules according to the business needs.
+
+<img width="1912" height="574" alt="image" src="https://github.com/user-attachments/assets/35471025-f8dd-49e7-8ac8-9f925e5cc30a" />
+
 
 ### Point of Sale (POS)
 
 The primary interface for billers and admins to place orders. It features a clean UI, menu search (including by shortcode), customer details, custom notes, and various payment options. The screen is split between categories and the current order for quick entry.
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/17bfca44-238e-4e7a-b8b0-89799bd502de)
+<img width="1919" height="914" alt="image" src="https://github.com/user-attachments/assets/cddbdd07-2c58-4282-88d3-0be66b9107e0" />
 
 ### Table Management
 
 A visual, color-coded screen to select tables for dine-in orders or to initiate a pickup order. It provides quick access to print bills or view orders for a specific table.
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/c1185c5f-776b-4b56-8b11-f3642ae14943)
+<img width="1915" height="910" alt="image" src="https://github.com/user-attachments/assets/eea49a45-640c-433b-8077-0b24912f1b32" />
 
 ### Kitchen Order Ticket (KOT) Display
 
 A real-time display for the kitchen staff, powered by Pusher. New orders appear instantly, categorized by order type. Chefs can see item counts across all live orders and update an order's status as it's prepared.
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/7b0e1072-0944-4498-bf22-1833769fc0d7)
+<img width="1885" height="908" alt="image" src="https://github.com/user-attachments/assets/9f2fcf46-2c18-44af-8a7e-95ae7e32b870" />
+
+
 
 ### Waiter Module
 
 A mobile-first interface designed for waiters to take orders directly at the table using any phone or tablet. This streamlines the ordering process and reduces errors.
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/e874dc80-248a-4d6c-a492-b2141d796193)
+
+<img width="300" height="800" alt="image" src="https://github.com/user-attachments/assets/09272c98-dfa4-47ec-b870-3b1195b5af9f" />
+
+### Kitchen Module
+
+A dynamic Kitchen Display System (KDS) where new orders appear instantly. Chefs can manage their workflow by moving tickets from 'Pending' to 'In Progress', and see a live count of all items needed across active orders.
+
+<img width="1905" height="843" alt="image" src="https://github.com/user-attachments/assets/9ff227a1-6585-4a7a-84e0-0d5e81e06540" />
+
+
+
+
 
 ### Biller Module & Bill Management
 
 Users with the "Biller" role have a restricted version of the dashboard. They can place and update orders but cannot perform sensitive admin actions. Admins have full access to view, print, and manage all historical bills.
-![image](https://github.com/pavanvattikala/FoodEase/assets/88368215/3b57e8aa-ead9-4c2c-8539-66f9b9c7d715)
+<img width="1916" height="907" alt="image" src="https://github.com/user-attachments/assets/78a346ab-59f0-414d-ae83-b2ea42f631a6" />
+
 
 ---
 
