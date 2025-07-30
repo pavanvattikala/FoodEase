@@ -1,73 +1,61 @@
 <x-kitchen-layout>
     @section('title', 'Kitchen')
-    <style>
-        .pending-orders {
-            min-width: 20%;
-            max-width: 20%;
 
-        }
+    <div class="flex flex-col h-screen bg-gray-200 font-sans">
+        <header class="flex justify-between items-center bg-white shadow-md p-2">
+            <h1 class="text-2xl font-bold text-gray-800 px-4">Kitchen Display</h1>
+            <x-user-dropdown />
+        </header>
 
-        .processing-orders {
-            min-width: 60%;
+        <div class="flex flex-1 overflow-hidden">
 
-            max-width: 60%;
-
-        }
-
-        .items-counts {
-            min-width: 20%;
-
-            max-width: 20%;
-
-        }
-    </style>
-    <x-user-dropdown />
-    <div class="container flex flex-row">
-
-        <div class="container  px-4 pending-orders">
-            <h1 class="text-2xl font-semibold w-full text-center mb-4">Pending Orders</h1>
-            @if ($newOrders->isEmpty())
-                <p class="text-gray-500 w-full">No order available.</p>
-            @else
-                @foreach ($newOrders as $order)
-                    <x-new-order-component-for-kitchen :order="$order" />
-                @endforeach
-            @endif
-        </div>
-        <div class="container px-2 processing-orders">
-            <h1 class="text-2xl font-semibold w-full align-top text-center">Current Orders</h1>
-            <div class="flex flex-wrap">
-                @if ($processingOrders->isEmpty())
-                    <p class="text-gray-500 w-full">No order available.</p>
-                @else
-                    @foreach ($processingOrders as $order)
-                        <x-order-processing-component-for-kitchen :order="$order" />
+            <div class="w-1/4 bg-gray-100 border-r border-gray-300 flex flex-col">
+                <div class="p-4 border-b border-gray-300 bg-white">
+                    <h2 class="text-xl font-bold text-center text-gray-800">Pending KOTs</h2>
+                </div>
+                <div class="pending-orders flex p-3 space-y-3">
+                    @foreach ($newOrders as $order)
+                        <x-new-order-component-for-kitchen :order="$order" />
                     @endforeach
-
-                @endif
-            </div>
-        </div>
-        <div class="items-counts">
-            <h1 class="text-2xl font-semibold w-full align-top text-center">Items Count</h1>
-            <div class="flex flex-col pt-4">
-
-                <div class="dine-in max-w-max bg-slate-400 border border-gray-500 rounded pt-4 m-2 font-bold">
-                    <h1 class="text-2xl font-semibold">Dine in Orders</h1>
-                    <div class="border-t border-gray-500 p-2 items">
-                        <p class=" mb-1 order-name-quantity"> </p>
-                    </div>
                 </div>
-                <div class="take-away max-w-max bg-slate-400 border border-gray-500 rounded pt-4 m-2 font-bold">
-                    <h1 class="text-2xl font-semibold">Takeaway Orders</h1>
-                    <div class="border-t border-gray-500 p-2 items">
-                        <p class="mb-1 order-name-quantity"> </p>
+            </div>
+
+            <div class="w-1/2 bg-white flex flex-col">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-center text-gray-800">In Progress</h2>
+                </div>
+                <div class="processing-orders flex-1 overflow-y-auto p-3">
+                    <div class="flex flex-wrap gap-3 content-start">
+                        @foreach ($processingOrders as $order)
+                            <x-order-processing-component-for-kitchen :order="$order" />
+                        @endforeach
                     </div>
                 </div>
             </div>
-        </div>
 
+            <div class="w-1/4 bg-gray-100 border-l border-gray-300 flex flex-col">
+                <div class="p-4 border-b border-gray-300 bg-white">
+                    <h2 class="text-xl font-bold text-center text-gray-800">Live Item Counts</h2>
+                </div>
+                <div class="items-counts flex-1 overflow-y-auto p-3 space-y-4">
+                    <div class="dine-in bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-semibold p-3 bg-gray-50 rounded-t-lg border-b">Dine-In Items</h3>
+                        <div class="p-3 items space-y-1">
+                            {{-- JS will populate this --}}
+                        </div>
+                    </div>
+                    <div class="take-away bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-semibold p-3 bg-gray-50 rounded-t-lg border-b">Take Away Items</h3>
+                        <div class="p-3 items space-y-1">
+                            {{-- JS will populate this --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    {{-- The original script block is preserved --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             window.Echo.channel('order-submitted-to-kitchen')
@@ -88,6 +76,11 @@
                             },
                             contentType: 'application/x-www-form-urlencoded',
                             success: function(response) {
+
+                                console.log('New order component received:', response.html);
+
+                                // check if the order already exists
+
                                 $('.pending-orders').append(response.html);
                                 console.log('Order added');
                             },
@@ -102,7 +95,6 @@
         });
 
         function acceptOrder(orderId) {
-
             const url = '{{ route('kitchen.accept.order', [], false) }}';
             var csrf_token = "{{ csrf_token() }}";
             showLoader();
@@ -122,14 +114,14 @@
                     var firstChilderen = order.find('.options').children().first();
                     firstChilderen.attr("id", "completeOrder");
                     firstChilderen.text("Completed");
+                    firstChilderen.attr("class",
+                        "py-3 px-6 font-bold text-white bg-green-600 hover:bg-green-700 transition-colors rounded-br-lg"
+                    );
                     firstChilderen.attr("onclick", "completeOrder(" + orderId + ")");
                     $('.processing-orders > .flex').append(order);
                     $('.pending-orders > #order' + orderId).remove();
                     console.log('Order accepted');
-
                     calculateMenuSumByType();
-
-
                 },
                 error: function(error) {
                     console.error('Error ', error);
@@ -140,9 +132,7 @@
             });
         }
 
-
         function discardOrder(orderId) {
-
             const url = '{{ route('kitchen.discard.order', [], false) }}';
             var csrf_token = "{{ csrf_token() }}";
             showLoader();
@@ -159,9 +149,7 @@
                 success: function(response) {
                     $('#order' + orderId).remove();
                     calculateMenuSumByType();
-
                     console.log('Order discarded');
-
                 },
                 error: function(error) {
                     console.error('Error ', error);
@@ -173,7 +161,6 @@
         }
 
         function completeOrder(orderId) {
-
             const url = '{{ route('kitchen.complete.order', [], false) }}';
             var csrf_token = "{{ csrf_token() }}";
             showLoader();
@@ -191,7 +178,6 @@
                     $('#order' + orderId).remove();
                     console.log('Order No ' + orderId + ' marked as completed');
                     calculateMenuSumByType();
-
                 },
                 error: function(error) {
                     console.error('Error ', error);
@@ -202,70 +188,57 @@
             });
         }
 
-
-        // Function to iterate through orders and calculate the sum of menu items based on dine-in or takeaway
         function calculateMenuSumByType() {
-            console.log('calculateMenuSumByType');
-            // Get all elements with class "order-item"
-            const orderElements = document.querySelectorAll('.processing-orders  .order-item');
-
-            // Create objects to store the sum of each menu item for dine-in and takeaway
             const dineInSum = {};
             const takeawaySum = {};
 
-            // Iterate through each order element
-            orderElements.forEach((orderElement) => {
-                // Get quantity elements
-                const quantityElements = orderElement.querySelectorAll('.order-details .order-name-quantity');
+            // Iterate over each order card currently in the "In Progress" column
+            $('.processing-orders .order-item').each(function() {
+                const orderElement = $(this);
 
-                // Get the order type description
-                const orderTypeDescription = orderElement.querySelector('.order-type').textContent.trim();
+                // Check the data attribute to determine if it's dine-in or takeaway
+                const isDineIn = orderElement.data('order-type') === 'dine_in';
 
-                // Determine if it's dine-in or takeaway based on order type description
-                const isDineIn = orderTypeDescription.toLowerCase() === 'dine in';
+                // Find each item row within the order card
+                orderElement.find('.order-details-list > div').each(function() {
+                    const itemRow = $(this);
+                    const quantitySpan = itemRow.find('span:first-child');
+                    const nameSpan = itemRow.find('span:last-child');
+
+                    console.log('Processing item:', quantitySpan.text(), nameSpan.text());
 
 
-                quantityElements.forEach((quantityElement) => {
-                    // Extract menu item and quantity
-                    const [quantity, menuItem] = quantityElement.textContent.split(' x ');
+                    if (quantitySpan.length && nameSpan.length) {
+                        // Extract quantity by removing 'x' and parsing as an integer
+                        const quantity = parseInt(quantitySpan.text().replace('x', ''), 10);
+                        const menuItem = nameSpan.text().trim();
 
-                    // Update the sum for the menu item based on dine-in or takeaway
-                    const menuItemKey = menuItem.trim();
-                    const quantityValue = parseInt(quantity.trim(), 10);
-
-                    if (isDineIn) {
-                        dineInSum[menuItemKey] = (dineInSum[menuItemKey] || 0) + quantityValue;
-                    } else {
-                        takeawaySum[menuItemKey] = (takeawaySum[menuItemKey] || 0) + quantityValue;
+                        if (!isNaN(quantity) && menuItem) {
+                            if (isDineIn) {
+                                dineInSum[menuItem] = (dineInSum[menuItem] || 0) + quantity;
+                            } else {
+                                takeawaySum[menuItem] = (takeawaySum[menuItem] || 0) + quantity;
+                            }
+                        }
                     }
                 });
-
             });
 
-            $('.dine-in > .items').empty();
-            $('.take-away > .items').empty();
-
-            // Output the results
-            //console.log('Dine-In Menu Item Sums:');
-            Object.entries(dineInSum).forEach(([menuItem, sum]) => {
-                //console.log(`${menuItem}: ${sum}`);
-                updateMenuSumByType('dinein', menuItem, sum);
-            });
-
-            // console.log('\nTakeaway Menu Item Sums:');
-            Object.entries(takeawaySum).forEach(([menuItem, sum]) => {
-                // console.log(`${menuItem}: ${sum}`);
-                updateMenuSumByType('takeaway', menuItem, sum);
-            });
+            // The existing updateMenuSumView function will now work correctly
+            updateMenuSumView('.dine-in > .items', dineInSum);
+            updateMenuSumView('.take-away > .items', takeawaySum);
         }
 
-        function updateMenuSumByType(type, menuItem, sum) {
-            //console.log('updateMenuSumByType');
-            if (type === 'dinein')
-                $('.dine-in > .items').append('<p class="mb-1 order-name-quantity">' + sum + ' x ' + menuItem + '</p>');
-            else {
-                $('.take-away > .items').append('<p class="mb-1 order-name-quantity">' + sum + ' x ' + menuItem + '</p>');
+        function updateMenuSumView(containerSelector, sumObject) {
+            const container = $(containerSelector).empty();
+            if (Object.keys(sumObject).length === 0) {
+                container.append('<p class="text-sm text-gray-500">No items.</p>');
+                return;
             }
+            Object.entries(sumObject).forEach(([menuItem, sum]) => {
+                container.append(
+                    `<p class="text-sm text-gray-800"><span class="font-bold">${sum}</span> x ${menuItem}</p>`);
+            });
         }
     </script>
 </x-kitchen-layout>

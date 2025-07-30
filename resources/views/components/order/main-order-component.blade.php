@@ -1,41 +1,46 @@
-<div class="bg-slate-700 border border-slate-700 rounded-lg shadow-lg p-4 flex flex-col h-full font-sans text-gray-200 order-item"
-    id="order{{ $order->id }}">
+<div class="order-item bg-gray-800 text-gray-100 rounded-lg shadow-md flex flex-col h-full font-sans"
+    id="order{{ $order->id }}" data-order-type="{{ $order->table ? 'dine_in' : 'take_away' }}">
 
-    <header class="flex justify-between items-start pb-3 border-b border-slate-600">
-        <div>
-            <p class="tex]t-xs text-slate-400">KOT</p>
-            <p class="font-bold text-lg text-white">{{ $order->KOT }}</p>
+    <!-- Header -->
+    <header class="p-4 border-b border-gray-700">
+        <div class="flex justify-between items-start ">
+            <div>
+                <p class="font-bold text-white order-time">{{ $order->KOT }}</p>
+            </div>
+            <div class="text-right pl-1">
+                <p class="font-semibold text-white waiter-name">{{ $order->waiter->name }}</p>
+            </div>
         </div>
-        <div class="text-right">
-            <p class="font-semibold text-white">{{ $order->waiter->name }}</p>
-            <p class="text-sm text-slate-400">{{ $order->created_at->format('g:i a') }}</p>
-        </div>
+        <p class="text-xs text-gray-400 mt-1">{{ $order->created_at->format('g:i a') }}</p>
     </header>
 
-    <div class="py-3 text-sm">
-        <div class="flex justify-between">
-            <span class="text-slate-400">For:</span>
-            <span class="font-semibold text-white">
+    <!-- Order Details -->
+    <main class="p-4 flex-grow order-details">
+        <div class="flex justify-left items-center mb-3">
+            <span class="text-sm text-gray-400">For:</span>
+            <span class="font-semibold text-white order-type">
                 @if ($order->table)
                     Table: {{ $order->table->name }}
                 @else
-                    {{ \App\Enums\OrderType::getDescription($order->order_type) }}
+                    <span class="text-yellow-400">Take Away</span>
                 @endif
             </span>
         </div>
-    </div>
 
-
-    <main class="flex-grow space-y-2 py-3 border-y border-slate-700">
-        @foreach ($order->orderDetails as $orderDetail)
-            <div class="flex">
-                <p class="font-bold text-lg text-amber-400 mr-3">{{ $orderDetail->quantity }} x</p>
-                <p class="text-gray-100">{{ $orderDetail->menu->name }}</p>
-            </div>
-        @endforeach
+        <div class="space-y-2 order-details-list">
+            @foreach ($order->orderDetails as $orderDetail)
+                @if ($orderDetail->menu->category->first()->name != 'Drinks')
+                    <div class="flex items-center text-lg order-name-quantity">
+                        <span class="font-bold text-yellow-400 w-8">{{ $orderDetail->quantity }} x</span>
+                        <span class="text-gray-100">{{ $orderDetail->menu->name }}</span>
+                    </div>
+                @endif
+            @endforeach
+        </div>
     </main>
 
-    <footer class="pt-3">
+    <!-- Footer with Notes and Slotted Buttons -->
+    <footer class="p-4 mt-auto border-t border-gray-700">
         @if ($order->special_instructions)
             <div class="mb-3">
                 <p class="text-xs font-semibold text-red-400 uppercase">Notes:</p>
@@ -43,8 +48,7 @@
             </div>
         @endif
 
-        {{-- The slot for dynamic admin/waiter buttons renders here --}}
-        <div class="flex items-center justify-center pt-2">
+        <div class="options flex items-center justify-center pt-2">
             {{ $slot }}
         </div>
     </footer>
