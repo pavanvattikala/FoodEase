@@ -12,9 +12,9 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="flex h-screen bg-gray-900 text-gray-200" x-data="{ sidebarOpen: false }">
+    <div class="flex h-screen" x-data="{ sidebarOpen: false }">
 
-        <div x-show="sidebarOpen" class="fixed inset-0 z-40 bg-black bg-opacity-75" @click="sidebarOpen = false" x-cloak>
+        <div x-show="sidebarOpen" class="fixed inset-0 z-40 bg-opacity-75" @click="sidebarOpen = false" x-cloak>
         </div>
 
         <aside
@@ -47,7 +47,7 @@
 
                 @if ($user->isAdmin())
                     <hr class="my-2 border-t border-gray-700">
-                    <p class="px-4 py-2 text-xs font-semibold tracking-wider text-gray-500 uppercase">Admin</p>
+                    <p class="px-4 py-2 text-xs font-semibold tracking-wider text-gray-300 uppercase">Admin</p>
                     <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.index')">Categories</x-nav-link>
                     <x-nav-link :href="route('admin.menus.index')" :active="request()->routeIs('admin.menus.index')">Menus</x-nav-link>
                     <x-nav-link :href="route('admin.tables.index')" :active="request()->routeIs('admin.tables.index')">Tables</x-nav-link>
@@ -77,7 +77,7 @@
                 </button>
             </header>
 
-            <main class="flex-grow p-4 md:p-8 overflow-y-auto">
+            <main class="flex-grow p-4 md:p-8 overflow-y-auto bg-gray-200">
                 @foreach (['danger', 'success', 'warning'] as $msg)
                     @if (session()->has($msg))
                         @php

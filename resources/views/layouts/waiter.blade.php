@@ -15,7 +15,7 @@
 
     <div class="flex h-screen bg-gray-100 text-gray-200" x-data="{ sidebarOpen: false }">
 
-        <div x-show="sidebarOpen" class="fixed inset-0 z-40 bg-black bg-opacity-75" @click="sidebarOpen = false" x-cloak>
+        <div x-show="sidebarOpen" class="fixed inset-0 z-40  bg-opacity-75" @click="sidebarOpen = false" x-cloak>
         </div>
 
         <aside
@@ -34,13 +34,13 @@
             </div>
 
             <nav class="flex-grow px-4 py-4 space-y-2 overflow-y-auto">
-                <x-waiter-nav-link :href="route('waiter.tables.index')" :active="request()->routeIs('waiter.tables.index')">
+                <x-nav-link :href="route('waiter.tables.index')" :active="request()->routeIs('waiter.tables.index')">
                     {{ __('Choose Table') }}
-                </x-waiter-nav-link>
+                </x-nav-link>
 
-                <x-waiter-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
+                <x-nav-link :href="route('order.KOT.view')" :active="request()->routeIs('order.KOT.view')">
                     {{ __('KOT View') }}
-                </x-waiter-nav-link>
+                </x-nav-link>
 
                 <div class="pt-4 mt-auto border-t border-gray-700">
                     <x-user-dropdown />
