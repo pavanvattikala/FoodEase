@@ -2,7 +2,6 @@
 
 <img width="1915" height="919" alt="image" src="https://github.com/user-attachments/assets/8510ca23-8497-441f-91f4-3a4d97b7fe51" />
 
-
 **FoodEase** is a comprehensive, Laravel-based application designed to streamline all aspects of restaurant management. From table and order processing to a real-time kitchen display, FoodEase provides a complete solution for modern restaurants.
 
 ---
@@ -40,10 +39,9 @@ They can configure the printer of kitchen and billing sections.
 
 <img width="1902" height="351" alt="image" src="https://github.com/user-attachments/assets/bcd7dc53-313f-49aa-8ba6-763d837ccd93" />
 
-They can enable or disbles modules according to the business needs.
+They can enable or disbles modules according to their business needs.
 
 <img width="1912" height="574" alt="image" src="https://github.com/user-attachments/assets/35471025-f8dd-49e7-8ac8-9f925e5cc30a" />
-
 
 ### Point of Sale (POS)
 
@@ -60,8 +58,6 @@ A visual, color-coded screen to select tables for dine-in orders or to initiate 
 A real-time display for the kitchen staff, powered by Pusher. New orders appear instantly, categorized by order type. Chefs can see item counts across all live orders and update an order's status as it's prepared.
 <img width="1885" height="908" alt="image" src="https://github.com/user-attachments/assets/9f2fcf46-2c18-44af-8a7e-95ae7e32b870" />
 
-
-
 ### Waiter Module
 
 A mobile-first interface designed for waiters to take orders directly at the table using any phone or tablet. This streamlines the ordering process and reduces errors.
@@ -74,15 +70,10 @@ A dynamic Kitchen Display System (KDS) where new orders appear instantly. Chefs 
 
 <img width="1905" height="843" alt="image" src="https://github.com/user-attachments/assets/9ff227a1-6585-4a7a-84e0-0d5e81e06540" />
 
-
-
-
-
 ### Biller Module & Bill Management
 
 Users with the "Biller" role have a restricted version of the dashboard. They can place and update orders but cannot perform sensitive admin actions. Admins have full access to view, print, and manage all historical bills.
 <img width="1916" height="907" alt="image" src="https://github.com/user-attachments/assets/78a346ab-59f0-414d-ae83-b2ea42f631a6" />
-
 
 ---
 
