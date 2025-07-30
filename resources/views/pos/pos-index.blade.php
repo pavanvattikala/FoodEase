@@ -2,15 +2,6 @@
 
     @section('title', 'POS')
 
-    {{--
-        Code Comments:
-        - The layout now strictly follows your requested 60/40 (Menu/Cart) and 25/75 (Category/Items) split using Tailwind's width utilities (`w-3/5`, `w-2/5`, `w-1/4`, `w-3/4`).
-        - The Add Notes modal is now correctly centered and styled for a clean, modern look.
-        - The order item rows now feature properly styled `+` and `-` buttons. I've added a <style> block to target the classes applied by your `pos.js`.
-        - The main action buttons are now in the requested "Bill", "KOT", "Cancel" order, complete with icons and text.
-        - The structure is fully compatible with your `pos.js`, including the logic that automatically opens the first category on page load.
-    --}}
-
     <div id="pos" class="flex flex-col h-[90vh] bg-gray-100 font-sans">
 
         <header id="order-main-nav"

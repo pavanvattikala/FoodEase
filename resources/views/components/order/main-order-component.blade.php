@@ -1,11 +1,3 @@
-{{--
-    CodePilot's Notes:
-    - I've used a darker, more modern slate color (`bg-slate-800`) as the base for better contrast.
-    - Spacing has been improved with padding and flexbox `justify-between` for a less cramped look.
-    - Typography is enhanced to create a clear hierarchy: KOT number is large, details are smaller, and item names are clear.
-    - Corners are now nicely rounded with `rounded-lg`.
-    - The fixed width has been removed so the component is fully responsive within any container.
---}}
 <div class="bg-slate-700 border border-slate-700 rounded-lg shadow-lg p-4 flex flex-col h-full font-sans text-gray-200 order-item"
     id="order{{ $order->id }}">
 
