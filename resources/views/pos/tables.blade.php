@@ -1,224 +1,142 @@
 <x-pos-layout>
+
     @section('title', 'Choose Table')
-    <style>
-        .category-header {
-            cursor: pointer;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #f5f5f5;
-        }
 
-        .table-item,
-        .unavailable-table-item {
-            cursor: pointer;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            min-height: 130px !important;
-            min-width: 110px !important;
-            padding: 10px;
-            margin: 0 10px 10px 0;
-            background-color: #fff;
-            width: 100px;
-        }
+    <div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen font-sans">
 
-        .unavailable-table-item {
-            cursor: not-allowed;
-            background-color: #f5a5a5;
-        }
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+            <h1 class="text-3xl font-bold text-gray-900">Table View</h1>
+            <div class="flex items-center gap-3">
+                <button onclick="location.reload()"
+                    class="flex items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-colors shadow-sm">
+                    <i class="fa fa-refresh mr-2"></i>Refresh
+                </button>
+                <button id="Takeaway"
+                    class="flex items-center justify-center px-4 py-2 bg-green-600 rounded-lg text-white font-semibold hover:bg-green-700 transition-colors shadow-sm">
+                    Pick Up
+                </button>
+            </div>
+        </header>
 
-        .tables-container {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .mw-60 {
-            width: 60%;
-        }
-
-        .mw-40 {
-            width: 40%;
-        }
-
-        .btn {
-            background-color: rgb(55, 150, 55);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .new_options div {
-            margin-right: 10px !important;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .modal-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            width: 300px;
-        }
-
-        .modal-header,
-        .modal-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-body {
-            margin-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 10px;
-        }
-
-        .table-options {
-            display: flex;
-            justify-content: center;
-        }
-
-        .table-options>div:first-child {
-            margin-right: 10px;
-        }
-    </style>
-
-    <div class="flex flex-row mb-2 mt-2" id="table-main-nav">
-        <div class="flex flex-row mw-60">
-            <h1 class="font-bold">Table View</h1>
-        </div>
-        <div id="order-type-options" class="mw-40 flex flex-row justify-evenly">
-            <button class="btn" id="reload" onclick="location.reload()"><i class="fa fa-refresh">Refresh</i></button>
-            <button class="btn" id="Takeaway">Pick Up</button>
-        </div>
-    </div>
-
-    <div class="flex flex-row mb-2 mt-2" id="table-second-nav">
-        <div class="flex flex-row mw-60 new_options">
-            <!-- Additional buttons can be added here if needed -->
-        </div>
-        <div id="table_type_options" class="mw-40 flex flex-row justify-evenly">
-            @foreach ($table_colors as $table_option_name => $table_color)
-                <div>
-                    <center>{{ ucfirst($table_option_name) }}
-                        <br>
-                        <span style="background-color: {{ $table_color }};">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    </center>
+        <div class="flex flex-wrap justify-end items-center mb-8 gap-x-6 gap-y-2">
+            @foreach ($table_colors as $status => $color)
+                <div class="flex items-center gap-2 text-sm text-gray-600 font-medium">
+                    <span class="w-4 h-4 rounded-full" style="background-color: {{ $color }};"></span>
+                    <span>{{ ucfirst($status) }}</span>
                 </div>
             @endforeach
         </div>
-    </div>
 
-    <div class="container" id="select-tables">
-        @foreach ($tablesWithLocations as $location => $tables)
-            {{-- Display tables for each location --}}
-            <div class="mb-4">
-                <h2 class="category-header">{{ ucfirst($location) }} Tables</h2>
-                <div class="tables-container">
+        <div class="space-y-10">
+            @foreach ($tablesWithLocations as $location => $tables)
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+                        {{ ucfirst($location) }} Tables</h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-5">
+                        @foreach ($tables as $table)
+                            <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
+                                class="table-item relative flex flex-col rounded-xl shadow-lg p-3 text-white cursor-pointer transition-transform transform hover:-translate-y-1"
+                                data-table-status="{{ $table->status->value }}">
 
-                    {{-- Check if there are tables for this location --}}
+                                <p class="elapsed-time absolute top-2 right-2 text-xs font-bold bg-black bg-opacity-20 px-1.5 py-0.5 rounded-full"
+                                    data-taken-at="{{ $table->taken_at }}">
+                                </p>
 
-                    @foreach ($tables as $table)
-                        {{-- Access tables grouped by location ID --}}
-                        <div id="{{ $table->id }}" onclick="selectTable({{ $table->id }})"
-                            class="table-item text-white text-center" data-table-status="{{ $table->status->value }}">
-
-                            <p class="elapsed-time" id="elapsedTime" data-taken-at="{{ $table->taken_at }}"></p>
-
-                            <h2 class="text-xl font-semibold mb-2">{{ $table->name }}</h2>
-                            @if ($table->order_sum)
-                                <p id="tableTotal">Rs {{ $table->order_sum }}</p>
-                            @endif
-
-                            <div class="flex table-options justify-center align-middle">
-                                <div id="showOrdersBtn"
-                                    onclick="event.stopPropagation(); showOrders({{ $table->id }})">
-                                    <button class="btn" style="background-color: white; color: black"><i
-                                            class="fas fa-eye"></i></button>
-                                </div>
-                                <div id="printTableBtn"
-                                    onclick="event.stopPropagation(); printTable({{ $table->id }})">
-                                    <button class="btn" style="background-color: white; color: black"><i
-                                            class="fas fa-print"></i></button>
+                                <div class="text-center">
+                                    <h2 class="text-3xl font-bold tracking-wider">{{ $table->name }}</h2>
+                                    @if ($table->order_sum)
+                                        <p id="tableTotal" class="text-lg font-semibold mt-1">Rs {{ $table->order_sum }}
+                                        </p>
+                                    @else
+                                        <p id="tableTotal" class="text-lg font-semibold mt-1"></p> {{-- Ensure element exists for clearing --}}
+                                    @endif
                                 </div>
 
-                                <div id="settleTableBtn"
-                                    onclick="event.stopPropagation(); triggerPaymentModal({{ $table->id }})">
-                                    <button class="btn" style="background-color: white; color: black"><i
-                                            class="fas fa-save"></i></button>
+
+                                <div class="table-options bottom-3 left-0 right-0 flex justify-center gap-2">
+                                    <div id="showOrdersBtn">
+                                        <button onclick="event.stopPropagation(); showOrders({{ $table->id }})"
+                                            class="action-btn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div id="printTableBtn">
+                                        <button onclick="event.stopPropagation(); printTable({{ $table->id }})"
+                                            class="action-btn">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                    </div>
+                                    <div id="settleTableBtn">
+                                        <button
+                                            onclick="event.stopPropagation(); triggerPaymentModal({{ $table->id }})"
+                                            class="action-btn">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div id="paymentModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            style="display: none;">
+            <div class="modal-overlay fixed inset-0" data-close="paymentModal"></div>
+            <div class="modal-container bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 m-4 relative">
+                <div class="modal-header flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800">Settle Bill</h3>
+                    <button data-close="paymentModal" class="text-gray-400 hover:text-gray-600">&times;</button>
+                </div>
+                <div class="modal-body space-y-3">
+                    <input type="hidden" id="paymentTableId" value="0">
+                    @foreach ($paymentTypes as $payment)
+                        <label
+                            class="flex items-center p-3 rounded-lg hover:bg-gray-50 border has-[:checked]:bg-green-50 has-[:checked]:border-green-400">
+                            <input type="radio" name="payment-type" value="{{ $payment }}"
+                                id="payment-{{ $payment }}"
+                                class="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500">
+                            <label for="payment-{{ $payment }}"
+                                class="ml-3 text-gray-700 font-medium">{{ strtoupper($payment) }}</label>
+                        </label>
                     @endforeach
                 </div>
-            </div>
-        @endforeach
-
-    </div>
-
-    {{-- Payment Modal --}}
-    <div id="paymentModal" class="modal fixed inset-0 flex items-center justify-center">
-        <div class="modal-overlay fixed inset-0 bg-black opacity-50" tabindex="-1" data-close="paymentModal"></div>
-        <div class="modal-container bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
-            <!-- Modal Header -->
-            <div class="modal-header flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-gray-800">Payment Options</h2>
-                <button class="text-gray-500 hover:text-gray-700" data-close="paymentModal">&times;</button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="space-y-4 modal-body">
-                <input type="hidden" id="paymentTableId" value="0">
-                @foreach ($paymentTypes as $payment)
-                    <div class="flex items-center space-x-3">
-                        <input type="radio" name="payment-type" value="{{ $payment }}" id="{{ $payment }}"
-                            class="h-4 w-4 text-green-600">
-                        <label for="{{ $payment }}"
-                            class="text-gray-700 font-medium">{{ strtoupper($payment) }}</label>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="mt-6 flex justify-end space-x-3 modal-footer">
-                <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                    data-close="paymentModal">Close</button>
-                <button type="button" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                    id="savePaymentDataBtn">Save and Settle</button>
+                <div class="modal-footer mt-6 flex justify-end gap-3">
+                    <button type="button"
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold"
+                        data-close="paymentModal">Cancel</button>
+                    <button type="button" id="savePaymentDataBtn"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold">Save &
+                        Settle</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <style>
+        .action-btn {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+        }
 
+        .action-btn:hover {
+            background-color: white;
+            transform: scale(1.1);
+        }
 
+        .table-item {
+            min-height: 100px !important;
+        }
+    </style>
 
     <script>
         const billTableUrl = "{{ route('pos.table.bill', [], false) }}";
@@ -263,16 +181,18 @@
         function updateElapsedTimes() {
             runningTables.forEach(table => {
                 const elapsedString = getElapsedMinutes(table.takenAt);
+                // Correctly target the elapsed-time <p> inside the specific table div
                 $(`#${table.tableId}`).find(".elapsed-time").text(elapsedString);
             });
         }
 
         function getElapsedMinutes(originalTime) {
+            if (!originalTime) return '';
             const takenTime = new Date(originalTime);
             const elapsedTime = Date.now() - takenTime.getTime();
-            const elapsedHours = Math.floor(elapsedTime / (1000 * 60 * 60));
-            const elapsedMinutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-            return `${elapsedHours}H:${elapsedMinutes}M`;
+            const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+            return hours > 0 ? `${hours}H:${minutes}M` : `${minutes}M`;
         }
 
         // Show orders for a specific table
@@ -429,5 +349,4 @@
             });
         }
     </script>
-
 </x-pos-layout>
