@@ -37,7 +37,7 @@
     <main class="flex-grow space-y-2 py-3 border-y border-slate-700">
         @foreach ($order->orderDetails as $orderDetail)
             <div class="flex">
-                <p class="font-bold text-lg text-amber-400 mr-3">{{ $orderDetail->quantity }}x</p>
+                <p class="font-bold text-lg text-amber-400 mr-3">{{ $orderDetail->quantity }} x</p>
                 <p class="text-gray-100">{{ $orderDetail->menu->name }}</p>
             </div>
         @endforeach
