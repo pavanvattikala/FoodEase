@@ -56,7 +56,7 @@
             </div>
         </header>
 
-        <main class="mx-auto flex-grow p-4 sm:p-6 lg:p-8 w-full">
+        <main class="mx-auto flex-grow lg:p-1 w-full">
 
 
 
