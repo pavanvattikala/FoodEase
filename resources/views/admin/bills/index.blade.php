@@ -1,94 +1,79 @@
 <x-master-layout>
-    @section('title', 'View Bills')
-
+    @section('title', 'All Bills')
     @include('components.analytics.datatable')
-    <style>
-        #table-bills {
-            color: grey !important;
-        }
 
-        main {
-            padding: 0px !important;
-            margin: 0px !important;
-        }
-    </style>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            All Bills
         </h2>
     </x-slot>
 
-
-    @php
-        $user = Auth::user();
-    @endphp
-
     <div class="py-6">
-        <div class="max-w-7xl sm:px-6 lg:px-8">
-            <x-search-by-date>
-                <div class="flex m-2 p-2 justify-between">
-                    @if ($user->isAdmin())
-                        <div class="flex items-center">
-                            <input type="checkbox" id="includeDeleted" name="includeDeleted">
-                            <label for="includeDeleted" class="ml-2">Include <br> Deleted Bills</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="onlyDeleted" name="onlyDeleted">
-                            <label for="onlyDeleted" class="ml-2">Show Only <br> Deleted Bills</label>
-                        </div>
-                    @endif
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+
+                <div class="mb-6">
+                    <x-search-by-date>
+                        @if (Auth::user()->isAdmin())
+                            <div class="flex items-center justify-start flex-wrap gap-6 mt-4">
+                                <label for="includeDeleted" class="flex items-center cursor-pointer">
+                                    <input type="checkbox" id="includeDeleted" name="includeDeleted"
+                                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <span class="ml-2 text-sm text-gray-600">Include Deleted Bills</span>
+                                </label>
+                                <label for="onlyDeleted" class="flex items-center cursor-pointer">
+                                    <input type="checkbox" id="onlyDeleted" name="onlyDeleted"
+                                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <span class="ml-2 text-sm text-gray-600">Show Only Deleted Bills</span>
+                                </label>
+                            </div>
+                        @endif
+                    </x-search-by-date>
                 </div>
-            </x-search-by-date>
 
-            <div class="flex flex-col">
-                <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div class="inline-block py-2 min-w-full sm:px-6 lg:px-8">
-                        <div class="overflow-hidden shadow-md sm:rounded-lg">
-                            <table id="bills-table" class="min-w-full">
-                                <thead class="bg-gray-50 dark:bg-gray-700">
-                                    <tr>
-                                        <th scope="col"
-                                            class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Sno
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Bill Id
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Bill Type
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Grand Total
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
-                                            Options
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bills-table-body">
-
-                                </tbody>
-
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="3"
-                                            class="py-3 px-6 text-xl font-medium text-gray-700 uppercase">
-                                            Total Sales Amount:</td>
-                                        <td id="total-sales-amount"
-                                            class="py-3 px-6 text-xl font-medium text-gray-900 "> </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table id="bills-table" class="min-w-full">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    S.No</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Bill ID</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Bill Type</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Grand Total</th>
+                                <th
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bills-table-body" class="bg-white divide-y divide-gray-200">
+                            {{-- AJAX will populate this section --}}
+                        </tbody>
+                        <tfoot class="bg-gray-100">
+                            <tr>
+                                <td colspan="3"
+                                    class="px-6 py-4 text-right text-sm font-bold text-gray-700 uppercase">
+                                    Total Sales Amount:
+                                </td>
+                                <td id="total-sales-amount" class="px-6 py-4 text-left text-sm font-bold text-gray-900">
+                                    {{-- AJAX will populate this --}}
+                                </td>
+                                <td></td> {{-- Empty cell for alignment --}}
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- The original script block is preserved --}}
     <script>
         document.getElementById("searchByDate").addEventListener("click", function() {
             let startDate = new Date(getSelectPickrFormattedDate(startDateObject));
@@ -117,22 +102,15 @@
                     tableBody.innerHTML = bills;
 
                     let totalSales = formatCurrency(data.totalSales);
-
                     $("#total-sales-amount").text(totalSales);
 
-                    var filename = `Bills-${startDate} To ${endDate}`;
-
-                    // if include deleted is checked, change filename to include deleted
+                    var filename = `Bills-${startDate}-To-${endDate}`;
                     if (includeDeleted) {
                         filename += "-IncludeDeleted";
                     }
-
-                    // if only deleted is checked, change filename to only deleted
                     if (onlyDeleted) {
                         filename += "-OnlyDeleted";
                     }
-
-                    //set the page title
                     document.title = filename;
 
                     $('#bills-table').DataTable({
@@ -176,16 +154,10 @@
         });
 
         function formatDateToYYYYMMDD(date) {
-            // Extract year, month, and date
             let year = date.getFullYear();
-            // Months are zero-based, so we add 1 to get the correct month
             let month = date.getMonth() + 1;
             let day = date.getDate();
-
-            // Format the date as YYYY-MM-DD
-            let formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
-
-            return formattedDate;
+            return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
         }
     </script>
 </x-master-layout>
