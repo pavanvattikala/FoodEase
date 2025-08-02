@@ -2,32 +2,52 @@
 
 namespace App\Helpers;
 
-use App\Models\Table;
-use App\Enums\TableStatus;
-
+use App\Http\Service\RestaurantService;
 
 class ModuleHelper
 {
+    private $restaurantService;
 
-    public static function isKitchenModuleEnabled()
+    public function __construct(RestaurantService $restaurantService)
     {
-        return boolval(env('KITCHEN_MODULE_ENABLED', false));
+        $this->restaurantService = $restaurantService;
     }
 
-    public static function isWaiterModuleEnabled()
+    public function isModuleEnabled(string $module): bool
     {
-        return boolval(env('WAITER_MODULE_ENABLED ', false));
+        switch ($module) {
+            case 'kitchen':
+                return $this->restaurantService->isKitchenModuleEnabled();
+            case 'waiter':
+                return $this->restaurantService->isWaiterModuleEnabled();
+            default:
+                return false; // or throw an exception if the module is unknown
+        }
     }
 
-    public static function getDiabledModules()
+    public static function isKitchenModuleEnabled(): bool
+    {
+        // resolve the instance through Laravel container
+        return app(self::class)->isModuleEnabled('kitchen');
+    }
+
+    public static function isWaiterModuleEnabled(): bool
+    {
+        return app(self::class)->isModuleEnabled('waiter');
+    }
+
+    public function getDisabledModules(): array
     {
         $modules = [];
+
         if (!self::isKitchenModuleEnabled()) {
             $modules[] = 'Kitchen';
         }
+
         if (!self::isWaiterModuleEnabled()) {
             $modules[] = 'Waiter';
         }
+
         return $modules;
     }
 }

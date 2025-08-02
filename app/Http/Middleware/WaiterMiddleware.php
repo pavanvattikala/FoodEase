@@ -28,7 +28,7 @@ class WaiterMiddleware
     {
 
         // Check if the restaurant has the waiter module enabled
-        $isWaiterConfigured = $this->restaurantService->isWaiterEnabled();
+        $isWaiterConfigured = $this->restaurantService->isWaiterModuleEnabled();
 
         if (!$isWaiterConfigured) {
             abort(501, 'Waiter module is not enabled.');

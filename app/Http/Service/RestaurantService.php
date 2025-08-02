@@ -17,12 +17,12 @@ class RestaurantService extends Service
         return !is_null($restaurant) && !is_null($restaurant->name) && !is_null($restaurant->address);
     }
 
-    public function isKitchenEnabled()
+    public function isKitchenModuleEnabled()
     {
         return (bool)$this->getRestaurantDetails()->kitchen_module_enabled ?? false;
     }
 
-    public function isWaiterEnabled()
+    public function isWaiterModuleEnabled()
     {
         return (bool)$this->getRestaurantDetails()->waiter_module_enabled ?? false;
     }

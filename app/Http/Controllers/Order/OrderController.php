@@ -51,8 +51,8 @@ class OrderController extends Controller
 
         $this->orderService = $orderService;
 
-        $this->kitchenModuleEnabled = $this->restaurantService->isKitchenEnabled();
-        $this->waiterModuleEnabled = $this->restaurantService->isWaiterEnabled();
+        $this->kitchenModuleEnabled = $this->restaurantService->isKitchenModuleEnabled();
+        $this->waiterModuleEnabled = $this->restaurantService->isWaiterModuleEnabled();
         $this->printBillEnabled = $this->restaurantService->isPrintBillEnabled();
         $this->printKOTEnabled = $this->restaurantService->isKOTPrintEnabled();
     }

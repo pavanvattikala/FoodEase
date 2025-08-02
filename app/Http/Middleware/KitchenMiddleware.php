@@ -30,7 +30,7 @@ class KitchenMiddleware
 
 
         // Check if the authenticated user is a waiter
-        $isKitchenConfigured = $this->restaurantService->isKitchenEnabled();
+        $isKitchenConfigured = $this->restaurantService->isKitchenModuleEnabled();
 
         if (!$isKitchenConfigured) {
             abort(501, 'Kitchen module is not enabled.');
