@@ -198,7 +198,7 @@
         // Show orders for a specific table
         function showOrders(tableId) {
             const url = "{{ route('pos.table.orders', ['tableId' => ':id'], false) }}".replace(':id', tableId);
-            window.open(url, '_blank');
+            window.open(url, '{{ env('LINK_TARGET', '_blank') }}');
         }
 
         // Trigger payment modal

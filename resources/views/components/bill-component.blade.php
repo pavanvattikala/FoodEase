@@ -36,7 +36,7 @@
                     class="text-blue-600 hover:text-blue-800 transition-colors">
                     <i class="fas fa-eye"></i>
                 </a>
-                <a href="{{ route('admin.stream.bill', $bill->id) }}" title="Print Bill" target="_blank"
+                <a href="{{ route('admin.stream.bill', $bill->id) }}" title="Print Bill" @target
                     class="text-green-600 hover:text-green-800 transition-colors">
                     <i class="fas fa-print"></i>
                 </a>

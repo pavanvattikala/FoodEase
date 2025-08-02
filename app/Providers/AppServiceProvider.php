@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Blade::directive('target', function () {
+            // Read the value from your .env file, default to '_blank'
+            $target = env('LINK_TARGET', '_blank');
+            return "<?php echo 'target=\"$target\"'; ?>";
+        });
     }
 }
