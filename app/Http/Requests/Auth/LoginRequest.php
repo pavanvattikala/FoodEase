@@ -10,106 +10,86 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Helpers\ModuleHelper;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
-        // If 'pin' is provided, no need for 'email' and 'password'
-        if ($this->filled('pin')) {
-            return [
-                'pin' => ['required', 'string'],
+        return $this->filled('pin')
+            ? ['pin' => ['required', 'string']]
+            : [
+                'email' => ['required', 'string', 'email'],
+                'password' => ['required', 'string'],
             ];
-        }
-
-        // Otherwise, require 'email' and 'password'
-        return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ];
     }
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function authenticate()
+    public function authenticate(): void
     {
-
         $this->ensureIsNotRateLimited();
-        // If 'pin' is provided, authenticate with pin
-        $this->filled('pin') ? $this->authenticateWithPin() : $this->authenticateWithEmail();
+
+        $user = $this->filled('pin')
+            ? $this->authenticateWithPin()
+            : $this->authenticateWithEmail();
+
+        $this->enforceRoleRestrictions($user);
+
+        Auth::login($user, $this->boolean('remember'));
 
         RateLimiter::clear($this->throttleKey());
     }
-    public function authenticateWithPin()
+
+    protected function authenticateWithPin(): User
     {
-        // Retrieve the user by the provided pin
         $user = User::where('pin', $this->input('pin'))->first();
 
         if (!$user) {
-            throw ValidationException::withMessages([
-                'email' => trans('No User Exists with this pin'),
-            ]);
+            $this->fail('pin', 'No user exists with this PIN.');
         }
 
         if ($user->hasPermission(UserRole::Admin)) {
-            $this->ensureIsNotRateLimited();
-            throw ValidationException::withMessages([
-                'email' => trans('login via email and password for extra secuirty'),
-            ]);
+            $this->fail('pin', 'Login via email and password for extra security.');
         }
 
-        // Check if the user exists and if the PIN matches
-        if (!$user) {
-            // If the user doesn't exist, or if the PIN doesn't match, throw a validation exception
-            throw ValidationException::withMessages([
-                'pin' => trans('auth.failed'),
-            ]);
-        }
-
-        // Log in the user
-        Auth::login($user, $this->boolean('remember'));
+        return $user;
     }
 
-    public function authenticateWithEmail()
+    protected function authenticateWithEmail(): User
     {
         if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
+            $this->fail('email', trans('auth.failed'));
+        }
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+        return Auth::user();
+    }
+
+    protected function enforceRoleRestrictions(User $user): void
+    {
+        if ($user->isWaiter() && !ModuleHelper::isWaiterModuleEnabled()) {
+            $this->forceLogoutIfLoggedIn();
+            $this->fail('email', 'Waiter login is currently disabled by the administrator.');
+        }
+
+        if ($user->isKitchen() && !ModuleHelper::isKitchenModuleEnabled()) {
+            $this->forceLogoutIfLoggedIn();
+            $this->fail('email', 'Kitchen login is currently disabled by the administrator.');
         }
     }
 
+    protected function forceLogoutIfLoggedIn(): void
+    {
+        if (Auth::check()) {
+            Auth::logout();
+        }
+    }
 
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @return void
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function ensureIsNotRateLimited()
+    protected function ensureIsNotRateLimited(): void
     {
         if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
@@ -119,21 +99,25 @@ class LoginRequest extends FormRequest
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
+        $this->fail('email', trans('auth.throttle', [
+            'seconds' => $seconds,
+            'minutes' => ceil($seconds / 60),
+        ]));
+    }
+
+    protected function fail(string $field, string $message): void
+    {
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            $field => [$message],
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     *
-     * @return string
-     */
-    public function throttleKey()
+    protected function throttleKey(): string
     {
-        return Str::lower($this->input('email')) . '|' . $this->ip();
+        $identifier = $this->filled('pin')
+            ? $this->input('pin')
+            : $this->input('email');
+
+        return Str::lower($identifier) . '|' . $this->ip();
     }
 }
